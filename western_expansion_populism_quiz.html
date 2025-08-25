@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Western Expansion & Populism — Quick Quiz</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --card:#121a2b;
+    --soft:#1b2540;
+    --text:#f5f7ff;
+    --muted:#b9c2d6;
+    --accent:#4da3ff;
+    --right:#1db954;
+    --wrong:#ff3b30;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+    color:var(--text);
+    background:linear-gradient(180deg,#0b1220,#0b1220 50%,#0f172a);
+    min-height:100svh;
+    display:flex;
+    justify-content:center;
+    padding:12px;
+  }
+  .app{
+    width:100%;
+    max-width:680px;
+    background:var(--card);
+    border-radius:20px;
+    padding:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.05);
+  }
+  header{
+    display:flex;align-items:center;gap:10px;margin-bottom:8px;
+  }
+  .pill{
+    background:var(--soft);color:var(--muted);
+    border-radius:999px;padding:6px 10px;font-size:12px;
+  }
+  h1{font-size:20px;margin:0 0 6px 0;line-height:1.25}
+  #progressWrap{height:8px;background:#0e1424;border-radius:999px;overflow:hidden}
+  #progress{height:100%;width:0;background:var(--accent);transition:width .25s ease}
+  .qCard{
+    margin-top:12px;background:#0f1730;border-radius:16px;padding:14px;
+    border:1px solid rgba(255,255,255,.06);
+  }
+  .qText{font-size:18px;line-height:1.35;margin:0 0 8px 0}
+  .answers{display:grid;gap:10px;margin-top:10px}
+  button.answer{
+    text-align:left;border:none;border-radius:12px;padding:12px 14px;
+    font-size:16px;background:var(--soft);color:var(--text);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+  }
+  button.answer:active{transform:scale(.99)}
+  button.answer.correct{background:rgba(29,185,84,.14);box-shadow:inset 0 0 0 2px var(--right);}
+  button.answer.incorrect{background:rgba(255,59,48,.14);box-shadow:inset 0 0 0 2px var(--wrong);}
+  .explain{color:var(--muted);font-size:14px;margin-top:8px}
+  .controls{display:flex;gap:10px;margin-top:10px}
+  .btn{
+    flex:1;text-align:center;border:none;border-radius:12px;padding:12px;
+    font-size:16px;background:var(--accent);color:#001a33;font-weight:600;
+  }
+  .btn.secondary{background:#1f2a44;color:var(--text)}
+  .tiny{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+  .score{
+    font-size:18px;margin-top:8px;color:var(--muted)
+  }
+</style>
+</head>
+<body>
+<div class="app" role="application" aria-label="Study Quiz">
+  <header>
+    <span class="pill">Unit: Western Expansion & Populism</span>
+  </header>
+  <h1 id="title">Quick Quiz</h1>
+  <div id="progressWrap" aria-hidden="true"><div id="progress"></div></div>
+
+  <div class="qCard">
+    <p class="qText" id="qText">Loading…</p>
+    <div id="answers" class="answers"></div>
+    <div id="explain" class="explain"></div>
+    <div class="controls">
+      <button id="nextBtn" class="btn" disabled>Next</button>
+      <button id="restartBtn" class="btn secondary">Restart</button>
+    </div>
+    <div id="score" class="score"></div>
+    <div class="tiny">Tip: tap an option to check your answer.</div>
+  </div>
+</div>
+
+<script>
+/** 25 mobile‑friendly questions derived from the provided class notes. **/
+const allQuestions = [
+  {
+    q: "Which two companies built the Transcontinental Railroad from each side?",
+    a: ["Northern & Southern","Union Pacific & Central Pacific","Santa Fe & BNSF","Amtrak & Southern"],
+    correct: 1,
+    why: "Union Pacific built from the East; Central Pacific from the West. They met at Promontory Summit, Utah in 1869."
+  },
+  {
+    q: "Where did the Transcontinental Railroad join the tracks in 1869?",
+    a: ["Abilene, Kansas","Cheyenne, Wyoming","Promontory Summit, Utah","Omaha, Nebraska"],
+    correct: 2,
+    why: "The golden spike was driven at Promontory Summit, Utah."
+  },
+  {
+    q: "A major effect of the railroads was that they…",
+    a: ["slowed western settlement","eliminated the telegraph","led to standard time and faster transportation","banned immigration"],
+    correct: 2,
+    why: "Railroads unified the country, encouraged western settlement, sped travel and communication, and helped adopt standard time."
+  },
+  {
+    q: "Which groups were often hired for tough railroad work and faced discrimination?",
+    a: ["Irish and Germans","Chinese and Mexicans","Russians and Italians","Canadians and British"],
+    correct: 1,
+    why: "Notes highlight Chinese and Mexican laborers."
+  },
+  {
+    q: "Why did many farmers fall into debt in the late 1800s?",
+    a: ["High crop prices and low shipping costs","Overproduction, high railroad shipping costs, and high interest loans","Gold discoveries on their land","They refused bank loans"],
+    correct: 1,
+    why: "Advances led to overproduction → low prices; railroads charged high rates; banks charged high interest."
+  },
+  {
+    q: "What was the purpose of the Grange and Farmers' Alliance?",
+    a: ["Promote cattle trails","Fight railroad corruption and push states to regulate rates","Build national parks","Support the gold standard"],
+    correct: 1,
+    why: "They worked to regulate railroad rates; their success helped inspire later reform."
+  },
+  {
+    q: "Which 1887 law created the first federal agency to regulate industry?",
+    a: ["Morrill Act","Interstate Commerce Act","Homestead Act","Sherman Act"],
+    correct: 1,
+    why: "Interstate Commerce Act (1887) regulated railroads—first federal regulatory agency."
+  },
+  {
+    q: "The Populist (People’s) Party grew mainly out of which movement?",
+    a: ["Temperance","Grange/Farmers’ movement","Conservation","Nativism"],
+    correct: 1,
+    why: "Farmers united and later allied with urban laborers to form the Populist Party."
+  },
+  {
+    q: "Which reform was on the Populist Party platform?",
+    a: ["End secret ballots","Government‑owned railroads","Ban windmills","Repeal income tax"],
+    correct: 1,
+    why: "Platform included government ownership of railroads, a graduated income tax, restriction of immigration, and secret ballot."
+  },
+  {
+    q: "“Bimetallism” in the 1890s called for…",
+    a: ["money backed only by gold","money backed by both gold and silver","no backing for currency","backing money with cattle"],
+    correct: 1,
+    why: "Silverites wanted gold and silver to expand the money supply."
+  },
+  {
+    q: "Who gave the “Cross of Gold” speech supporting bimetallism?",
+    a: ["William McKinley","Theodore Roosevelt","William Jennings Bryan","Grover Cleveland"],
+    correct: 2,
+    why: "Bryan was the Populist‑backed Democratic candidate in 1896."
+  },
+  {
+    q: "Supporters of the gold standard in 1896 were nicknamed…",
+    a: ["Sooners","Gold Bugs","Exodusters","Buffalo Soldiers"],
+    correct: 1,
+    why: "Bankers and many businessmen favored the gold standard (the 'Gold Bugs')."
+  },
+  {
+    q: "After the Civil War, the Plains economy was dominated by…",
+    a: ["Ranching","Shipbuilding","Rice farming","Textiles"],
+    correct: 0,
+    why: "Large‑scale cattle ranching (e.g., Texas longhorns) grew rapidly."
+  },
+  {
+    q: "Which invention helped end the open range by fencing land?",
+    a: ["Steam plow","Windmill","Barbed wire","Telegraph"],
+    correct: 2,
+    why: "Barbed wire, invented by Joseph Glidden, closed the open range."
+  },
+  {
+    q: "The Chisholm Trail ran from San Antonio to…",
+    a: ["Denver, CO","Abilene, KS","Cheyenne, WY","Chicago, IL"],
+    correct: 1,
+    why: "Cattle were driven north to Abilene where the trail met the railroads."
+  },
+  {
+    q: "Which act granted 160 acres to settlers who lived on and cultivated the land?",
+    a: ["Morrill Act","Pacific Railway Act","Homestead Act","Dawes Act"],
+    correct: 2,
+    why: "Homestead Act offered 160 acres (including to women and African Americans) if farmed for 5 years."
+  },
+  {
+    q: "The Morrill Act provided land to states to fund…",
+    a: ["naval bases","colleges in agricultural & mechanical arts","prisons","railroad depots"],
+    correct: 1,
+    why: "Land‑grant colleges emphasized agriculture and engineering."
+  },
+  {
+    q: "People who slipped into Oklahoma early during the land rush were called…",
+    a: ["Gold Bugs","Sooners","Grangers","Longhorns"],
+    correct: 1,
+    why: "Early entrants were nicknamed 'Sooners.'"
+  },
+  {
+    q: "Which term refers to African‑American settlers who moved West after the Civil War?",
+    a: ["Rough Riders","Exodusters","Sooners","Forty‑Niners"],
+    correct: 1,
+    why: "Exodusters—many moved to Kansas seeking new opportunities."
+  },
+  {
+    q: "Plains Indians believed land…",
+    a: ["could be freely bought and sold","belonged to the government","could not be owned as private property","should be owned only by tribes"],
+    correct: 2,
+    why: "Many Plains tribes viewed land as shared, not bought and sold."
+  },
+  {
+    q: "U.S. policy in the late 1800s forced many Native Americans onto…",
+    a: ["plantations","reservations","mission towns","factory towns"],
+    correct: 1,
+    why: "Reservation policy confined tribes to limited areas."
+  },
+  {
+    q: "Which 1876 battle was a last major victory for the Sioux under Sitting Bull?",
+    a: ["Wounded Knee","Little Bighorn","Sand Creek","Bear River"],
+    correct: 1,
+    why: "Custer’s 7th Cavalry was defeated at Little Bighorn."
+  },
+  {
+    q: "The 1890 event that shocked Americans and effectively ended Plains resistance was…",
+    a: ["The Ghost Dance","Wounded Knee Massacre","Pueblo Revolt","Trail of Tears"],
+    correct: 1,
+    why: "U.S. troops killed many Sioux at Wounded Knee; seen as the last major armed resistance on the Plains."
+  },
+  {
+    q: "Chief Joseph of the Nez Perce is remembered for saying…",
+    a: ["“Remember the Alamo.”","“I will fight no more forever.”","“Give me liberty or give me death.”","“Speak softly and carry a big stick.”"],
+    correct: 1,
+    why: "Said after a long retreat when forced to surrender."
+  },
+  {
+    q: "Which law aimed at 'assimilation' broke up tribal lands into family plots?",
+    a: ["Dawes Act (1887)","Homestead Act","Interstate Commerce Act","Sherman Silver Purchase Act"],
+    correct: 0,
+    why: "The Dawes Act divided reservation land; harmful to Native communal life."
+  },
+  {
+    q: "What lasting impact did the Populist Party have despite losing in 1896?",
+    a: ["None—its ideas vanished","It showed citizens could organize and many of its reforms were later enacted","It created the telegraph","It stopped immigration entirely"],
+    correct: 1,
+    why: "Populism proved mass political organizing could work; several reforms (e.g., income tax, regulation) came later."
+  }
+];
+
+// Shuffle and take 25 (all)
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+let questions = shuffle([...allQuestions]).slice(0,25);
+let i = 0;
+let score = 0;
+let answered = false;
+
+const qText = document.getElementById('qText');
+const ansWrap = document.getElementById('answers');
+const explain = document.getElementById('explain');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const progress = document.getElementById('progress');
+const scoreEl = document.getElementById('score');
+const title = document.getElementById('title');
+
+function render(){
+  const q = questions[i];
+  title.textContent = `Question ${i+1} of ${questions.length}`;
+  qText.textContent = q.q;
+  ansWrap.innerHTML='';
+  explain.textContent='';
+  answered = false;
+  nextBtn.disabled = true;
+  progress.style.width = ((i)/questions.length*100)+'%';
+  scoreEl.textContent = `Score: ${score}/${questions.length}`;
+
+  q.a.forEach((opt,idx)=>{
+    const btn = document.createElement('button');
+    btn.className='answer';
+    btn.innerHTML = `<b>${String.fromCharCode(65+idx)}.</b> ${opt}`;
+    btn.addEventListener('click',()=>choose(idx,btn));
+    ansWrap.appendChild(btn);
+  });
+}
+
+function choose(idx, btn){
+  if(answered) return;
+  answered = true;
+  const q = questions[i];
+  const nodes = [...document.querySelectorAll('button.answer')];
+  nodes.forEach((n,k)=>{
+    if(k===q.correct){n.classList.add('correct')}
+    if(k===idx && k!==q.correct){n.classList.add('incorrect')}
+    n.disabled = true;
+  });
+  if(idx===q.correct){
+    score++;
+    explain.textContent = "Correct! " + q.why;
+  }else{
+    explain.textContent = "Not quite. " + q.why;
+  }
+  nextBtn.disabled = false;
+  scoreEl.textContent = `Score: ${score}/${questions.length}`;
+  progress.style.width = ((i+1)/questions.length*100)+'%';
+  if(i===questions.length-1){ nextBtn.textContent='Finish'; }
+}
+
+nextBtn.addEventListener('click',()=>{
+  if(i<questions.length-1){
+    i++; nextBtn.textContent='Next'; render();
+  }else{
+    finish();
+  }
+});
+
+function finish(){
+  qText.textContent = 'All done!';
+  ansWrap.innerHTML='';
+  explain.innerHTML = `You scored <b>${score}</b> out of <b>${questions.length}</b>.`;
+  title.textContent = 'Quiz complete';
+  nextBtn.disabled = true;
+  progress.style.width='100%';
+}
+
+restartBtn.addEventListener('click',()=>{
+  questions = shuffle([...allQuestions]).slice(0,25);
+  i=0; score=0; nextBtn.textContent='Next'; render();
+});
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Industrialization & Labor Movement — 50‑Question Practice Test</title>
+<style>
+  :root{
+    --bg:#0b1020;
+    --card:#111834;
+    --muted:#9fb2ff;
+    --text:#eef2ff;
+    --accent:#6ea8ff;
+    --correct:#2ecc71;
+    --wrong:#ff6b6b;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:20px;line-height:1.5}
+  .card{background:var(--card);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:18px;margin:14px 0}
+  h1{font-size:1.4rem;margin:6px 0 12px}
+  h2{font-size:1.1rem;margin:0 0 8px;color:var(--muted)}
+  .btn{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;margin:8px 0;font-weight:700;
+       background:linear-gradient(180deg,var(--accent),#4a78ff);color:#fff;font-size:1.02rem}
+  .btn.secondary{background:#2b386b}
+  .btn:active{transform:scale(.98)}
+  .options{display:grid;gap:10px;margin-top:12px}
+  .option{border-radius:14px;border:2px solid #303d78;padding:12px 14px}
+  .option input{display:none}
+  .label{display:block}
+  .option.selected{border-color:#8fa6ff;background:#1a2552}
+  .option.correct{border-color:var(--correct);background:#143822}
+  .option.wrong{border-color:var(--wrong);background:#3a1a1a}
+  .row{display:flex;gap:10px}
+  .row .btn{flex:1}
+  .muted{color:#aebcfb}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#1a2552;border:1px solid #32408f;color:#cbd6ff;font-size:.85rem}
+  .small{font-size:.9rem}
+  .hidden{display:none}
+  .kbd{background:#1f2a5a;border:1px solid #3a4691;border-bottom-width:3px;border-radius:8px;padding:2px 6px}
+  .footer{opacity:.7;font-size:.85rem;text-align:center;margin-top:16px}
+  .explain{border-left:3px solid #3b9eff;padding-left:10px;margin-top:10px;color:#d9e3ff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Unit 1 — Modules 3–5: Industrialization &amp; the Labor Movement</h1>
+    <p class="muted">50‑question self‑contained quiz. Works offline. Optimized for iPhone — tap <span class="kbd">Share</span> → <b>Add to Home Screen</b> for a full‑screen app.</p>
+    <div id="setup">
+      <h2>Choose mode</h2>
+      <div class="row">
+        <button class="btn" onclick="startQuiz('study')">Study mode (instant feedback)</button>
+        <button class="btn secondary" onclick="startQuiz('test')">Test mode (score at end)</button>
+      </div>
+      <label class="small"><input type="checkbox" id="shuffleBox" checked> Shuffle questions &amp; answers</label>
+    </div>
+    <div id="quiz" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div><span id="progress" class="pill">1 / 50</span></div>
+        <div class="small muted" id="modeLabel"></div>
+      </div>
+      <div id="qCard" class="card" style="margin:12px 0 6px"></div>
+      <div id="controls" class="row">
+        <button class="btn secondary" id="prevBtn" onclick="prevQ()" disabled>Back</button>
+        <button class="btn" id="nextBtn" onclick="nextQ()">Next</button>
+      </div>
+    </div>
+    <div id="results" class="hidden"></div>
+  </div>
+  <div class="footer">Made from your class notes • No tracking • v1.0</div>
+</div>
+
+<script>
+const data = [
+  // 1
+  {q:"What combination best explains the late‑1800s industrial boom in the U.S.?", type:"mc",
+   choices:["Natural resources, creative ideas, and growing markets","Government price controls and small rural markets","Declining immigration and scarce resources","Strict limits on patents and invention"],
+   answer:0, exp:"Your notes list natural resources, creative ideas, and growing markets as the big drivers of industrial growth."},
+  // 2
+  {q:"What happened on January 10, 1901, starting the Texas oil boom?", type:"mc",
+   choices:["A gold strike in Nevada","Patillo Higgins and Anthony F. Lucas struck oil in southeastern Texas","Standard Oil split into many companies","Henry Ford opened his first factory"],
+   answer:1, exp:"Higgins and Lucas found oil gushing from their well in southeast Texas."},
+  // 3
+  {q:"The 'Second Industrial Revolution' describes an immense industrial boom in the late 1800s driven by new uses of natural resources, supportive government policies, and a growing urban population.", type:"tf", answer:0,
+   exp:"That’s how your notes define the period."},
+  // 4
+  {q:"In the mid‑1800s, what petroleum product did Americans mainly use to light lamps?", type:"mc",
+   choices:["Gasoline","Diesel","Kerosene","Propane"], answer:2, exp:"Kerosene became popular for lighting; Abraham Gesner figured out how to distill it."},
+  // 5
+  {q:"Who used a steam engine to drill for oil near Titusville, Pennsylvania in 1859?", type:"mc",
+   choices:["John D. Rockefeller","Edwin L. Drake","Nikola Tesla","Cyrus McCormick"], answer:1, exp:"Drake’s success made drilling for oil practical."},
+  // 6
+  {q:"Drilling oil initially became practical mainly to produce kerosene.", type:"tf", answer:0,
+   exp:"The early demand was for lamp fuel."},
+  // 7
+  {q:"Gasoline was originally thrown away but became the most important petroleum product after automobiles grew popular.", type:"tf", answer:0,
+   exp:"Exactly from your notes."},
+  // 8
+  {q:"What did the Bessemer process do?", type:"mc",
+   choices:["Injected air into molten iron to remove carbon, creating steel","Converted coal into oil","Smelted aluminum from bauxite","Tempered copper for wiring"], answer:0,
+   exp:"Removing carbon made a lighter, stronger, more flexible, rust‑resistant steel."},
+  // 9
+  {q:"By 1880, roughly 90% of U.S. steel used the Bessemer process.", type:"tf", answer:0, exp:"That rapid adoption fueled growth."},
+  // 10
+  {q:"The open‑hearth process improved in the 1860s and allowed quality steel to be made from scrap metal.", type:"tf", answer:0, exp:"This broadened steel production."},
+  // 11
+  {q:"Who were the biggest customers for steel in the late 1800s?", type:"mc",
+   choices:["Textile mills","Railroads","Banks","Newspapers"], answer:1, exp:"Railroads demanded huge quantities of steel."},
+  // 12
+  {q:"Who invented the safety elevator that made skyscrapers practical?", type:"mc",
+   choices:["Elisha Otis","George Westinghouse","Lewis Latimer","John Roebling"], answer:0, exp:"Otis’s brake made tall buildings feasible."},
+  // 13
+  {q:"Which building is often cited as the first skyscraper with a steel frame?", type:"mc",
+   choices:["Empire State Building, New York","Home Insurance Building, Chicago","Transamerica Pyramid, San Francisco","Flatiron Building, New York"], answer:1,
+   exp:"William Le Baron Jenney’s Home Insurance Building used a steel frame."},
+  // 14
+  {q:"The Brooklyn Bridge was completed in 1883.", type:"tf", answer:0, exp:"That’s the date in your notes."},
+  // 15
+  {q:"Thomas Edison founded the world’s first industrial research laboratory in 1876 at:", type:"mc",
+   choices:["Menlo Park, New Jersey","Boston, Massachusetts","Pittsburgh, Pennsylvania","Buffalo, New York"], answer:0, exp:"Menlo Park is correct."},
+  // 16
+  {q:"Edison worked to perfect the light bulb and applied for his first patent in 1879.", type:"tf", answer:0, exp:"Matches your notes."},
+  // 17
+  {q:"Who invented a longer‑lasting carbon filament for light bulbs in 1881?", type:"mc",
+   choices:["Hiram Maxim","Lewis H. Latimer","Nikola Tesla","C. F. Brush"], answer:1, exp:"Latimer later worked on Edison’s team."},
+  // 18
+  {q:"Edison and George Westinghouse helped make electricity safer and less expensive.", type:"tf", answer:0, exp:"Westinghouse commercialized AC systems."},
+  // 19
+  {q:"Electric power gave factories more freedom in locating plants, not just beside rivers.", type:"mc",
+   choices:["True","False"], answer:0, exp:"Owners could consider population and resource availability instead."},
+  // 20
+  {q:"Who invented the typewriter in 1867?", type:"mc",
+   choices:["Margaret E. Knight","Christopher Sholes","Elisha Otis","Alexander Graham Bell"], answer:1, exp:"Sholes’s typewriter changed office work."},
+  // 21
+  {q:"Alexander Graham Bell and Thomas Watson unveiled the telephone in:", type:"mc",
+   choices:["1867","1876","1883","1890"], answer:1, exp:"1876 opened long‑distance communication."},
+  // 22
+  {q:"Between 1870 and 1910, women’s share of clerical jobs rose to about 40%.", type:"tf", answer:0, exp:"Notes: <5% in 1870 → 40% by 1910."},
+  // 23
+  {q:"By 1890, the average U.S. workweek had decreased by about ten hours.", type:"tf", answer:0, exp:"Industrialization slowly reduced hours."},
+  // 24
+  {q:"Americans encouraged entrepreneurship and hard work in a favorable climate for business.", type:"tf", answer:0, exp:"Part of the rise of big business."},
+  // 25
+  {q:"Free‑enterprise capitalism means:", type:"mc",
+   choices:["Government sets prices and wages","Individuals and private businesses own industries and set prices/wages, driven by competition and demand","Only the government may own factories","Labor unions set all wages"], answer:1, exp:"That’s how your notes describe it."},
+  // 26
+  {q:"What does <i>laissez‑faire</i> mean in this context?", type:"mc",
+   choices:["Let the government control business","Let do — minimal government interference in business","Let unions run factories","Let prices be fixed by law"], answer:1, exp:"Laissez‑faire = 'to let do'."},
+  // 27
+  {q:"Social Darwinism applied Darwin’s ideas to human society: the best adapted thrive and the less suited die out.", type:"tf", answer:0, exp:"Used to justify inequalities."},
+  // 28
+  {q:"Which did Andrew Carnegie use to maximize profits?", type:"mc",
+   choices:["New machinery & techniques","Attracting talent by offering stock","Both A and B","Neither A nor B"], answer:2, exp:"Your notes list both tactics."},
+  // 29
+  {q:"Vertical integration is best defined as:", type:"mc",
+   choices:["Buying out competitors that make the same product","Owning suppliers, manufacturing, and distribution of an industry","Setting prices below cost to drive rivals out","Merging through a trust"], answer:1, exp:"Control every step from resources to distribution."},
+  // 30
+  {q:"Horizontal integration means buying out competitors that produce similar products.", type:"tf", answer:0, exp:"Yes — consolidating at the same stage."},
+  // 31
+  {q:"Who created United States Steel Corporation in 1901 by merging Carnegie Steel and others?", type:"mc",
+   choices:["Andrew Carnegie","J. P. Morgan","Gustavus Swift","Cornelius Vanderbilt"], answer:1, exp:"Morgan used holding-company tactics."},
+  // 32
+  {q:"A trust allowed companies to turn control over to trustees who ran the firms as a single corporation. Rockefeller formed such trusts with Standard Oil.", type:"tf", answer:0, exp:"Used to dominate refining."},
+  // 33
+  {q:"By 1880, Standard Oil controlled about what share of the refining business?", type:"mc",
+   choices:["30%","50%","70%","90%"], answer:3, exp:"Notes: 1870 ~3% → 1880 ~90%."},
+  // 34
+  {q:"A monopoly has complete control over an industry’s production, prices, and wages.", type:"tf", answer:0, exp:"Fewer choices for consumers and workers."},
+  // 35
+  {q:"Andrew Carnegie’s 1889 <i>Gospel of Wealth</i> and later actions included giving away roughly 90% of his fortune to learning and the arts.", type:"tf", answer:0, exp:"Part of the era’s philanthropy."},
+  // 36
+  {q:"The Sherman Antitrust Act of 1890 made it illegal to form trusts that interfered with free trade among states or with other countries.", type:"tf", answer:0, exp:"Early federal attempt to curb monopolies."},
+  // 37
+  {q:"U.S. v. E. C. Knight Co. (1895) limited the government’s ability to use the Sherman Act against:", type:"mc",
+   choices:["Railroad rate‑fixing","Sugar refining manufacturing operations","Banking consolidation","Telegraph companies"], answer:1, exp:"The Court said manufacturing was beyond the Act’s reach there."},
+  // 38
+  {q:"Much of the South missed the business boom due to scarce capital/resources and because about 90% of its railroads were owned by Northern companies.", type:"tf", answer:0, exp:"Your notes: 'Business boom bypasses the South'."},
+  // 39
+  {q:"Which of the following was NOT typical of late‑1800s factory work noted in your outline?", type:"mc",
+   choices:["Six‑day weeks, 10–12 hour days","No vacation or sick leave","High unemployment compensation and injury reimbursement","Dangerous, repetitive work"], answer:2, exp:"Benefits such as unemployment compensation didn’t exist for most workers."},
+  // 40
+  {q:"Between 1890 and 1910 the number of women workers doubled to about:", type:"mc",
+   choices:["2 million","5 million","8 million","12 million"], answer:2, exp:"Your notes: women workers doubled to 8 million."},
+  // 41
+  {q:"About what proportion of children under 15 worked full‑time in that era?", type:"mc",
+   choices:["5% boys and 2% girls","10% boys and 20% girls","20% boys and 10% girls","40% boys and 25% girls"], answer:2, exp:"Notes: 20% boys & 10% girls."},
+  // 42
+  {q:"Who founded the National Labor Union (NLU) in 1866, which persuaded Congress to legalize the eight‑hour day for government workers in 1868?", type:"mc",
+   choices:["Samuel Gompers","Eugene V. Debs","William H. Sylvis","Mary Harris Jones"], answer:2, exp:"Sylvis led the first large‑scale national union of laborers."},
+  // 43
+  {q:"The Colored National Labor Union (CNLU) was led largely by:", type:"mc",
+   choices:["Isaac Meyers from Baltimore","Booker T. Washington","A. Philip Randolph","W. E. B. Du Bois"], answer:0, exp:"Your notes attribute leadership to Isaac Meyers."},
+  // 44
+  {q:"The Knights of Labor, organized by Uriah Stephens in 1869, was open to all workers and supported arbitration.", type:"tf", answer:0, exp:"Membership peaked around 700,000 by 1886."},
+  // 45
+  {q:"What is collective bargaining?", type:"mc",
+   choices:["Individual workers negotiating separately","Union officials negotiating with management over wages, hours, and conditions","Companies setting wages unilaterally","Government‑mandated wage setting"], answer:1, exp:"If talks failed, unions might call strikes or boycotts."},
+  // 46
+  {q:"A 'closed shop' is a business that:", type:"mc",
+   choices:["Refuses to hire union members","Only hires workers who are in the union","Is owned by the government","Operates only eight hours a day"], answer:1, exp:"Open shop = can hire anyone."},
+  // 47
+  {q:"The American Federation of Labor (AFL), led by Samuel Gompers, used strikes as a major tactic and won gains in wages, hours, and working conditions.", type:"tf", answer:0, exp:"That’s in your notes under Craft Unionism."},
+  // 48
+  {q:"Industrial unionism sought to include all laborers (skilled and unskilled). Eugene V. Debs tried this with the American Railway Union and won a wage strike in 1894.", type:"tf", answer:0, exp:"Debs’s ARU organized many unskilled workers."},
+  // 49
+  {q:"The Industrial Workers of the World (IWW), led by William 'Big Bill' Haywood from 1905, welcomed African Americans but never topped about 100,000 members.", type:"tf", answer:0, exp:"Sometimes called the Wobblies."},
+  // 50
+  {q:"The Great Strike of 1877 involved workers from which railroad and ended when federal troops intervened?", type:"mc",
+   choices:["Union Pacific; state militia ended it","Baltimore and Ohio (B&O); federal troops ended it","Southern Pacific; company police ended it","Erie; Pinkertons ended it"], answer:1, exp:"Workers protested a second wage cut; troops ultimately ended the strike."}
+];
+
+let mode="study";
+let idx=0;
+let order=[...data.keys()];
+let answers = []; // for test mode
+let missed = [];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function startQuiz(selectedMode){
+  mode = selectedMode;
+  answers = Array(data.length).fill(null);
+  missed = [];
+  order=[...data.keys()];
+  if(document.getElementById('shuffleBox').checked){shuffle(order)}
+  document.getElementById('modeLabel').textContent =
+    (mode==='study' ? 'Study mode • instant feedback' : 'Test mode • score at end');
+  idx=0;
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  renderQ();
+}
+
+function renderQ(){
+  const qIndex = order[idx];
+  const item = data[qIndex];
+  document.getElementById('progress').textContent = (idx+1)+" / "+data.length;
+  const container = document.getElementById('qCard');
+  const isTF = item.type === 'tf';
+  const baseChoices = isTF ? ["True","False"] : item.choices.slice();
+  const choiceOrder = baseChoices.map((_,i)=>i);
+  if(document.getElementById('shuffleBox').checked && !isTF) shuffle(choiceOrder);
+  let html = `<h2>Q${idx+1}.</h2><div>${item.q}</div><div class="options">`;
+  choiceOrder.forEach((cPos)=>{
+     const choiceText = baseChoices[cPos];
+     const selected = (answers[qIndex]===cPos) ? ' selected' : '';
+     html += `<label class="option${selected}" onclick="choose(${qIndex},${cPos},this)">
+                <input type="radio" name="q${qIndex}">
+                <span class="label">${choiceText}</span>
+              </label>`;
+  });
+  html += `</div><div id="explain" class="explain hidden">${item.exp}</div>`;
+  container.innerHTML = html;
+
+  // buttons
+  document.getElementById('prevBtn').disabled = idx===0;
+  document.getElementById('nextBtn').textContent = idx===data.length-1 ? (mode==='study'?'Finish':'Submit') : 'Next';
+}
+
+function choose(qIndex,choice,el){
+  // record selection
+  answers[qIndex] = choice;
+
+  // visual select
+  document.querySelectorAll('#qCard .option').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  if(mode==='study'){
+    // immediate evaluation
+    const item = data[qIndex];
+    const correct = (choice === (item.type==='tf' ? item.answer : item.answer));
+    document.querySelectorAll('#qCard .option').forEach((opt,i)=>{
+      const was = i; // not reliable after shuffle, so mark by text
+    });
+    const options = Array.from(document.querySelectorAll('#qCard .option'));
+    options.forEach((opt)=>{
+      const text = opt.querySelector('.label').textContent.trim();
+      const baseChoices = (item.type==='tf' ? ["True","False"] : item.choices.slice());
+      const correctText = (item.type==='tf' ? (item.answer===0?"True":"False") : baseChoices[item.answer]);
+      if(text===correctText){ opt.classList.add('correct'); }
+    });
+    if(!correct){
+      el.classList.add('wrong');
+    }
+    const exp = document.getElementById('explain');
+    exp.classList.remove('hidden');
+    // auto-advance after short delay if correct
+    // (keep simple; user can tap Next)
+  }
+}
+
+function nextQ(){
+  if(idx===data.length-1){
+    endQuiz();
+    return;
+  }
+  idx++; renderQ();
+}
+function prevQ(){ if(idx>0){ idx--; renderQ(); } }
+
+function endQuiz(){
+  document.getElementById('quiz').classList.add('hidden');
+  const res = document.getElementById('results');
+  // compute score
+  let score=0;
+  missed=[];
+  order.forEach(qIndex=>{
+    const item = data[qIndex];
+    const baseChoices = (item.type==='tf' ? ["True","False"] : item.choices.slice());
+    const correctChoiceText = (item.type==='tf' ? (item.answer===0?"True":"False") : baseChoices[item.answer]);
+    const chosen = answers[qIndex];
+    const chosenText = (chosen===null) ? "—" : (item.type==='tf' ? (chosen===0?"True":"False") : baseChoices[chosen]);
+    const isCorrect = chosen!==null && chosenText===correctChoiceText;
+    if(isCorrect) score++; else missed.push({q:item.q, correct:correctChoiceText, chosen:chosenText, exp:item.exp});
+  });
+  const pct = Math.round((score/data.length)*100);
+  let html = `<div class="card"><h1>Results</h1>
+    <p><span class="pill">Score: ${score} / ${data.length} (${pct}%)</span></p>
+    <div class="row">
+      <button class="btn" onclick="startQuiz(mode)">Try Again</button>
+      <button class="btn secondary" onclick="startQuiz('study')">Switch to Study Mode</button>
+    </div>
+  </div>`;
+  if(missed.length){
+    html += `<div class="card"><h2>Review Missed Questions (${missed.length})</h2>`;
+    missed.forEach((m,i)=>{
+      html += `<div style="margin:10px 0">
+        <div><b>${i+1}.</b> ${m.q}</div>
+        <div class="small">Your answer: <b>${m.chosen}</b></div>
+        <div class="small">Correct: <b>${m.correct}</b></div>
+        <div class="explain">${m.exp}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }else{
+    html += `<div class="card"><h2>Perfect! 🎉</h2><p class="muted">Nice work — you got every question right.</p></div>`;
+  }
+  res.innerHTML = html;
+  res.classList.remove('hidden');
+}
+</script>
+</body>
+</html>
