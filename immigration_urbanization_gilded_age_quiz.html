@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Immigration & Urbanization Quiz">
+  <title>Immigration, Urbanization & Gilded Age — Practice Quiz</title>
+  <style>
+    :root{ --bg:#0b1020; --card:#121a35; --ink:#eef2ff; --muted:#a6b0d8; --accent:#7c9cff; --good:#10b981; --bad:#ef4444; }
+    html,body{height:100%}
+    body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--ink); line-height:1.45;}
+    .wrap{max-width:900px; margin:0 auto; padding:max(16px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));}
+    .card{background:var(--card); border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,.35); padding:20px;}
+    h1{font-size:clamp(22px,3vw,34px); margin:0 0 6px}
+    h2{font-size:clamp(18px,2.4vw,24px); margin:10px 0}
+    p{color:var(--muted)}
+    .grid{display:grid; gap:12px}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .btn{display:inline-block; border:0; background:linear-gradient(180deg,#8aa5ff,#6d86ff); color:white; padding:12px 16px; font-weight:700; border-radius:12px; cursor:pointer; width:100%; font-size:18px}
+    .btn.secondary{background:#222b55; color:#d7defe; border:1px solid #2c376b}
+    .btn.ghost{background:transparent; color:#cdd5ff; border:1px dashed #3a4a8b}
+    .btn.sm{font-size:15px; padding:8px 10px; width:auto}
+    select, input[type=number]{background:#0f173a; color:#e6eaff; border:1px solid #2f3a78; border-radius:10px; padding:10px 12px; font-size:16px}
+    .choices{display:grid; gap:12px; margin-top:12px}
+    .choice{border:1px solid #2e3a71; background:#18224a; padding:14px; border-radius:12px; cursor:pointer; text-align:left}
+    .choice.correct{border-color:#1e875a; background:#103926}
+    .choice.wrong{border-color:#862929; background:#3c1414}
+    .pill{background:#222a55; border:1px solid #2f3a78; color:#cdd5ff; padding:6px 10px; border-radius:999px; font-size:13px}
+    .meta{display:flex; gap:10px; justify-content:space-between; align-items:center; margin:12px 0 6px}
+    .progress{height:12px; background:#1a2247; border-radius:999px; overflow:hidden}
+    .bar{height:100%; background:linear-gradient(90deg,#7c9cff,#4f6beb); width:0}
+    .explanation{background:#0f1633; border-left:4px solid #3a58ff; padding:12px 14px; border-radius:10px; margin-top:12px}
+    .footer{opacity:.8; font-size:12px; margin-top:16px}
+    .result{display:none}
+    .review details{background:#101737; border:1px solid #26316d; padding:10px 12px; border-radius:10px; margin-bottom:10px}
+    .sticky-controls{position:sticky; bottom:0; left:0; right:0; padding-top:12px; background:linear-gradient(180deg, transparent, rgba(11,16,32,.96) 18%)}
+    .warn{color:#fbbf24}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Immigration, Urbanization & Politics in the Gilded Age</h1>
+    <p>Touch‑friendly quiz built from your class notes. Choose how many questions you want and get instant feedback. Works offline and can be added to the iPhone Home Screen.</p>
+
+    <div id="start">
+      <div class="grid">
+        <div class="row">
+          <label for="count"><strong>Number of questions:</strong></label>
+          <select id="count">
+            <option value="25">25</option>
+            <option value="50" selected>50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+          </select>
+          <span class="pill" id="bankSize"></span>
+        </div>
+        <button class="btn" id="startBtn">Start Quiz</button>
+        <button class="btn secondary" id="studyBtn">Shuffle & Study (no scoring)</button>
+        <details>
+          <summary>How to add to iPhone Home Screen</summary>
+          <ol class="muted">
+            <li>Open this file in <strong>Safari</strong> (not inside Gmail’s viewer).</li>
+            <li>Tap <em>Share</em> → <strong>Add to Home Screen</strong> → <em>Add</em>.</li>
+            <li>Launch it from your Home Screen for a full‑screen, offline app.</li>
+          </ol>
+        </details>
+      </div>
+    </div>
+
+    <div id="quiz" style="display:none">
+      <div class="meta">
+        <div class="pill" id="qIndex">Question 1</div>
+        <div class="pill" id="scorePill">Score 0</div>
+      </div>
+      <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+      <h2 id="question">…</h2>
+      <div class="choices" id="choices"></div>
+      <div id="explain" class="explanation" style="display:none"></div>
+      <div class="sticky-controls">
+        <div class="row">
+          <button class="btn sm ghost" id="prevBtn">◀︎ Prev</button>
+          <button class="btn sm" id="nextBtn">Next ▶︎</button>
+          <button class="btn sm secondary" id="restartBtn">Restart</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="done" class="result">
+      <h2>All done!</h2>
+      <p id="summary"></p>
+      <div class="grid">
+        <button class="btn" id="reviewMissed">Review missed questions</button>
+        <button class="btn secondary" id="emailBtn">Email results…</button>
+        <button class="btn ghost" id="againBtn">Take it again</button>
+      </div>
+      <div class="review" id="review"></div>
+    </div>
+
+    <div class="footer muted">Single‑file study app. If the “Add to Home Screen” option isn’t visible, make sure the file is open in Safari and not in the Gmail preview.</div>
+  </div>
+</div>
+
+<script>
+// ————————— Question bank (mixed from Lessons 1–3).
+// If you choose more questions than we have, we'll use the whole bank and let you know.
+const QUESTIONS = [
+  // Lesson 1 & 2 items (from the earlier file) — trimmed comments
+  {q:"Immigration from Europe, Asia, the Caribbean, and Mexico reached a new high during which period?", a:"the late 19th and early 20th centuries", d:["the early 18th century","the mid‑1700s","after World War II"], e:"Immigration surged in the late 1800s and early 1900s."},
+  {q:"Which is a pull factor that drew immigrants to the U.S.?", a:"the promise of a better life", d:["famine","land shortages","religious persecution"], e:"Pull = attracts. Push = famine/shortages/persecution."},
+  {q:"Who were the 'Birds of Passage'?", a:"immigrants who came to earn money and then returned home", d:["Europeans on seasonal farm visas","U.S. citizens visiting Europe","Ellis Island doctors"], e:"Temporary workers seeking wages before going back home."},
+  {q:"About how many Europeans immigrated to the U.S. between 1870 and 1920?", a:"about 20 million", d:["about 2 million","about 5 million","about 50 million"]},
+  {q:"Before 1890, most immigrants came from which regions of Europe?", a:"western and northern Europe", d:["southern and eastern Europe","the Balkans","Iberia only"]},
+  {q:"Beginning in the 1890s, increasing numbers of immigrants came from where?", a:"southern and eastern Europe", d:["western Europe","northern Africa","Scandinavia only"]},
+  {q:"In 1907, roughly how many people came from Italy, Austria‑Hungary, and Russia?", a:"about 1 million", d:["about 100,000","about 10 million","about 50,000"]},
+  {q:"Many immigrants left Europe to escape what, especially Russian Jews?", a:"religious persecution", d:["mandatory military service","high taxes only","prohibition"]},
+  {q:"Europe's population between 1800 and 1900…", a:"doubled to ~400 million, creating land scarcity", d:["fell by half","stayed the same","tripled to 900 million"]},
+  {q:"Caribbean immigration in this era included people from…", a:"Jamaica, Cuba, and Puerto Rico", d:["Iceland and Malta","Tahiti and Greenland","Madagascar and Seychelles"]},
+  {q:"About how many Chinese arrived on the U.S. West Coast (1851–1883)?", a:"about 300,000", d:["about 30,000","about 3 million","about 600,000"]},
+  {q:"What discovery drew many Chinese immigrants seeking fortune?", a:"gold from the 1848 California Gold Rush", d:["oil in Texas","silver in Nevada (1900)","coal in Appalachia"]},
+  {q:"Many Chinese immigrants worked primarily as…", a:"railroad workers", d:["plantation owners","bankers","naval officers"]},
+  {q:"Which 1882 law limited Chinese immigration?", a:"the Chinese Exclusion Act", d:["the Dawes Act","the Morrill Act","the Pendleton Act"]},
+  {q:"U.S. annexation of which place in 1898 led to increased Japanese immigration to the West Coast?", a:"Hawaii", d:["Guam","the Philippines","Puerto Rico"]},
+  {q:"By 1920, approximately how many Japanese lived on the West Coast?", a:"> 200,000", d:["~20,000","~2 million","< 5,000"]},
+  {q:"Between 1880 and 1920, immigrants arriving from the West Indies numbered…", a:"about 260,000", d:["about 26,000","about 2.6 million","about 600"]},
+  {q:"The 1902 National Reclamation Act encouraged…", a:"irrigation of arid land and new western farmland", d:["free college","naval expansion","the eight‑hour day"]},
+  {q:"Roughly how many Mexicans (about 7% of the population then) came to the U.S.?", a:"about 700,000", d:["about 70,000","about 7 million","about 170,000"]},
+  {q:"By the 1870s, most immigrants reached America by…", a:"steamship", d:["jetliner","sailing canoe","rail across Bering Strait"]},
+  {q:"An Atlantic crossing by steamship typically took…", a:"about one week", d:["one day","five weeks","three months"]},
+  {q:"A Pacific crossing typically took…", a:"about three weeks", d:["two days","ten weeks","one afternoon"]},
+  {q:"Poor immigrants most often traveled in…", a:"steerage (crowded, cheapest area)", d:["private cabins","deck tents","student quarters"]},
+  {q:"What was the chief U.S. immigration station (1892–1924)?", a:"Ellis Island in New York Harbor", d:["Fort Sumter","Pearl Harbor","Port of Miami"]},
+  {q:"About how many immigrants passed through Ellis Island?", a:"about 17 million", d:["about 170,000","about 70 million","about 1 million"]},
+  {q:"At Ellis Island, roughly what portion were held a day or more before inspection?", a:"about 20%", d:["about 2%","about 80%","none"]},
+  {q:"Which was NOT an entry requirement at Ellis Island?", a:"speaking fluent English", d:["no felony conviction","ability to work","having at least $25 after 1909"]},
+  {q:"Women traveling alone often had to wait for…", a:"a male relative", d:["a union rep","a court date","a teacher"]},
+  {q:"Angel Island primarily processed immigrants from…", a:"Asia (especially Chinese)", d:["Africa","South America","Northern Europe"]},
+  {q:"Angel Island is located in…", a:"San Francisco Bay", d:["Puget Sound","San Diego Harbor","Hudson River"]},
+  {q:"Chinese immigrants processed at Angel Island (1910–1940) numbered…", a:"about 50,000", d:["about 5,000","about 500,000","about 150,000"]},
+  {q:"Conditions at Angel Island were known for…", a:"harsh questioning and dirty, run‑down buildings", d:["luxury dorms","short waits","open borders"]},
+  {q:"To cope with life in America, immigrants often formed…", a:"ethnic neighborhoods for mutual support", d:["private armies","royal monarchies","sports leagues only"]},
+  {q:"The Americanization Movement aimed to…", a:"assimilate people into the dominant American culture", d:["send immigrants back","abolish public schools","replace English with Yiddish"]},
+  {q:"Farming inventions like the reaper and steel plow led to…", a:"fewer farm laborers and migration to cities", d:["less city growth","fewer factories","a return to subsistence farming"]},
+  {q:"Between 1890 and 1910, about how many African American farmers moved to cities?", a:"around 700,000", d:["70,000","7 million","17,000"]},
+  {q:"Tenements were…", a:"overcrowded, unsanitary multifamily urban dwellings", d:["suburban cottages","temporary army tents","single‑family farmhouses"]},
+  {q:"Social stratification is…", a:"organizing people into social classes by wealth", d:["zoning streets","teaching English","dividing states by climate"]},
+  {q:"NYC’s second tenement law (1879) required…", a:"a window for each bedroom", d:["indoor plumbing for all buildings","fire sprinklers","child‑care rooms"]},
+  {q:"Which city created the first paid fire department, and when?", a:"Cincinnati in 1853", d:["Boston, 1897","New York, 1844","Chicago, 1871"]},
+  {q:"Two early U.S. mass‑transit examples were…", a:"SF streetcars (1873) and Boston subways (1897)", d:["Miami monorail 1955","LA maglev 1910","Houston hovercrafts 1880"]},
+  {q:"Even after filtration (1870s) and chlorination (1908), many cities…", a:"still lacked access to safe water", d:["banned factories","eliminated pollution","had excess water"]},
+  {q:"In many cities, 'scavengers' were…", a:"private contractors hired to clean streets and collect garbage", d:["grave robbers","police detectives","rail workers"]},
+  {q:"NYC created the first full‑time police force in…", a:"1844", d:["1901","1776","1897"]},
+  {q:"Settlement houses were…", a:"community centers in slum neighborhoods offering assistance", d:["immigrant jails","military forts","stock exchanges"]},
+  {q:"Hull House (1889) was founded by…", a:"Jane Addams and Ellen Gates Starr", d:["Stover & Coit","Janie Porter Barrett","Washington Gladden"]},
+  {q:"Political machines gained power mainly by…", a:"offering services to voters/businesses for support", d:["abolishing elections","banning immigration","selling government land only"]},
+
+  // Lesson 3: Political machines, graft, patronage, reforms
+  {q:"A political boss typically controlled access to…", a:"municipal jobs and business licenses and influenced courts/agencies", d:["national parks","foreign embassies","the U.S. Senate directly"]},
+  {q:"Bosses like Roscoe Conkling used power to build…", a:"parks, sewer systems, and waterworks", d:["airports and interstates","shopping malls","submarine bases"]},
+  {q:"Machines also gave money to schools, hospitals, and orphans’ homes to…", a:"win voter loyalty and political support", d:["eliminate taxes","fund national armies","replace state governments"]},
+  {q:"Many precinct captains and bosses were first‑ or second‑generation immigrants, so they…", a:"understood newcomer challenges and could trade help for votes", d:["avoided immigrants entirely","only hired native‑born workers","banned naturalization"]},
+  {q:"Tammany Hall helped immigrants especially with…", a:"naturalization, housing, and jobs in exchange for votes", d:["overseas travel","college scholarships for all","military service exemptions"]},
+  {q:"'Big Jim' Pendergast is noted as…", a:"an Irish American saloonkeeper who became Kansas City Democratic boss by helping immigrants", d:["a NY police chief who jailed bosses","a Supreme Court justice","a Boston banker"]},
+  {q:"When loyalty wasn’t enough to win, some machines turned to…", a:"election fraud and graft", d:["civil service exams","referendums only","nonpartisan primaries"]},
+  {q:"Graft is…", a:"illegal use of political influence for personal gain", d:["lawful lobbying","charitable giving","public service"]},
+  {q:"Kickbacks are…", a:"illegal payments for political machine services", d:["campaign refunds to voters","sales tax rebates","legal city bonuses"]},
+  {q:"The Tweed Ring was led by…", a:"William M. 'Boss' Tweed at Tammany Hall", d:["Grover Cleveland","Theodore Roosevelt","Upton Sinclair"]},
+  {q:"Construction of NYC’s County Courthouse under Tweed cost taxpayers about $13 million when the actual cost was…", a:"about $3 million", d:["$30 million","$300,000","$1 million"]},
+  {q:"Political cartoonist who helped stir public outrage against Tweed’s graft:", a:"Thomas Nast", d:["Jacob Riis","Ida Tarbell","Frederick Douglass"]},
+  {q:"Tweed faced how many counts of graft and extortion in 1871?", a:"120", d:["12","220","60"]},
+  {q:"Patronage refers to…", a:"giving government jobs to supporters (spoils system)", d:["awarding jobs by exam merit","outsourcing to private firms","drafting workers into service"]},
+  {q:"Reformers argued civil‑service jobs should go to…", a:"the most qualified people via a merit system", d:["party donors","relatives of officials","highest bidders"]},
+  {q:"Rutherford B. Hayes (1877) appointed independents and investigated…", a:"customhouses (centers of patronage)", d:["national parks","railroad strikes only","Supreme Court vacancies"]},
+  {q:"Stalwarts were…", a:"supporters of Roscoe Conkling who backed the spoils system", d:["temperance activists","anti‑imperialists","muckrakers"]},
+  {q:"James A. Garfield was elected as a reformer, and his vice president was…", a:"Chester A. Arthur", d:["Grover Cleveland","Benjamin Harrison","William McKinley"]},
+  {q:"Garfield was shot by…", a:"Charles Guiteau (a Stalwart) on July 2, 1881; he died Sept. 19", d:["Leon Czolgosz","John Wilkes Booth","an unknown assailant"]},
+  {q:"As president, Chester A. Arthur…", a:"turned reformer and backed civil‑service changes", d:["restored the spoils system","resigned immediately","abolished exams"]},
+  {q:"The Pendleton Civil Service Act (1883)…", a:"created a bipartisan commission and required merit exams for federal jobs", d:["eliminated federal jobs","banned unions","created income tax"]},
+  {q:"By 1901, roughly what percent of federal jobs were classified as civil service?", a:"about 40%", d:["5%","75%","100%"]},
+  {q:"One effect of the Pendleton Act was that politicians…", a:"sought campaign donations from businesses instead of seeking patronage fees", d:["stopped campaigning","abolished parties","turned to small farms"]},
+  {q:"Theodore Roosevelt became New York’s 33rd governor in 1899 after being backed by…", a:"Thomas C. Platt’s Republican machine", d:["Tammany Hall","the Populist Party","the Greenback Party"]},
+  {q:"As governor, Theodore Roosevelt…", a:"put public interest over partisan politics and refused patronage", d:["expanded machine jobs","closed civil service exams","ended factory inspections"]},
+  {q:"Grover Cleveland, elected in 1884, tried to…", a:"lower tariff rates, but Congress refused", d:["raise tariffs to record highs","abolish tariffs entirely","privatize customs"]},
+  {q:"In the 1888 election, Cleveland’s opponent was…", a:"Benjamin Harrison", d:["William Bryan","William McKinley","James Blaine"]},
+  {q:"Harrison’s campaign was financed by companies that wanted…", a:"higher tariffs", d:["no tariffs","prohibition","immigration quotas only"]},
+  {q:"The McKinley Tariff Act of 1890…", a:"raised tariffs on manufactured goods to the highest level yet", d:["lowered tariffs","created a flat income tax","banned imports"]},
+  {q:"High tariffs were defended because they…", a:"helped U.S. businesses against cheaper imported products", d:["cut business profits","ended urban growth","stopped immigration"]},
+  {q:"Machines were organized like a pyramid with the city boss at the top. Below him were…", a:"ward bosses and local precinct workers/captains", d:["senators and mayors","judges and sheriffs","governors and delegates"]}
+];
+
+// ————————— Quiz engine
+const STATE_KEY = 'immigration_urbanization_gilded_quiz_v2';
+
+let order = [];
+let idx = 0;
+let score = 0;
+let mode = 'quiz';
+let seen = {};
+let total = 50;
+
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]} return arr; }
+
+function build(){
+  const requested = parseInt(document.getElementById('count').value,10);
+  const available = QUESTIONS.length;
+  total = Math.min(requested, available);
+  order = [...Array(available).keys()];
+  shuffle(order);
+  order = order.slice(0, total);
+  idx = 0; score = 0; seen = {}; save();
+  const bankMsg = document.getElementById('bankSizeMsg');
+  if(bankMsg) bankMsg.remove();
+  if(requested>available){
+    const warn = document.createElement('p');
+    warn.id = 'bankSizeMsg';
+    warn.className = 'warn';
+    warn.textContent = `Requested ${requested}, but only ${available} questions exist. Using all ${available}.`;
+    document.getElementById('quiz').prepend(warn);
+  }
+}
+
+function save(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify({order, idx, score, seen, mode, total})); }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(STATE_KEY)||'null'); if(!s) return false; order=s.order; idx=s.idx; score=s.score; seen=s.seen||{}; mode=s.mode||'quiz'; total=s.total||50; return true;}catch(e){return false} }
+
+const el = id=>document.getElementById(id);
+const $start = el('start'), $quiz=el('quiz'), $done=el('done');
+const $q=el('question'), $choices=el('choices'), $explain=el('explain');
+const $qIndex=el('qIndex'), $scorePill=el('scorePill'), $bar=el('bar');
+
+function render(){
+  const i = order[idx];
+  const data = QUESTIONS[i];
+  $qIndex.textContent = `Question ${idx+1} / ${total}`;
+  $scorePill.textContent = `Score ${score}`;
+  $bar.style.width = `${((idx)/total)*100}%`;
+  $q.textContent = data.q;
+
+  const choices = shuffle([data.a, ...data.d.slice()]);
+  $choices.innerHTML = '';
+  choices.forEach(text=>{
+    const btn = document.createElement('button');
+    btn.className='choice'; btn.textContent=text;
+    btn.onclick=()=>select(text,data);
+    $choices.appendChild(btn);
+  });
+
+  const answered = seen[i];
+  if(answered){
+    Array.from($choices.children).forEach(c=>{
+      if(c.textContent===data.a) c.classList.add('correct');
+      if(answered.selected && c.textContent===answered.selected && answered.selected!==data.a) c.classList.add('wrong');
+      c.onclick = null;
+    });
+    $explain.style.display='block';
+    $explain.textContent=data.e||'';
+  }else{ $explain.style.display='none'; $explain.textContent=''; }
+}
+
+function select(text,data){
+  const i=order[idx]; if(seen[i]) return;
+  const correct=text===data.a; seen[i]={selected:text, correct};
+  if(mode==='quiz' && correct) score++; save();
+  Array.from($choices.children).forEach(c=>{
+    if(c.textContent===data.a) c.classList.add('correct');
+    if(c.textContent===text && !correct) c.classList.add('wrong');
+    c.onclick=null;
+  });
+  $explain.style.display='block'; $explain.textContent=data.e||'';
+}
+
+function next(){ if(idx<total-1){ idx++; save(); render(); } else finish(); }
+function prev(){ if(idx>0){ idx--; save(); render(); } }
+function finish(){ $quiz.style.display='none'; $done.style.display='block'; el('summary').innerHTML=`You scored <strong>${score}/${total}</strong> (${Math.round(score/total*100)}%).`; $bar.style.width='100%'; }
+function reviewMissed(){
+  const missed=order.filter(i=>!seen[i]?.correct); const wrap=el('review'); wrap.innerHTML='';
+  if(missed.length===0){ wrap.innerHTML='<p>No missed questions 🎉</p>'; return; }
+  missed.forEach((i,k)=>{ const d=QUESTIONS[i]; const sel=seen[i]?.selected||'(no answer)';
+    const det=document.createElement('details'); const sum=document.createElement('summary'); sum.textContent=`${k+1}. ${d.q}`; det.appendChild(sum);
+    const p=document.createElement('p'); p.innerHTML=`<strong>Correct:</strong> ${d.a}<br><strong>Your answer:</strong> ${sel}<br><span class="muted">${d.e||''}</span>`; det.appendChild(p);
+    wrap.appendChild(det);
+  });
+}
+function emailResults(){
+  const missed=order.filter(i=>!seen[i]?.correct);
+  let body=`Module 4 Quiz Results%0D%0AScore: ${score}/${total} (${Math.round(score/total*100)}%%0D%0A)`;
+  if(missed.length){ body+=`%0D%0AMissed Questions:%0D%0A`; missed.forEach((i,k)=>{ const d=QUESTIONS[i]; body+=`\\n${k+1}. ${d.q}\\n - Correct: ${d.a}\\n`; }); }
+  const url=`mailto:?subject=Immigration%20%26%20Urbanization%20Quiz%20Score&body=${body}`; window.location.href=url;
+}
+
+el('startBtn').onclick=()=>{ mode='quiz'; build(); $start.style.display='none'; $quiz.style.display='block'; render(); };
+el('studyBtn').onclick=()=>{ mode='study'; build(); $start.style.display='none'; $quiz.style.display='block'; render(); };
+el('nextBtn').onclick=next; el('prevBtn').onclick=prev;
+el('restartBtn').onclick=()=>{ build(); render(); };
+el('againBtn').onclick=()=>{ $done.style.display='none'; $quiz.style.display='block'; build(); render(); };
+el('reviewMissed').onclick=reviewMissed; el('emailBtn').onclick=emailResults;
+
+// bank size display
+document.getElementById('bankSize').textContent = `Bank: ${QUESTIONS.length} questions`;
+
+// Restore saved session if present
+if(load()){ document.getElementById('start').style.display='none'; document.getElementById('quiz').style.display='block'; render(); }
+</script>
+</body>
+</html>
