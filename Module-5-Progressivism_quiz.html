@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>iPhone Practice Test</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #111827;
+    --ink: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #22c55e;
+    --warn: #ef4444;
+    --btn: #1f2937;
+    --border: #374151;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 12px;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(15,23,42,0.95) 70%, rgba(15,23,42,0));
+    backdrop-filter: blur(6px);
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 0.2px;
+  }
+  .mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--btn);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.02s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn.primary { background: #2563eb; border-color: #1d4ed8; }
+  .btn.accent { background: #16a34a; border-color: #15803d; }
+  .btn.warn { background: #b91c1c; border-color: #991b1b; }
+  .btn.ghost { background: transparent; }
+  .btn:disabled { opacity: 0.5; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 10px 0 4px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .progress {
+    height: 10px;
+    background: #0b1220;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar { height: 100%; width: 0%; background: #22c55e; transition: width 0.3s ease; }
+  .q {
+    margin-top: 6px;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .answers {
+    margin-top: 10px;
+    display: grid;
+    gap: 8px;
+  }
+  .choice {
+    border: 1px solid var(--border);
+    background: #0b1220;
+    border-radius: 14px;
+    padding: 12px;
+    font-size: 16px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+    align-items: start;
+  }
+  .choice input { margin-top: 2px; }
+  .feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #0b1220;
+    border: 1px solid var(--border);
+    font-size: 15px;
+  }
+  .ok { color: var(--accent); font-weight: 700; }
+  .bad { color: var(--warn); font-weight: 700; }
+  .footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .summary {
+    margin-top: 12px;
+    display: none;
+  }
+  .summary h2 { font-size: 18px; margin: 8px 0; }
+  .missed {
+    display: grid;
+    gap: 10px;
+  }
+  .missed .card { border-left: 4px solid var(--warn); }
+  .download-wrap { margin-top: 8px; text-align: right; }
+  .select {
+    width: 100%;
+    background: #0b1220;
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 16px;
+  }
+  .tiny { font-size: 12px; color: var(--muted); }
+  .pill {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #0b1220;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1>Practice Test</h1>
+  <div class="mode-toggle">
+    <button id="studyBtn" class="btn">Study Mode</button>
+    <button id="testBtn" class="btn primary">Test Mode</button>
+  </div>
+  <div class="controls">
+    <select id="countSelect" class="select" title="Question count">
+      <option value="10">10 questions</option>
+      <option value="20">20 questions</option>
+      <option value="30">30 questions</option>
+      <option value="40">40 questions</option>
+      <option value="50" selected>50 questions</option>
+    </select>
+    <button id="startBtn" class="btn accent">Start</button>
+  </div>
+  <div class="download-wrap">
+    <button id="downloadBtn" class="btn ghost">Download this file</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="quiz" class="card">
+    <div class="meta">
+      <div><span class="pill" id="modePill">Test Mode</span></div>
+      <div id="progressText">0/0</div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div id="qText" class="q">Tap Start to begin.</div>
+    <div id="answers" class="answers"></div>
+    <div id="feedback" class="feedback" style="display:none;"></div>
+    <div class="footer">
+      <button id="prevBtn" class="btn" disabled>◀︎ Prev</button>
+      <button id="nextBtn" class="btn">Next ▶︎</button>
+    </div>
+    <div class="tiny" style="margin-top:8px;">Answers and question order are shuffled each run.</div>
+  </div>
+
+  <section id="summary" class="summary">
+    <div class="card">
+      <h2>Summary</h2>
+      <p id="scoreLine"></p>
+      <div id="missedWrap" style="display:none;">
+        <h3>Review missed questions</h3>
+        <div id="missedList" class="missed"></div>
+      </div>
+      <div style="margin-top:10px; display:grid; gap:8px; grid-template-columns: 1fr 1fr;">
+        <button id="retryBtn" class="btn accent">Retry with new shuffle</button>
+        <button id="studyFromMissedBtn" class="btn">Study Missed Only</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/** UTILITIES **/
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function el(id) { return document.getElementById(id); }
+function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+/** QUESTION BANK
+ * Replace these placeholder questions with ones generated from your notes.
+ * Supported types:
+ * - type: "mc", fields: prompt, options: [..], answerIndex
+ * - type: "tf", fields: prompt, answer (true/false), options auto: ["True","False"]
+ */
+const QUESTION_BANK = [
+  // === PLACEHOLDER QUESTIONS (Replace with your class-note content) ===
+  { type: "mc", prompt: "PLACEHOLDER: According to your notes (IMG_2999), what is the correct key term?", options: ["Term A","Term B","Term C","Term D"], answerIndex: 1 },
+  { type: "tf", prompt: "PLACEHOLDER: Statement from IMG_3001 is True.", answer: true },
+  { type: "mc", prompt: "PLACEHOLDER: Which example matches the definition from IMG_3005?", options: ["Ex 1","Ex 2","Ex 3","Ex 4"], answerIndex: 2 },
+  { type: "tf", prompt: "PLACEHOLDER: The rule in IMG_3007 applies only in special cases.", answer: false },
+  { type: "mc", prompt: "PLACEHOLDER: From IMG_3010, select the correct formula.", options: ["x+y","x–y","x·y","x/y"], answerIndex: 0 },
+  { type: "tf", prompt: "PLACEHOLDER: The diagram in IMG_3013 shows an increasing trend.", answer: true },
+  { type: "mc", prompt: "PLACEHOLDER: Based on IMG_3018, what is the main idea?", options: ["Idea A","Idea B","Idea C","Idea D"], answerIndex: 3 },
+  { type: "tf", prompt: "PLACEHOLDER: The definition in IMG_3022 contradicts the one in IMG_3020.", answer: false }
+];
+
+// Will hold active questions for this session run
+let active = [];
+let mode = "test"; // 'study' | 'test'
+let idx = 0;
+let given = {};    // idx -> selected index (for mc) or boolean (for tf)
+let locked = {};   // idx -> true once answered in test mode
+let score = 0;
+let missed = [];
+let countTarget = 50;
+
+/** RENDER **/
+function setMode(next) {
+  mode = next;
+  el("modePill").textContent = next === "study" ? "Study Mode" : "Test Mode";
+}
+function setCountFromSelect() {
+  countTarget = parseInt(el("countSelect").value, 10);
+}
+function buildRun(from = QUESTION_BANK) {
+  const pool = from.slice();
+  shuffle(pool);
+  active = pool.slice(0, Math.min(countTarget, pool.length)).map(q => {
+    if (q.type === "mc") {
+      const opts = q.options.slice();
+      const answerText = opts[q.answerIndex];
+      shuffle(opts);
+      const newAnswerIndex = opts.indexOf(answerText);
+      return { ...q, options: opts, answerIndex: newAnswerIndex };
+    } else {
+      return { ...q }; // tf unchanged
+    }
+  });
+  idx = 0;
+  given = {};
+  locked = {};
+  score = 0;
+  missed = [];
+  render();
+}
+function render() {
+  // Progress
+  const total = active.length;
+  el("progressText").textContent = `${clamp(idx+1,0,total)}/${total}`;
+  const pct = total ? ((idx)/total)*100 : 0;
+  el("bar").style.width = `${pct}%`;
+
+  // Question
+  const q = active[idx];
+  if (!q) {
+    el("qText").textContent = "Tap Start to begin.";
+    el("answers").innerHTML = "";
+    el("feedback").style.display = "none";
+    return;
+  }
+  el("qText").textContent = q.prompt;
+
+  // Answers
+  const answersDiv = el("answers");
+  answersDiv.innerHTML = "";
+  const fb = el("feedback");
+  fb.style.display = "none";
+  if (q.type === "mc") {
+    q.options.forEach((opt, i) => {
+      const id = `opt-${idx}-${i}`;
+      const row = document.createElement("label");
+      row.className = "choice";
+      row.innerHTML = `
+        <input type="radio" name="q-${idx}" id="${id}" value="${i}" ${given[idx]===i?"checked":""} />
+        <div>${opt}</div>`;
+      answersDiv.appendChild(row);
+      row.addEventListener("click", (e) => {
+        if (locked[idx]) return; // prevent changes after lock in test mode
+        given[idx] = i;
+        if (mode === "study") {
+          const correct = i === q.answerIndex;
+          fb.style.display = "block";
+          fb.innerHTML = correct ? `<span class="ok">Correct!</span>` : `<span class="bad">Try again.</span>`;
+        }
+      });
+    });
+  } else if (q.type === "tf") {
+    ["True","False"].forEach((opt, i) => {
+      const val = (i === 0);
+      const row = document.createElement("label");
+      row.className = "choice";
+      row.innerHTML = `
+        <input type="radio" name="q-${idx}" value="${val}" ${given[idx]===val?"checked":""} />
+        <div>${opt}</div>`;
+      answersDiv.appendChild(row);
+      row.addEventListener("click", () => {
+        if (locked[idx]) return;
+        given[idx] = val;
+        if (mode === "study") {
+          const correct = (val === q.answer);
+          fb.style.display = "block";
+          fb.innerHTML = correct ? `<span class="ok">Correct!</span>` : `<span class="bad">Try again.</span>`;
+        }
+      });
+    });
+  }
+
+  // Nav buttons
+  el("prevBtn").disabled = idx === 0;
+  el("nextBtn").textContent = (idx === total - 1) ? (mode === "test" ? "Finish" : "Done") : "Next ▶︎";
+}
+function next() {
+  const q = active[idx];
+  if (!q) return;
+  // In test mode, lock answer on Next
+  if (mode === "test" && !locked[idx]) {
+    locked[idx] = true;
+    // grade if answered
+    if (q.type === "mc" && typeof given[idx] === "number") {
+      if (given[idx] === q.answerIndex) score++; else missed.push(idx);
+    } else if (q.type === "tf" && typeof given[idx] === "boolean") {
+      if (given[idx] === q.answer) score++; else missed.push(idx);
+    } else {
+      // unanswered counts as missed
+      missed.push(idx);
+    }
+  }
+  // Move forward or finish
+  if (idx < active.length - 1) {
+    idx++;
+    render();
+  } else {
+    if (mode === "test") finish();
+  }
+}
+function prev() {
+  if (idx > 0) {
+    idx--;
+    render();
+  }
+}
+function finish() {
+  const total = active.length;
+  const pct = total ? Math.round((score/total)*100) : 0;
+  el("scoreLine").textContent = `Score: ${score}/${total} (${pct}%)`;
+  // Build missed review
+  if (missed.length) {
+    el("missedWrap").style.display = "block";
+    const list = el("missedList");
+    list.innerHTML = "";
+    missed.forEach(i => {
+      const q = active[i];
+      const card = document.createElement("div");
+      card.className = "card";
+      const userAnswer = given[i];
+      let correctText = "";
+      if (q.type === "mc") {
+        correctText = q.options[q.answerIndex];
+      } else {
+        correctText = q.answer ? "True" : "False";
+      }
+      let yourText = "(no answer)";
+      if (typeof userAnswer !== "undefined") {
+        if (q.type === "mc") {
+          yourText = q.options[userAnswer];
+        } else {
+          yourText = userAnswer ? "True" : "False";
+        }
+      }
+      card.innerHTML = `
+        <div style="font-weight:700; margin-bottom:6px;">${q.prompt}</div>
+        <div class="tiny">Your answer: ${yourText}</div>
+        <div class="tiny">Correct answer: <span class="ok">${correctText}</span></div>
+      `;
+      list.appendChild(card);
+    });
+  } else {
+    el("missedWrap").style.display = "none";
+  }
+  el("summary").style.display = "block";
+  // scroll to summary
+  el("summary").scrollIntoView({ behavior: "smooth" });
+}
+
+function startRun() {
+  setCountFromSelect();
+  buildRun();
+  el("summary").style.display = "none";
+  render();
+}
+
+/** EVENTS **/
+el("studyBtn").addEventListener("click", () => { setMode("study"); el("studyBtn").classList.add("primary"); el("testBtn").classList.remove("primary"); });
+el("testBtn").addEventListener("click", () => { setMode("test"); el("testBtn").classList.add("primary"); el("studyBtn").classList.remove("primary"); });
+el("startBtn").addEventListener("click", startRun);
+el("nextBtn").addEventListener("click", next);
+el("prevBtn").addEventListener("click", prev);
+el("retryBtn").addEventListener("click", () => { startRun(); });
+el("studyFromMissedBtn").addEventListener("click", () => {
+  // Build a study-only pool from missed
+  const pool = missed.map(i => active[i]);
+  if (!pool.length) return;
+  setMode("study");
+  el("studyBtn").classList.add("primary"); el("testBtn").classList.remove("primary");
+  // Slight shuffle for variety
+  shuffle(pool);
+  active = pool;
+  idx = 0;
+  given = {};
+  locked = {};
+  score = 0;
+  missed = [];
+  el("summary").style.display = "none";
+  render();
+});
+
+/** DOWNLOAD CURRENT FILE **/
+el("downloadBtn").addEventListener("click", () => {
+  // Offer download of the exact HTML as currently opened
+  const blob = new Blob([document.documentElement.outerHTML], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "practice_test.html";
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(url);
+  a.remove();
+});
+</script>
+</body>
+</html>
