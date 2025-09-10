@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Chapter Quiz – iPhone Friendly</title>
+<style>
+  :root {
+    --bg: #0b0c10;
+    --card: #121417;
+    --text: #e6e6e6;
+    --muted: #b0b8c3;
+    --accent: #4da3ff;
+    --good: #34c759;
+    --bad: #ff3b30;
+    --warn: #ff9f0a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+  header { position: sticky; top: 0; z-index: 10; background: linear-gradient(180deg, rgba(11,12,16,.98) 0%, rgba(11,12,16,.8) 100%); backdrop-filter: blur(6px); padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,.06); }
+  header .title { font-size: 18px; font-weight: 700; letter-spacing:.2px; }
+  .seg { display: inline-flex; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; overflow: hidden; }
+  .seg button { background: transparent; color: var(--text); border: none; padding: 8px 12px; font-weight: 600; }
+  .seg button.active { background: var(--accent); color: #001a33; }
+  .card { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 16px; box-shadow: 0 6px 22px rgba(0,0,0,.35); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 6px; }
+  input[type="text"], input[type="number"], textarea, select {
+    width: 100%; background: #0e1116; color: var(--text); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px; padding: 10px 12px; font-size: 16px;
+  }
+  textarea { min-height: 80px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.14);
+    background: #111820; color: var(--text); font-weight: 700; font-size: 16px;
+  }
+  .btn.primary { background: var(--accent); color: #001a33; border-color: transparent; }
+  .btn.good { background: var(--good); color: #001a33; border-color: transparent; }
+  .btn.warn { background: var(--warn); color: #201400; border-color: transparent; }
+  .btn.ghost { background: transparent; }
+  .btn:active { transform: translateY(1px); }
+  .sp { height: 14px; }
+  .pill { display:inline-block; padding: 2px 8px; border:1px solid rgba(255,255,255,.14); border-radius:999px; color:var(--muted); font-size:12px; }
+  .option { background:#0e1116; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:10px; }
+  .option.correct { border-color: rgba(76, 217, 100, .6); }
+  .option.wrong { border-color: rgba(255, 59, 48, .6); }
+  .mc-grid { display: grid; gap: 10px; }
+  .flex { display:flex; gap:10px; flex-wrap:wrap; }
+  .center { text-align:center; }
+  .hidden { display:none !important; }
+  .score { font-size: 32px; font-weight: 800; }
+  .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #0b0f14; padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,.12); }
+  .footer-note { color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+    <div class="title">Chapter Quiz – iPhone</div>
+    <div class="seg" role="tablist" aria-label="Modes">
+      <button id="tab-practice" class="active" onclick="switchTab('practice')">Practice</button>
+      <button id="tab-review" onclick="switchTab('review')">Review</button>
+      <button id="tab-editor" onclick="switchTab('editor')">Editor</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Practice Card -->
+  <section id="practice" class="card">
+    <div class="row">
+      <div>
+        <label>Question Count</label>
+        <select id="qCount">
+          <option>10</option>
+          <option selected>20</option>
+          <option>30</option>
+          <option>40</option>
+          <option>50</option>
+          <option>All</option>
+        </select>
+      </div>
+      <div>
+        <label>Time Limit (minutes, 0 = none)</label>
+        <input id="timeLimit" type="number" min="0" step="1" value="0" />
+      </div>
+    </div>
+    <div class="row" style="margin-top:8px;">
+      <div>
+        <label>Shuffle</label>
+        <select id="shuffle">
+          <option value="on" selected>On</option>
+          <option value="off">Off</option>
+        </select>
+      </div>
+      <div>
+        <label>Question Types</label>
+        <select id="qTypes">
+          <option value="mixed" selected>Mixed (MC + Short)</option>
+          <option value="mc">Multiple Choice only</option>
+          <option value="sa">Short Answer only</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+    <div class="flex">
+      <button class="btn primary" onclick="startQuiz()">Start</button>
+      <button class="btn ghost" onclick="loadSample()">Load Sample Questions</button>
+      <span class="pill">Saved: <span id="savedCount">0</span></span>
+    </div>
+
+    <div id="quizArea" class="hidden">
+      <div class="sp"></div>
+      <div id="timer" class="pill hidden" aria-live="polite"></div>
+      <div class="sp"></div>
+      <div id="qText" style="font-size:18px; font-weight:700; line-height:1.4;"></div>
+      <div class="sp"></div>
+      <div id="mcArea" class="mc-grid hidden"></div>
+      <div id="saArea" class="hidden">
+        <label>Your answer</label>
+        <input id="saInput" type="text" autocomplete="off" autocapitalize="none" autocorrect="off" />
+      </div>
+      <div class="sp"></div>
+      <div class="flex">
+        <button class="btn" onclick="prevQ()">Prev</button>
+        <button class="btn" onclick="nextQ()">Next</button>
+        <button class="btn good" onclick="submitAnswer()">Submit</button>
+      </div>
+      <div class="sp"></div>
+      <div id="feedback" class="hidden"></div>
+      <div class="sp"></div>
+      <div class="center">
+        <span class="pill">Question <span id="qIndex">0</span>/<span id="qTotal">0</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="sp"></div>
+
+  <!-- Review Card -->
+  <section id="review" class="card hidden">
+    <div class="center">
+      <div class="score" id="score">—</div>
+      <div class="sp"></div>
+      <div class="pill" id="attemptMeta">No attempt yet</div>
+    </div>
+    <div class="sp"></div>
+    <div id="reviewList"></div>
+  </section>
+
+  <div class="sp"></div>
+
+  <!-- Editor Card -->
+  <section id="editor" class="card hidden">
+    <p class="footer-note">
+      Add or edit your questions here. They are saved locally on your device (no internet needed). 
+      You can export or import a JSON file to reuse across chapters.
+    </p>
+    <div class="row">
+      <div>
+        <label>Title (optional)</label>
+        <input id="quizTitle" type="text" placeholder="e.g., Chapter 6 – New Material" />
+      </div>
+      <div class="flex" style="align-items:flex-end;">
+        <button class="btn" onclick="saveTitle()">Save Title</button>
+        <button class="btn" onclick="exportJSON()">Export JSON</button>
+        <label for="importFile" class="btn">Import JSON</label>
+        <input id="importFile" class="hidden" type="file" accept="application/json" />
+      </div>
+    </div>
+
+    <div class="sp"></div>
+    <div class="flex">
+      <button class="btn good" onclick="addQuestion()">Add Question</button>
+      <button class="btn warn" onclick="clearAll()">Clear All</button>
+      <span class="pill">Total: <span id="editorCount">0</span></span>
+    </div>
+    <div class="sp"></div>
+    <div id="editorList"></div>
+  </section>
+
+  <div class="sp"></div>
+  <p class="footer-note center">Tip: Add this page to your Home Screen from the Share menu for a full-screen app-like experience.</p>
+</main>
+
+<script>
+/** Data Model **/
+const STORAGE_KEY = "chapterQuizQuestions_v2";
+const META_KEY = "chapterQuizMeta_v2";
+
+function getSaved() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+  catch(e){ return []; }
+}
+function setSaved(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  document.getElementById("savedCount").textContent = String(list.length);
+  document.getElementById("editorCount").textContent = String(list.length);
+}
+function getMeta() {
+  try { return JSON.parse(localStorage.getItem(META_KEY) || "{}"); }
+  catch(e){ return {}; }
+}
+function setMeta(meta) {
+  localStorage.setItem(META_KEY, JSON.stringify(meta));
+}
+
+function uid() {
+  return Math.random().toString(36).slice(2,10);
+}
+
+/** UI Tabs **/
+function switchTab(tab) {
+  document.getElementById("practice").classList.toggle("hidden", tab !== 'practice');
+  document.getElementById("review").classList.toggle("hidden", tab !== 'review');
+  document.getElementById("editor").classList.toggle("hidden", tab !== 'editor');
+  document.getElementById("tab-practice").classList.toggle("active", tab === 'practice');
+  document.getElementById("tab-review").classList.toggle("active", tab === 'review');
+  document.getElementById("tab-editor").classList.toggle("active", tab === 'editor');
+}
+
+/** Editor **/
+function makeEditorRow(q) {
+  const wrap = document.createElement("div");
+  wrap.className = "option";
+  wrap.style.marginBottom = "10px";
+
+  wrap.innerHTML = `
+    <div class="row">
+      <div>
+        <label>Question Text</label>
+        <textarea data-k="text">${q.text || ""}</textarea>
+      </div>
+      <div>
+        <label>Type</label>
+        <select data-k="type">
+          <option value="mc"${q.type === 'mc' ? ' selected':''}>Multiple Choice</option>
+          <option value="sa"${q.type === 'sa' ? ' selected':''}>Short Answer</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Correct Answer</label>
+        <input type="text" data-k="answer" value="${q.answer || ""}" />
+      </div>
+      <div>
+        <label>Explanation (optional)</label>
+        <input type="text" data-k="explain" value="${q.explain || ""}" />
+      </div>
+    </div>
+    <div class="row">
+      <div><label>Choice A (for MC)</label><input type="text" data-k="a" value="${(q.choices && q.choices[0]) || ""}" /></div>
+      <div><label>Choice B (for MC)</label><input type="text" data-k="b" value="${(q.choices && q.choices[1]) || ""}" /></div>
+    </div>
+    <div class="row">
+      <div><label>Choice C (for MC)</label><input type="text" data-k="c" value="${(q.choices && q.choices[2]) || ""}" /></div>
+      <div><label>Choice D (for MC)</label><input type="text" data-k="d" value="${(q.choices && q.choices[3]) || ""}" /></div>
+    </div>
+    <div class="flex" style="justify-content:flex-end;">
+      <button class="btn" data-act="dup">Duplicate</button>
+      <button class="btn warn" data-act="del">Delete</button>
+      <button class="btn good" data-act="save">Save</button>
+    </div>
+  `;
+
+  wrap.querySelector('[data-act="save"]').onclick = () => {
+    const saved = getSaved();
+    const idx = saved.findIndex(x => x.id === q.id);
+    const data = collect(wrap);
+    if (idx >= 0) { saved[idx] = {...data, id: q.id}; }
+    else { saved.push({...data, id: q.id}); }
+    setSaved(saved);
+    toast("Saved");
+  };
+  wrap.querySelector('[data-act="del"]').onclick = () => {
+    let saved = getSaved().filter(x => x.id !== q.id);
+    setSaved(saved);
+    wrap.remove();
+    toast("Deleted");
+  };
+  wrap.querySelector('[data-act="dup"]').onclick = () => {
+    const data = collect(wrap);
+    const newQ = {...data, id: uid()};
+    const saved = getSaved();
+    saved.push(newQ);
+    setSaved(saved);
+    document.getElementById("editorList").appendChild(makeEditorRow(newQ));
+    toast("Duplicated");
+  };
+  return wrap;
+}
+function collect(wrap) {
+  const get = k => wrap.querySelector(`[data-k="${k}"]`)?.value || "";
+  const type = get("type");
+  const q = {
+    text: get("text").trim(),
+    type,
+    answer: get("answer").trim(),
+    explain: get("explain").trim(),
+    choices: [get("a"), get("b"), get("c"), get("d")].map(s => s.trim()).filter(Boolean)
+  };
+  if (type === "mc" && q.choices.length < 2) {
+    q.choices = [q.answer, "—", "—", "—"];
+  }
+  return q;
+}
+function addQuestion() {
+  const q = { id: uid(), text: "", type: "mc", answer: "", explain: "", choices: ["", "", "", ""] };
+  setSaved([...getSaved(), q]);
+  document.getElementById("editorList").appendChild(makeEditorRow(q));
+  updateCounts();
+}
+function clearAll() {
+  if (!confirm("Clear ALL saved questions?")) return;
+  setSaved([]);
+  document.getElementById("editorList").innerHTML = "";
+  updateCounts();
+}
+function exportJSON() {
+  const meta = getMeta();
+  const data = { meta, questions: getSaved() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = (meta.title || "chapter-quiz") + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+document.getElementById("importFile").addEventListener("change", (e) => {
+  const f = e.target.files?.[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (Array.isArray(data)) {
+        // Allow legacy format: array of questions
+        setSaved(data);
+      } else if (data && Array.isArray(data.questions)) {
+        setSaved(data.questions);
+        if (data.meta) setMeta(data.meta);
+      }
+      reloadEditor();
+      toast("Imported");
+    } catch (err) {
+      alert("Could not import JSON: " + err.message);
+    }
+  };
+  reader.readAsText(f);
+});
+
+function saveTitle() {
+  const title = document.getElementById("quizTitle").value.trim();
+  setMeta({...getMeta(), title});
+  toast("Title saved");
+}
+
+/** Practice **/
+let session = null;
+function startQuiz() {
+  const saved = getSaved();
+  if (!saved.length) {
+    alert("No questions saved yet. Go to the Editor tab or load sample questions.");
+    return;
+  }
+  let pool = [...saved];
+  const qTypes = document.getElementById("qTypes").value;
+  if (qTypes !== "mixed") {
+    pool = pool.filter(q => q.type === qTypes);
+    if (!pool.length) {
+      alert("No questions of the selected type.");
+      return;
+    }
+  }
+  if (document.getElementById("shuffle").value === "on") {
+    pool.sort(() => Math.random() - 0.5);
+  }
+  const qCountSel = document.getElementById("qCount").value;
+  const count = (qCountSel === "All") ? pool.length : Math.min(parseInt(qCountSel, 10), pool.length);
+  const items = pool.slice(0, count).map(q => ({
+    ...q,
+    user: null,
+    result: null,
+    choices: q.type === "mc" ? shuffle([...(q.choices || []), q.answer]).slice(0,4) : null
+  }));
+  session = {
+    items,
+    idx: 0,
+    start: Date.now(),
+    timeLimit: Math.max(0, parseInt(document.getElementById("timeLimit").value || "0", 10)),
+    timerId: null,
+    finished: false
+  };
+  document.getElementById("quizArea").classList.remove("hidden");
+  document.getElementById("feedback").classList.add("hidden");
+  renderQ();
+  startTimer();
+  switchTab('practice');
+}
+
+function startTimer() {
+  const t = document.getElementById("timer");
+  if (!session || !session.timeLimit) {
+    t.classList.add("hidden");
+    return;
+  }
+  t.classList.remove("hidden");
+  const end = session.start + session.timeLimit * 60000;
+  function tick() {
+    const remain = Math.max(0, end - Date.now());
+    const mins = Math.floor(remain/60000);
+    const secs = Math.floor((remain % 60000)/1000);
+    t.textContent = `Time Left: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    if (remain <= 0) { finish(); }
+    else { session.timerId = setTimeout(tick, 250); }
+  }
+  tick();
+}
+
+function finish() {
+  if (!session || session.finished) return;
+  session.finished = true;
+  if (session.timerId) clearTimeout(session.timerId);
+  let correct = 0;
+  session.items.forEach(it => { if (it.result === true) correct++; });
+  const pct = Math.round((correct / session.items.length) * 100);
+  document.getElementById("score").textContent = `${correct}/${session.items.length} (${pct}%)`;
+  document.getElementById("attemptMeta").textContent = `Completed ${new Date().toLocaleString()}`;
+  const list = document.getElementById("reviewList");
+  list.innerHTML = "";
+  session.items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    const resTxt = it.result ? `<span style="color:var(--good); font-weight:700;">Correct</span>` :
+                               `<span style="color:var(--bad); font-weight:700;">Incorrect</span>`;
+    div.innerHTML = `
+      <div style="font-size:15px; font-weight:700; margin-bottom:6px;">Q${i+1}. ${escapeHTML(it.text)}</div>
+      <div style="font-size:14px; color:var(--muted); margin-bottom:4px;">Your answer: <span class="kbd">${escapeHTML(it.user ?? "—")}</span></div>
+      <div style="font-size:14px; color:var(--muted);">Correct answer: <span class="kbd">${escapeHTML(it.answer)}</span> • ${resTxt}</div>
+      ${it.explain ? `<div style="margin-top:6px; font-size:13px; color:var(--muted);">Explanation: ${escapeHTML(it.explain)}</div>` : ""}
+    `;
+    list.appendChild(div);
+  });
+  switchTab('review');
+}
+
+function renderQ() {
+  const it = session.items[session.idx];
+  document.getElementById("qIndex").textContent = String(session.idx + 1);
+  document.getElementById("qTotal").textContent = String(session.items.length);
+  document.getElementById("qText").textContent = it.text;
+  document.getElementById("feedback").classList.add("hidden");
+
+  const mcArea = document.getElementById("mcArea");
+  const saArea = document.getElementById("saArea");
+  if (it.type === "mc") {
+    mcArea.classList.remove("hidden");
+    saArea.classList.add("hidden");
+    mcArea.innerHTML = "";
+    const choices = (it.choices || []).length ? it.choices : [it.answer];
+    choices.forEach((c, idx) => {
+      const b = document.createElement("button");
+      b.className = "btn option";
+      b.textContent = c;
+      b.onclick = () => { it.user = c; submitAnswer(); };
+      mcArea.appendChild(b);
+    });
+  } else {
+    mcArea.classList.add("hidden");
+    saArea.classList.remove("hidden");
+    const input = document.getElementById("saInput");
+    input.value = it.user || "";
+    setTimeout(() => input.focus(), 50);
+  }
+}
+
+function prevQ() {
+  if (!session) return;
+  if (session.idx > 0) { session.idx--; renderQ(); }
+}
+function nextQ() {
+  if (!session) return;
+  if (session.idx < session.items.length-1) { session.idx++; renderQ(); }
+  else { finish(); }
+}
+function normalize(s) {
+  return (s || "").toString().trim().toLowerCase().replace(/\s+/g,' ');
+}
+function submitAnswer() {
+  if (!session) return;
+  const it = session.items[session.idx];
+  if (it.type === "sa") {
+    it.user = document.getElementById("saInput").value;
+  }
+  const correct = normalize(it.user) === normalize(it.answer);
+  it.result = correct;
+
+  const fb = document.getElementById("feedback");
+  fb.classList.remove("hidden");
+  fb.innerHTML = correct
+    ? `<div class="option correct">✅ Correct! ${it.explain ? escapeHTML(" " + it.explain) : ""}</div>`
+    : `<div class="option wrong">❌ Not quite. Answer: <span class="kbd">${escapeHTML(it.answer)}</span>${it.explain ? "<br/>" + escapeHTML(it.explain) : ""}</div>`;
+}
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function escapeHTML(s) {
+  return (s ?? "").toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function loadSample() {
+  // A small sample to get started; replace with your chapter content in Editor
+  const sample = [
+    { id: uid(), type:"mc", text:"Which setting makes this app run full-screen when added to Home Screen on iOS?", answer:"apple-mobile-web-app-capable", explain:"Set the meta tag to 'yes' in HTML.", choices:["viewport-fit=cover","apple-touch-icon","apple-mobile-web-app-capable","manifest.json"] },
+    { id: uid(), type:"sa", text:"Write the CSS property that rounds corners of a box.", answer:"border-radius", explain:"e.g., border-radius: 12px;" },
+    { id: uid(), type:"mc", text:"What does localStorage store?", answer:"Key/value strings in the browser", explain:"Used here to save questions offline.", choices:["Server files","Images only","Key/value strings in the browser","Device contacts"] },
+    { id: uid(), type:"sa", text:"What JS function randomizes array order in this app?", answer:"shuffle", explain:"Fisher–Yates shuffle implementation.", },
+    { id: uid(), type:"mc", text:"Best way to toggle a hidden section?", answer:"Add/remove a 'hidden' class", explain:"We use classList.toggle.", choices:["Reload page","Write inline styles","Open DevTools","Add/remove a 'hidden' class"] },
+  ];
+  setSaved(sample);
+  reloadEditor();
+  toast("Loaded 5 sample questions. Edit in the Editor tab.");
+}
+
+/** Editor Render **/
+function reloadEditor() {
+  const list = document.getElementById("editorList");
+  list.innerHTML = "";
+  const saved = getSaved();
+  saved.forEach(q => list.appendChild(makeEditorRow(q)));
+  updateCounts();
+  const meta = getMeta();
+  document.getElementById("quizTitle").value = meta.title || "";
+}
+function updateCounts() {
+  document.getElementById("savedCount").textContent = String(getSaved().length);
+  document.getElementById("editorCount").textContent = String(getSaved().length);
+}
+
+/** Toast **/
+let toastTimer = null;
+function toast(msg) {
+  let el = document.getElementById("toast");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "toast";
+    el.style.position = "fixed";
+    el.style.left = "50%";
+    el.style.bottom = "calc(env(safe-area-inset-bottom) + 24px)";
+    el.style.transform = "translateX(-50%)";
+    el.style.background = "rgba(0,0,0,.8)";
+    el.style.color = "white";
+    el.style.padding = "10px 14px";
+    el.style.borderRadius = "12px";
+    el.style.fontWeight = "700";
+    el.style.boxShadow = "0 6px 22px rgba(0,0,0,.45)";
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.opacity = "1";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.opacity = "0"; }, 1400);
+}
+
+/** Init **/
+document.addEventListener("DOMContentLoaded", () => {
+  updateCounts();
+  reloadEditor();
+  // Accessibility: space/enter to submit in SA
+  document.getElementById("saInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
+  });
+});
+</script>
+</body>
+</html>
