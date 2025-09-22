@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>U.S. Imperialism — Study & Test</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --card:#121a2b;
+    --ink:#e9eefc;
+    --muted:#a8b3d1;
+    --accent:#5cc8ff;
+    --right:#21d07a;
+    --wrong:#ff5c7a;
+    --warn:#ffd166;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    color:var(--ink);
+    background:linear-gradient(180deg,#0b1220 0%,#0e1526 100%);
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    position:sticky;top:0;z-index:5;
+    background:rgba(11,18,32,.85); backdrop-filter:blur(8px);
+    border-bottom:1px solid #1d2740;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:12px 16px;}
+  h1{font-size:clamp(20px,4vw,28px);margin:6px 0 2px;font-weight:800;letter-spacing:.3px}
+  .sub{color:var(--muted);font-size:14px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  button,.pill{
+    border:0;border-radius:16px;padding:10px 14px;font-weight:700;
+    background:#1a2540;color:#dbe7ff;
+    box-shadow:0 2px 0 #0a1020 inset,0 1px 0 #263358;
+  }
+  button:active{transform:translateY(1px)}
+  .accent{background:linear-gradient(90deg,#44b0ff,#5cf2ff); color:#041225; box-shadow:none}
+  .ghost{background:#121a2b;color:var(--muted)}
+  .warn{background:linear-gradient(90deg,#ffd166,#ffe69a); color:#3b2f00}
+  .grid{display:grid;gap:16px;margin:14px 0}
+  .card{
+    background:var(--card);
+    border:1px solid #1a2540;
+    border-radius:18px;
+    padding:14px 14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  .qtext{font-size:18px;line-height:1.35;font-weight:700}
+  .choices{display:grid;gap:10px;margin-top:12px}
+  .choice{
+    border-radius:12px;padding:12px;border:1px solid #223055;background:#0f1730;color:#eaf0ff;
+  }
+  .choice input{display:none}
+  .choice label{display:block}
+  .choice.selected{outline:2px solid var(--accent)}
+  .choice.correct{background:rgba(33,208,122,.1); border-color:rgba(33,208,122,.8)}
+  .choice.incorrect{background:rgba(255,92,122,.12); border-color:rgba(255,92,122,.8)}
+  .explain{margin-top:10px;color:var(--muted);font-size:14px}
+  .progress{display:flex;align-items:center;gap:10px}
+  .bar{height:10px; background:#1a2540; border-radius:999px; overflow:hidden; flex:1}
+  .fill{height:100%; width:0%; background:linear-gradient(90deg,#5cc8ff,#44ffa1)}
+  .counter{font-variant-numeric:tabular-nums}
+  .mode{padding:8px 10px;border:1px dashed #2b3c66;border-radius:12px;color:#b7c8ff;font-size:14px}
+  .hidden{display:none}
+  .tag{font-size:12px;color:#9fb1df;margin-top:4px}
+  .pill{font-size:13px}
+  .end h2{margin:6px 0 4px}
+  .list-missed{display:grid;gap:12px}
+  .download{position:fixed;right:12px;bottom:12px;z-index:5}
+  .small{font-size:12px;color:#9fb1df}
+  a { color: #7fd0ff; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Unit 2 — U.S. Imperialism (Modules 6–7)</h1>
+      <div class="sub">Study Mode = instant feedback • Test Mode = score at end + review</div>
+      <div class="controls">
+        <button id="studyBtn" class="accent">Study Mode</button>
+        <button id="testBtn">Test Mode</button>
+        <button id="restartBtn" class="ghost">Shuffle & Restart</button>
+        <span class="mode" id="modeText">Mode: Study</span>
+        <span class="pill"><span class="counter" id="counter">0/0</span></span>
+      </div>
+      <div class="progress">
+        <div class="bar"><div class="fill" id="fill"></div></div>
+        <span class="small" id="pct">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="quiz" class="grid"></section>
+    <section id="end" class="card end hidden">
+      <h2>Test Summary</h2>
+      <p id="scoreline"></p>
+      <div class="grid">
+        <div class="card">
+          <h3>Missed Questions (with correct answers)</h3>
+          <div id="missed" class="list-missed"></div>
+        </div>
+      </div>
+      <div class="controls">
+        <button id="retry" class="accent">Try Again (shuffle)</button>
+        <button id="switchStudy">Switch to Study</button>
+      </div>
+    </section>
+  </main>
+
+  <button class="download accent" id="download">⬇️ Download this quiz</button>
+
+<script>
+// ---- Question Bank (from your handwritten notes) ----
+// type: 'mc' with {choices:[...], answer:index}  or 'tf' with {answer:true/false}
+const BANK = [
+  // Foundations & Concepts
+  {type:'tf', q:'Imperialism is when stronger nations extend economic, political, or military control over weaker ones.', a:true, e:'Definition from your notes.'},
+  {type:'mc', q:'Which idea motivated American expansion toward the Pacific in the late 1800s?', choices:['Isolationism','Manifest Destiny','Detente','Neutrality'], answer:1, e:'Notes: continued Manifest Destiny to the Pacific.'},
+  {type:'mc', q:'Queen Liliuokalani was the queen of which kingdom until 1893?', choices:['Cuba','Japan','Hawaii','Philippines'], answer:2, e:'She was forced to step down in 1893.'},
+  {type:'mc', q:'John L. Stevens was the U.S. ambassador to which place during the overthrow of the monarchy?', choices:['Cuba','Hawaii','Puerto Rico','Mexico'], answer:1, e:'Ambassador to Hawaii.'},
+
+  // Early Encounters in Pacific
+  {type:'mc', q:'Commodore Matthew Perry forced negotiations with Japan in 1853 by sailing into which bay?', choices:['Tokyo Bay','Manila Bay','Havana Harbor','San Juan Bay'], answer:0, e:'Four warships: threat of force convinced Japan.'},
+  {type:'mc', q:'The Treaty of Kanagawa (1854) opened how many Japanese ports for American fueling?', choices:['1','2','4','10'], answer:1, e:'Two ports were opened.'},
+  {type:'mc', q:'The Harris Treaty of 1858 primarily did what?', choices:['Ended Spanish rule in Cuba','Opened Japanese ports to trade','Gave the U.S. Alaska','Made Hawaii a state'], answer:1, e:'Opened Japanese ports to trade with the U.S.'},
+  {type:'tf', q:'Both China and Japan were initially eager to trade with the U.S. in the early 1800s.', a:false, e:'Notes: they were initially resistant.'},
+
+  // Global Competition & Motives
+  {type:'mc', q:'Which was NOT one of the three factors fueling American imperialism?', choices:['Desire for military strength','Thirst for new markets','Belief in cultural superiority','Commitment to isolationism'], answer:3, e:'Isolationism is the opposite.'},
+  {type:'mc', q:'Alfred T. Mahan urged the U.S. to build which of the following?', choices:['A large standing army','A modern naval fleet and global bases','More forts on the frontier','Railroads to the West'], answer:1, e:'Nine steel-hulled cruisers, naval bases, canal idea.'},
+  {type:'tf', q:'Farming machines increased corn production by 264% and wheat by 252%, contributing to the search for new markets.', a:true, e:'Economic motive from your notes.'},
+  {type:'mc', q:'“Belief in cultural superiority” in the notes is most associated with which concept?', choices:['Isolationism','Social Darwinism and Anglo-Saxonism','Pacifism','Communism'], answer:1, e:'Used to justify spreading Christianity/democracy.'},
+  {type:'mc', q:'Xenophobia is defined as:', choices:['Pride in one’s nation','Unreasonable fear or dislike of people from other countries','A type of trade treaty','A naval strategy'], answer:1, e:'Term appears under moral motives.'},
+
+  // Alaska & Hawaii
+  {type:'mc', q:'Who arranged the 1867 purchase of Alaska?', choices:['Theodore Roosevelt','William Seward','William McKinley','John Hay'], answer:1, e:'Seward’s Icebox/Folly—$7.2 million.'},
+  {type:'tf', q:'Pearl Harbor became a U.S. naval base in Hawaii beginning in 1887.', a:true, e:'Planters pressed Hawaii to allow the base.'},
+  {type:'mc', q:'The “Bayonet Constitution” in Hawaii did what?', choices:['Ended slavery','Limited voting rights to wealthy landowners','Gave women the vote','Declared independence from the U.S.'], answer:1, e:'King Kalakaua forced to amend constitution.'},
+  {type:'mc', q:'Which businessman became head of the provisional government after the queen was overthrown?', choices:['Andrew Carnegie','Sanford B. Dole','William Randolph Hearst','Emilio Aguinaldo'], answer:1, e:'Sugar tycoon.'},
+  {type:'tf', q:'President Cleveland supported immediate annexation of Hawaii.', a:false, e:'He opposed annexation; McKinley favored it later.'},
+
+  // Spanish-American War: Causes
+  {type:'mc', q:'Which Spanish general’s harsh policy in Cuba drew U.S. attention?', choices:['Valeriano Weyler','Francisco Franco','Pancho Villa','Porfirio Díaz'], answer:0, e:'“The Butcher” Weyler.'},
+  {type:'mc', q:'What is “yellow journalism”?', choices:['Objective reporting','Sensationalized, exaggerated news to attract readers','Military code','Diplomatic note'], answer:1, e:'Hearst and Pulitzer rivalry.'},
+  {type:'mc', q:'The De Lôme Letter criticized which U.S. president as “weak”?', choices:['Grover Cleveland','William McKinley','T. Roosevelt','Woodrow Wilson'], answer:1, e:'Letter from Spanish minister Enrique Dupuy de Lôme.'},
+  {type:'mc', q:'The USS Maine exploded in which harbor?', choices:['Havana','Manila','Tokyo','San Juan'], answer:0, e:'Feb. 15, 1898—over 260 dead.'},
+  {type:'tf', q:'Jingoism refers to extreme patriotism that often favors aggressive foreign policy.', a:true, e:'Term noted beneath Maine/press headlines.'},
+
+  // War with Spain
+  {type:'mc', q:'Where did the first major battle of the war occur?', choices:['Havana Harbor','Philippine Islands (Manila Bay)','Guam','Santiago de Cuba'], answer:1, e:'Dewey destroyed the Spanish fleet at Manila.'},
+  {type:'mc', q:'Which volunteer cavalry unit became famous at San Juan Hill?', choices:['Buffalo Soldiers','Rough Riders','Minute Men','Marines of Veracruz'], answer:1, e:'Led by Leonard Wood and Theodore Roosevelt.'},
+  {type:'mc', q:'Which is TRUE about the U.S. Army in 1898?', choices:['Large, well-equipped, tropical uniforms','Small professional force; many untrained volunteers and heavy wool uniforms','No African American regiments','Only fought at sea'], answer:1, e:'Notes: shortages, wool uniforms, many volunteers.'},
+  {type:'mc', q:'The Treaty of Paris (1898) did NOT include which outcome?', choices:['Spain freed Cuba','U.S. gained Guam and Puerto Rico','U.S. bought the Philippines for $20 million','Spain kept control of the Philippines'], answer:3, e:'Spain ceded/sold the Philippines.'},
+  {type:'mc', q:'Which two arguments against annexing the Philippines appear in your notes?', choices:['Too far and too cold','Violated the Declaration of Independence; immigrants would compete for U.S. jobs','Too expensive and too small','Would anger Britain and France'], answer:1, e:'Booker T. Washington & Samuel Gompers cited.'},
+
+  // Puerto Rico & Cuba Aftermath
+  {type:'mc', q:'The Foraker Act of 1900 did what in Puerto Rico?', choices:['Granted statehood','Ended military rule and set up civil government','Gave independence','Created NAFTA'], answer:1, e:'President appointed governor & upper house.'},
+  {type:'mc', q:'The Insular Cases decision held that:', choices:['The Constitution fully applied to all territories','The Constitution did not automatically apply to people in acquired territories','Puerto Ricans were U.S. citizens in 1898','Territories could not have legislatures'], answer:1, e:'Citizenship granted later in 1917.'},
+  {type:'tf', q:'Puerto Ricans were granted U.S. citizenship in 1917.', a:true, e:'As noted in your outline.'},
+  {type:'mc', q:'Which amendment set conditions on Cuba’s independence, including U.S. intervention rights and a naval base?', choices:['Teller Amendment','Platt Amendment','Roosevelt Corollary','Open Door Note'], answer:1, e:'Platt Amendment of 1901; Guantánamo Bay.'},
+  {type:'tf', q:'The Teller Amendment stated the U.S. intended to annex Cuba after the war.', a:false, e:'It promised the U.S. had no intention of taking Cuba.'},
+  {type:'mc', q:'A country partially controlled by a stronger power is called a:', choices:['Protectorate','Colony','Mandate','Sphere'], answer:0, e:'Your notes: Cuba became a U.S. protectorate.'},
+
+  // Philippines & Asia
+  {type:'mc', q:'Who led Filipino forces against Spain and later the U.S. in 1899?', choices:['Jose Martí','Emilio Aguinaldo','Porfirio Díaz','John J. Pershing'], answer:1, e:'Philippine–American War.'},
+  {type:'mc', q:'Approximate U.S. cost of the Philippine–American War according to notes:', choices:['$4 million','$40 million','$200 million','$400 million'], answer:3, e:'~$400 million; 20,000 Filipino rebels and 4,000 U.S. troops died.'},
+  {type:'mc', q:'The Philippines became an independent republic in:', choices:['1901','1917','1946','1963'], answer:2, e:'Independence on July 4, 1946.'},
+  {type:'mc', q:'The Open Door Notes (1899) proposed that imperialist nations:', choices:['Divide China into colonies','Share trading rights in China equally','Expel foreigners','Return ports to China'], answer:1, e:'John Hay’s policy.'},
+  {type:'mc', q:'Which event involved a Chinese secret society attacking foreigners and was settled by the Boxer Protocol?', choices:['Taiping Rebellion','Boxer Rebellion','Long March','Xinhai Revolution'], answer:1, e:'Final settlement required payments and removals of officials.'},
+  {type:'mc', q:'Which of these is NOT one of the three beliefs behind the Open Door Policy you listed?', choices:['U.S. growth depends on exports','U.S. has right to intervene abroad to keep markets open','Closing areas to U.S. products threatens survival','U.S. should avoid all foreign trade'], answer:3, e:'The first three are the “bedrock” notes.'},
+
+  // Impact & Personalities
+  {type:'tf', q:'McKinley’s 1900 reelection signaled support for imperialist policies.', a:true, e:'From “Impact of U.S. Territorial Gains”.'},
+  {type:'mc', q:'Which person was part of the Anti‑Imperialist League?', choices:['Sanford Dole','Alfred T. Mahan','Andrew Carnegie','George Dewey'], answer:2, e:'Also Grover Cleveland, Samuel Gompers, Jane Addams.'},
+
+  // TR as World Power; Panama Canal
+  {type:'mc', q:'Roosevelt mediated peace in 1905 between which two nations?', choices:['Britain & Germany','Russia & Japan','Spain & Cuba','Mexico & U.S.'], answer:1, e:'Treaty of Portsmouth; he later won the Nobel Peace Prize.'},
+  {type:'mc', q:'The Hay‑Pauncefote Treaty (1901) gave the U.S. what?', choices:['Control of Hawaii','Rights to build and control a canal through Central America','Sovereignty over Alaska','A protectorate in Cuba'], answer:1, e:'Between Britain and the U.S.'},
+  {type:'mc', q:'U.S. support for a Panamanian revolt against Colombia helped secure:', choices:['The Monroe Doctrine','Land and rights to build the Panama Canal','Statehood for Panama','Open Door in China'], answer:1, e:'Followed by Hay‑Bunau‑Varilla Treaty.'},
+  {type:'mc', q:'The Panama Canal opened for business in:', choices:['1903','1914','1917','1920'], answer:1, e:'August 15, 1914.'},
+  {type:'mc', q:'Approximate total U.S. cost to build the canal (per notes):', choices:['$38 million','$180 million','$380 million','$1 billion'], answer:2, e:'~$380 million; 5,600 worker deaths.'},
+  {type:'tf', q:'The Roosevelt Corollary expanded the Monroe Doctrine by asserting the U.S. would use force to protect economic interests in Latin America.', a:true, e:'“Big Stick” diplomacy; policeman of Latin America.'},
+
+  // Diplomacies & Mexico
+  {type:'mc', q:'Dollar Diplomacy under Taft involved:', choices:['Granting independence to Latin America','Using the U.S. government to guarantee loans by American businesspeople','Arming rebels in Europe','Banning trade with Asia'], answer:1, e:'Linked to Nicaragua and U.S. bankers collecting customs duties.'},
+  {type:'mc', q:'Missionary Diplomacy under Wilson meant the U.S. would:', choices:['Recognize any stable government','Deny recognition to undemocratic or oppressive regimes in Latin America','Annex Mexico','Abandon the Monroe Doctrine'], answer:1, e:'“Moral tone” to diplomacy.'},
+  {type:'mc', q:'During the Mexican Revolution, which leader was overthrown and murdered by Huerta?', choices:['Francisco Madero','Venustiano Carranza','Porfirio Díaz','Álvaro Obregón'], answer:0, e:'Huerta’s regime followed; U.S. refused recognition.'},
+  {type:'mc', q:'The ABC Powers (Argentina, Brazil, Chile) mediated a conflict after U.S. Marines occupied which Mexican port?', choices:['Veracruz','Tampico','Acapulco','Matamoros'], answer:0, e:'Arrest incident at Tampico preceded it; 1914.'},
+  {type:'mc', q:'Which Mexican revolutionary led raids into New Mexico, prompting Pershing’s expedition?', choices:['Emiliano Zapata','Francisco "Pancho" Villa','Victoriano Huerta','Carranza'], answer:1, e:'Pershing pursued him with 15,000 soldiers.'},
+  {type:'tf', q:'Wilson eventually recalled Pershing in 1917 as the U.S. prepared for war in Europe.', a:true, e:'From your notes; need peace on southern border.'},
+  {type:'mc', q:'Who became Mexico’s president in 1920 and started reforms?', choices:['Carranza','Obregón','Huerta','Díaz'], answer:1, e:'Álvaro Obregón (moderate).'},
+
+  // Quick-match/identification style (MC)
+  {type:'mc', q:'Match the leader to the style: Roosevelt’s foreign policy is best summarized as…', choices:['Dollar Diplomacy','Big Stick Diplomacy','Missionary Diplomacy','Gunboat Neutrality'], answer:1, e:'Use military power if needed.'},
+  {type:'mc', q:'Which statement pairs correctly? Taft — ______; Wilson — ______.', choices:['Missionary; Big Stick','Dollar; Missionary','Big Stick; Dollar','Open Door; Platt'], answer:1, e:'Taft = Dollar; Wilson = Missionary.'},
+  {type:'tf', q:'“Gunboat Diplomacy” describes using naval power as a threat to gain advantages in foreign negotiations.', a:true, e:'Term appears in Panama section.'}
+];
+
+// ---- Utility ----
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+let MODE = 'study'; // 'study' or 'test'
+let ORDER = [];
+let RESULTS = []; // {correct:boolean, picked:number|boolean, qIndex:number}
+let current = 0;
+
+function reset(){
+  ORDER = [...Array(BANK.length).keys()];
+  shuffle(ORDER);
+  RESULTS = [];
+  current = 0;
+  document.getElementById('end').classList.add('hidden');
+  render();
+}
+
+function renderProgress(){
+  const fill = document.getElementById('fill');
+  const pct = Math.round((current/ORDER.length)*100);
+  fill.style.width = pct + '%';
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('counter').textContent = (current)+'/'+ORDER.length;
+}
+
+function render(){
+  const container = document.getElementById('quiz');
+  container.innerHTML='';
+  renderProgress();
+  if(current>=ORDER.length){
+    if(MODE==='test'){ showSummary(); }
+    else { // in study mode, loop back
+      current = 0; render();
+    }
+    return;
+  }
+  const q = BANK[ORDER[current]];
+  const card = document.createElement('div');
+  card.className='card';
+  const title = document.createElement('div');
+  title.className='qtext';
+  title.textContent = (current+1)+'. '+q.q;
+  card.appendChild(title);
+
+  if(q.type==='mc'){
+    // shuffle choices but track correct index
+    const idx = q.answer;
+    const pairs = q.choices.map((c,i)=>({txt:c, i}));
+    shuffle(pairs);
+    const choicesDiv = document.createElement('div');
+    choicesDiv.className='choices';
+    pairs.forEach((p,k)=>{
+      const opt = document.createElement('div'); opt.className='choice';
+      const id = 'q'+current+'_'+k;
+      opt.innerHTML = `<input type="radio" name="q${current}" id="${id}"><label for="${id}">${p.txt}</label>`;
+      opt.addEventListener('click', ()=>{
+        const pickedOriginalIndex = p.i;
+        handleAnswer(q, pickedOriginalIndex, opt, choicesDiv, idx);
+      });
+      choicesDiv.appendChild(opt);
+    });
+    card.appendChild(choicesDiv);
+  } else { // tf
+    const choicesDiv = document.createElement('div');
+    choicesDiv.className='choices';
+    ['True','False'].forEach((txt,k)=>{
+      const opt = document.createElement('div'); opt.className='choice';
+      const id = 'q'+current+'_'+k;
+      opt.innerHTML = `<input type="radio" name="q${current}" id="${id}"><label for="${id}">${txt}</label>`;
+      opt.addEventListener('click', ()=>{
+        const picked = (k===0);
+        handleAnswer(q, picked, opt, choicesDiv, q.a);
+      });
+      choicesDiv.appendChild(opt);
+    });
+    card.appendChild(choicesDiv);
+  }
+
+  const tag = document.createElement('div');
+  tag.className='tag';
+  tag.textContent = MODE==='study' ? 'Tap an answer to check yourself. Auto-advance when correct.' : 'Choose an answer and tap Next.';
+  card.appendChild(tag);
+
+  // Next button (visible in Test mode)
+  if(MODE==='test'){
+    const next = document.createElement('div');
+    next.className='controls';
+    const btn = document.createElement('button');
+    btn.textContent='Next';
+    btn.className='accent';
+    btn.addEventListener('click', ()=>{ current++; render(); });
+    next.appendChild(btn);
+    card.appendChild(next);
+  }
+
+  container.appendChild(card);
+}
+
+function handleAnswer(q, picked, optEl, choicesDiv, correctVal){
+  // Visual feedback
+  for(const c of choicesDiv.children){ c.classList.remove('selected'); }
+  optEl.classList.add('selected');
+
+  let correct=false;
+  if(q.type==='mc'){ correct = (picked===correctVal); }
+  else { correct = (picked===correctVal); }
+
+  if(MODE==='study'){
+    // mark all
+    for(const c of choicesDiv.children){ c.classList.add('incorrect'); }
+    // find the right one and mark
+    if(q.type==='mc'){
+      // find child whose label text equals correct choice
+      [...choicesDiv.children].forEach((c,idx)=>{
+        const label = c.querySelector('label').textContent.trim();
+        if(label===q.choices[q.answer]) c.classList.remove('incorrect'), c.classList.add('correct');
+      });
+    } else {
+      const rightIndex = q.a ? 0 : 1;
+      choicesDiv.children[rightIndex].classList.remove('incorrect');
+      choicesDiv.children[rightIndex].classList.add('correct');
+    }
+    // explanation
+    const ex = document.createElement('div');
+    ex.className='explain';
+    ex.textContent = (correct?'✅ Correct. ':'❌ Not quite. ')+(q.e||'');
+    choicesDiv.parentElement.appendChild(ex);
+    setTimeout(()=>{ current++; render(); }, 700);
+  }else{
+    // Test mode: mark selected only lightly
+    RESULTS.push({correct, picked, qIndex: ORDER[current]});
+  }
+}
+
+function showSummary(){
+  const total = ORDER.length;
+  const correct = RESULTS.filter(r=>r.correct).length;
+  document.getElementById('scoreline').textContent = `You scored ${correct} / ${total} (${Math.round(correct/total*100)}%).`;
+  const missedBox = document.getElementById('missed');
+  missedBox.innerHTML='';
+  RESULTS.forEach((r,idx)=>{
+    if(!r.correct){
+      const q = BANK[r.qIndex];
+      const row = document.createElement('div');
+      row.className='card';
+      const corrTxt = q.type==='mc' ? q.choices[q.answer] : (q.a?'True':'False');
+      row.innerHTML = `<div class="qtext">${idx+1}. ${q.q}</div>
+        <div class="explain"><b>Correct:</b> ${corrTxt}</div>
+        <div class="explain">${q.e||''}</div>`;
+      missedBox.appendChild(row);
+    }
+  });
+  document.getElementById('end').classList.remove('hidden');
+  document.getElementById('quiz').innerHTML='';
+  document.getElementById('counter').textContent = total+'/'+total;
+  document.getElementById('fill').style.width='100%';
+  document.getElementById('pct').textContent='100%';
+}
+
+// Mode controls
+function setMode(m){
+  MODE=m;
+  document.getElementById('modeText').textContent='Mode: '+(m==='study'?'Study':'Test');
+  reset();
+}
+
+document.getElementById('studyBtn').addEventListener('click', ()=>setMode('study'));
+document.getElementById('testBtn').addEventListener('click', ()=>setMode('test'));
+document.getElementById('restartBtn').addEventListener('click', reset);
+document.getElementById('retry').addEventListener('click', ()=>setMode('test'));
+document.getElementById('switchStudy').addEventListener('click', ()=>setMode('study'));
+
+// Download button: save the current HTML file itself
+document.getElementById('download').addEventListener('click', ()=>{
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'US_Imperialism_Practice_Test.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// Init
+reset();
+</script>
+</body>
+</html>
