@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>U.S. History Unit 1 (Modules 3–5) Practice Test</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --accent: #22d3ee;
+      --accent-2: #60a5fa;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom); }
+    header { position: sticky; top: 0; z-index: 20; background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92)); backdrop-filter: saturate(140%) blur(6px); border-bottom: 1px solid rgba(148,163,184,0.12); }
+    .header-inner { display: flex; gap: 12px; align-items: center; padding: 10px 8px; flex-wrap: wrap; }
+    .title { font-size: 16px; font-weight: 700; letter-spacing: 0.3px; }
+    .badge { font-size: 12px; color: var(--muted); padding: 2px 8px; border: 1px solid rgba(148,163,184,0.25); border-radius: 999px; }
+    .mode-toggle { margin-left: auto; display: flex; gap: 8px; background: #0b1220; border: 1px solid rgba(148,163,184,0.22); border-radius: 10px; padding: 4px; }
+    .mode-toggle button { border: 0; background: transparent; color: var(--muted); padding: 8px 12px; border-radius: 8px; font-weight: 600; }
+    .mode-toggle button.active { background: linear-gradient(180deg, #0ea5e9 0%, #22d3ee 100%); color: #0b1220; }
+
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 8px; }
+    .control { background: var(--card); border: 1px solid rgba(148,163,184,0.18); padding: 10px 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .control label { font-size: 13px; color: var(--muted); }
+    .switch { position: relative; width: 48px; height: 28px; background: #0b1220; border: 1px solid rgba(148,163,184,0.22); border-radius: 999px; cursor: pointer; }
+    .switch input { display: none; }
+    .switch span { position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(180deg, #1f2937, #111827); transition: transform .2s ease; border: 1px solid rgba(148,163,184,0.25); }
+    .switch input:checked + span { transform: translateX(20px); background: linear-gradient(180deg, #06b6d4, #0ea5e9); border-color: transparent; }
+
+    .progress { display: flex; align-items: center; gap: 10px; margin: 8px; }
+    .bar { flex: 1; height: 10px; background: #0b1220; border: 1px solid rgba(148,163,184,0.18); border-radius: 999px; overflow: hidden; }
+    .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .2s ease; }
+    .stats { font-size: 12px; color: var(--muted); }
+
+    .card { background: var(--card); border: 1px solid rgba(148,163,184,0.18); border-radius: 14px; padding: 14px; margin: 10px 8px; }
+    .qhead { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 8px; }
+    .qnum { font-weight: 700; color: #cbd5e1; }
+    .qtype { font-size: 12px; color: var(--muted); }
+    .qtext { font-size: 16px; line-height: 1.4; margin: 6px 0 10px; }
+
+    .choices { display: grid; gap: 8px; }
+    .choice { display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 1px solid rgba(148,163,184,0.18); border-radius: 10px; background: #0b1220; cursor: pointer; }
+    .choice input { margin-top: 2px; }
+    .choice.correct { border-color: rgba(34,197,94,0.6); background: rgba(34,197,94,0.08); }
+    .choice.incorrect { border-color: rgba(239,68,68,0.6); background: rgba(239,68,68,0.08); }
+
+    .explain { margin-top: 8px; padding: 10px; background: #0b1220; border: 1px dashed rgba(148,163,184,0.3); border-radius: 10px; font-size: 14px; color: #cbd5e1; display: none; }
+    .explain.show { display: block; }
+
+    .nav { display: flex; gap: 8px; padding: 8px; position: sticky; bottom: 0; background: linear-gradient(0deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92)); backdrop-filter: blur(6px); border-top: 1px solid rgba(148,163,184,0.12); }
+    .btn { appearance: none; border: 0; padding: 10px 14px; font-weight: 700; border-radius: 10px; cursor: pointer; color: #0b1220; background: linear-gradient(180deg, #22d3ee, #60a5fa); }
+    .btn.secondary { background: #0b1220; color: var(--text); border: 1px solid rgba(148,163,184,0.24); }
+    .btn.warn { background: linear-gradient(180deg, #f59e0b, #f97316); color: #0b1220; }
+    .btn.success { background: linear-gradient(180deg, #22c55e, #16a34a); color: #0b1220; }
+
+    .result-card { display: none; }
+    .result-card.show { display: block; }
+
+    .fineprint { color: var(--muted); font-size: 12px; text-align: center; margin: 14px 0; }
+
+    @media (min-width: 760px) { .controls { grid-template-columns: repeat(4, 1fr); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap header-inner">
+      <div class="title">U.S. History — Unit 1 (Modules 3–5) Practice Test</div>
+      <span class="badge">Industrialization • Gilded Age • Progressivism</span>
+      <div class="mode-toggle" role="tablist" aria-label="Mode">
+        <button id="btnStudy" class="active" type="button" aria-selected="true">Study Mode</button>
+        <button id="btnTest" type="button" aria-selected="false">Test Mode</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="controls" aria-label="Controls">
+      <div class="control">
+        <label for="shuffleQ">Shuffle Questions</label>
+        <label class="switch"><input id="shuffleQ" type="checkbox" checked><span></span></label>
+      </div>
+      <div class="control">
+        <label for="shuffleA">Shuffle Answers</label>
+        <label class="switch"><input id="shuffleA" type="checkbox" checked><span></span></label>
+      </div>
+      <div class="control">
+        <label for="onePer">One per page</label>
+        <label class="switch"><input id="onePer" type="checkbox" checked><span></span></label>
+      </div>
+      <div class="control">
+        <label for="showExpl">Show explanations (Study)</label>
+        <label class="switch"><input id="showExpl" type="checkbox" checked><span></span></label>
+      </div>
+    </div>
+
+    <div class="progress" aria-live="polite">
+      <div class="bar" aria-label="Progress"><div id="barInner"></div></div>
+      <div class="stats"><span id="statTxt">Q 1 of 1</span> • <span id="modeTxt">Study</span></div>
+    </div>
+
+    <div id="questionHost"></div>
+
+    <div class="card result-card" id="resultCard">
+      <h3>Results</h3>
+      <p id="scoreLine"></p>
+      <div id="breakdown"></div>
+      <div style="display:flex; gap:8px; flex-wrap: wrap; margin-top:8px;">
+        <button type="button" class="btn" id="btnReviewWrong">Review wrong answers</button>
+        <button type="button" class="btn secondary" id="btnShowAll">Show all with answers</button>
+        <button type="button" class="btn" id="btnDownloadCSV">Download results (CSV)</button>
+        <button type="button" class="btn secondary" id="btnPrint">Print</button>
+        <button type="button" class="btn warn" id="btnDownloadHTML">Download this test (HTML)</button>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn secondary" id="btnPrev">Prev</button>
+      <button type="button" class="btn secondary" id="btnNext">Next</button>
+      <button type="button" class="btn success" id="btnSubmit">Submit</button>
+      <button type="button" class="btn warn" id="btnReset">Reset</button>
+    </div>
+
+    <p class="fineprint">Tip: In Study Mode you get instant feedback and explanations. Switch to Test Mode for scoring at the end.</p>
+  </div>
+
+  <script>
+    // Utility helpers
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+    const shuffle = (arr) => arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+
+    // Question bank (Modules 3–5)
+    // type: 'mc' | 'tf'
+    // For mc: { choices: [..], answerIndex: n }
+    // For tf: { correct: true/false }
+    const BANK = [
+      // Module 3: Industrialization & Big Business
+      { id: 'M3-Q1', type: 'mc', q: 'What was the primary benefit of the Bessemer Process?', choices: ['It produced stronger steel at lower cost', 'It made oil refining safer', 'It electrified factories', 'It improved railroad brakes'], answerIndex: 0, exp: 'The Bessemer Process enabled mass production of steel cheaply and efficiently, fueling railroads, bridges, and skyscrapers.' },
+      { id: 'M3-Q2', type: 'mc', q: 'Which inventor is most associated with the practical electric light bulb and power distribution?', choices: ['Alexander Graham Bell', 'Thomas Edison', 'Nikola Tesla', 'Samuel Morse'], answerIndex: 1, exp: 'Edison developed a practical incandescent bulb and built systems for electric power generation and distribution.' },
+      { id: 'M3-Q3', type: 'mc', q: 'Horizontal integration involves:', choices: ['Owning every step of production from raw materials to distribution', 'Merging with or buying out competitors in the same industry', 'Government control of key industries', 'Forming worker cooperatives'], answerIndex: 1, exp: 'Horizontal integration consolidates firms in the same stage of production, reducing competition.' },
+      { id: 'M3-Q4', type: 'mc', q: 'Andrew Carnegie is best known for dominating which industry?', choices: ['Oil', 'Railroads', 'Steel', 'Banking'], answerIndex: 2, exp: 'Carnegie built a steel empire using vertical integration and cost efficiencies.' },
+      { id: 'M3-Q5', type: 'mc', q: 'John D. Rockefeller built Standard Oil primarily through:', choices: ['Vertical integration only', 'Horizontal integration and trusts', 'Government subsidies', 'Labor union support'], answerIndex: 1, exp: 'Rockefeller consolidated many refineries into Standard Oil and used trusts to control the market.' },
+      { id: 'M3-Q6', type: 'tf', q: 'The Sherman Antitrust Act (1890) was the first federal law aimed at limiting monopolies and trusts.', correct: true, exp: 'It targeted anti-competitive practices, although early enforcement was weak.' },
+      { id: 'M3-Q7', type: 'mc', q: 'Which communication technology did Alexander Graham Bell invent?', choices: ['Telegraph', 'Telephone', 'Radio', 'Phonograph'], answerIndex: 1, exp: 'Bell patented the telephone in 1876.' },
+      { id: 'M3-Q8', type: 'mc', q: 'Which labor union focused on skilled workers and bread-and-butter issues like wages and hours?', choices: ['Knights of Labor', 'American Federation of Labor (AFL)', 'Industrial Workers of the World', 'Congress of Industrial Organizations'], answerIndex: 1, exp: 'The AFL, led by Samuel Gompers, emphasized practical gains for skilled workers.' },
+      { id: 'M3-Q9', type: 'mc', q: 'Which event turned public opinion against labor due to violence and anarchist associations?', choices: ['Homestead Strike', 'Haymarket Affair', 'Pullman Strike', 'Triangle Shirtwaist Fire'], answerIndex: 1, exp: 'The 1886 Haymarket bombing in Chicago hurt the labor movement’s public image.' },
+      { id: 'M3-Q10', type: 'mc', q: 'Pullman Strike (1894) is notable because:', choices: ['It was entirely peaceful', 'It involved federal intervention and injunctions', 'It led to the 19th Amendment', 'It nationalized the railroads permanently'], answerIndex: 1, exp: 'Federal troops and court injunctions were used against the American Railway Union led by Eugene V. Debs.' },
+      { id: 'M3-Q11', type: 'tf', q: 'Vertical integration means controlling multiple stages of production and distribution within one company.', correct: true, exp: 'Carnegie Steel is a classic example: raw materials, transport, mills, and distribution.' },
+
+      // Module 4: Immigration, Urbanization, Gilded Age Politics
+      { id: 'M4-Q1', type: 'mc', q: 'Political machines like Tammany Hall maintained power largely by:', choices: ['Winning court cases', 'Providing services to immigrants in exchange for votes', 'Military force', 'Selling public lands'], answerIndex: 1, exp: 'They offered jobs, housing, and aid, expecting political loyalty in return.' },
+      { id: 'M4-Q2', type: 'mc', q: 'Which reform aimed to reduce patronage and require exams for government jobs?', choices: ['Sherman Antitrust Act', 'Pendleton Civil Service Act', 'Interstate Commerce Act', 'Hepburn Act'], answerIndex: 1, exp: 'The Pendleton Act (1883) established merit-based federal employment.' },
+      { id: 'M4-Q3', type: 'mc', q: 'Jacob Riis is best known for exposing:', choices: ['Meatpacking industry abuses', 'Tenement conditions in cities', 'Standard Oil monopolies', 'Child labor in mines'], answerIndex: 1, exp: 'His book "How the Other Half Lives" used photos to reveal harsh tenement life.' },
+      { id: 'M4-Q4', type: 'mc', q: 'Which statement best describes the “Gilded Age”?', choices: ['A period of pure prosperity and equality', 'An era of glittering wealth masking social problems', 'Time of widespread ruralization', 'A post–WWI boom time'], answerIndex: 1, exp: 'Coined by Twain/Warner: wealth and growth covering corruption and inequality.' },
+      { id: 'M4-Q5', type: 'tf', q: 'Nativism refers to favoritism toward native-born Americans and hostility to immigrants.', correct: true, exp: 'Nativist sentiments led to restrictions like the Chinese Exclusion Act (1882).' },
+      { id: 'M4-Q6', type: 'mc', q: 'Settlement houses such as Hull House sought to:', choices: ['Provide charitable aid and education to the urban poor and immigrants', 'Lobby exclusively for big business', 'Privatize public parks', 'Ban all immigration'], answerIndex: 0, exp: 'Founded by reformers like Jane Addams to assist newcomers and the poor.' },
+      { id: 'M4-Q7', type: 'mc', q: 'Urban problems in the late 1800s included all EXCEPT:', choices: ['Overcrowded tenements', 'Inadequate sanitation', 'Excess affordable housing', 'Corruption'], answerIndex: 2, exp: 'Affordable, safe housing was scarce; tenements were overcrowded and unsanitary.' },
+      { id: 'M4-Q8', type: 'mc', q: 'Boss Tweed was associated with which organization?', choices: ['Standard Oil', 'Tammany Hall', 'AFL', 'Hull House'], answerIndex: 1, exp: 'William M. Tweed led New York’s Tammany Hall political machine.' },
+
+      // Module 5: Progressivism
+      { id: 'M5-Q1', type: 'mc', q: 'Muckrakers were:', choices: ['Supporters of machine politics', 'Investigative journalists exposing corruption and abuses', 'Leaders of trusts', 'Anti-immigrant vigilantes'], answerIndex: 1, exp: 'Muckrakers like Tarbell, Riis, and Sinclair exposed social and corporate ills.' },
+      { id: 'M5-Q2', type: 'mc', q: 'Which amendment established the federal income tax?', choices: ['16th', '17th', '18th', '19th'], answerIndex: 0, exp: 'The 16th Amendment authorized a federal income tax (1913).' },
+      { id: 'M5-Q3', type: 'mc', q: 'The 17th Amendment provided for:', choices: ['Women’s suffrage', 'Direct election of U.S. Senators', 'Prohibition of alcohol', 'Presidential term limits'], answerIndex: 1, exp: 'Direct election of senators reduced corruption by state legislatures.' },
+      { id: 'M5-Q4', type: 'mc', q: 'Which Progressive reform allowed voters to remove elected officials before their term ended?', choices: ['Initiative', 'Referendum', 'Recall', 'Primary'], answerIndex: 2, exp: 'Recall elections let voters oust officials mid-term.' },
+      { id: 'M5-Q5', type: 'mc', q: 'Upton Sinclair’s The Jungle led to:', choices: ['End of trusts', 'Meat inspection and pure food laws', 'Income tax repeal', 'End of child labor'], answerIndex: 1, exp: 'Public outrage prompted the Meat Inspection Act and Pure Food and Drug Act (1906).'},
+      { id: 'M5-Q6', type: 'mc', q: 'Which amendment granted women the right to vote?', choices: ['15th', '17th', '18th', '19th'], answerIndex: 3, exp: 'The 19th Amendment (1920) enfranchised women nationally.' },
+      { id: 'M5-Q7', type: 'mc', q: 'The Federal Reserve System (1913) was created to:', choices: ['Nationalize railroads', 'Regulate the money supply and banking', 'Ban corporate mergers', 'Fund political campaigns'], answerIndex: 1, exp: 'The Fed manages monetary policy and provides financial stability.' },
+      { id: 'M5-Q8', type: 'mc', q: 'Which law strengthened antitrust rules by defining unfair practices and protecting labor unions?', choices: ['Sherman Antitrust Act', 'Clayton Antitrust Act', 'Hepburn Act', 'Elkins Act'], answerIndex: 1, exp: 'Clayton (1914) clarified and expanded antitrust provisions and exempted unions from being trusts.' },
+      { id: 'M5-Q9', type: 'mc', q: 'The Square Deal is associated with which president?', choices: ['Woodrow Wilson', 'Theodore Roosevelt', 'William Howard Taft', 'Grover Cleveland'], answerIndex: 1, exp: 'Roosevelt’s Square Deal emphasized consumer protection, conservation, and control of corporations.' },
+      { id: 'M5-Q10', type: 'tf', q: 'Progressives supported direct primaries, initiatives, referendums, and recalls to expand democracy.', correct: true, exp: 'These tools aimed to reduce corruption and increase voter power.' },
+      { id: 'M5-Q11', type: 'mc', q: 'The 18th Amendment established:', choices: ['Income tax', 'Prohibition', 'Women’s suffrage', 'Direct election of Senators'], answerIndex: 1, exp: 'The 18th (1919) initiated Prohibition, later repealed by the 21st.' },
+      { id: 'M5-Q12', type: 'mc', q: 'Which tragedy led to improved workplace safety laws?', choices: ['Haymarket Affair', 'Triangle Shirtwaist Factory Fire', 'Homestead Strike', 'Pullman Strike'], answerIndex: 1, exp: 'The 1911 fire killed 146 workers, spurring safety reforms.' },
+      { id: 'M5-Q13', type: 'mc', q: 'Ida Tarbell is best known for her exposé of:', choices: ['The meatpacking industry', 'Tenement housing', 'Standard Oil', 'Railroad rebates'], answerIndex: 2, exp: 'Tarbell’s muckraking detailed Standard Oil’s unfair practices.' },
+      { id: 'M5-Q14', type: 'mc', q: 'Jane Addams is associated with:', choices: ['The NAACP', 'Hull House', 'Standard Oil', 'The U.S. Steel Corporation'], answerIndex: 1, exp: 'Addams co-founded Hull House, a major settlement house in Chicago.' },
+      { id: 'M5-Q15', type: 'mc', q: 'Conservation during the Progressive Era included:', choices: ['Creating national parks and forests', 'Selling public lands to trusts', 'Repealing wildlife protections', 'Privatizing water supplies'], answerIndex: 0, exp: 'Progressives like Roosevelt set aside millions of acres for conservation.' },
+
+      // More depth/variety
+      { id: 'M3-Q12', type: 'tf', q: 'Trusts were arrangements allowing one board to manage several companies, reducing competition.', correct: true, exp: 'Trusts often controlled entire industries under a single management.' },
+      { id: 'M3-Q13', type: 'mc', q: 'Which strike was at Carnegie’s Homestead plant and involved violent clashes with Pinkertons?', choices: ['Haymarket Affair', 'Homestead Strike', 'Pullman Strike', 'Great Railroad Strike of 1877'], answerIndex: 1, exp: 'The 1892 Homestead Strike turned violent and weakened union power in steel.' },
+      { id: 'M4-Q9', type: 'mc', q: 'Tenements were characterized by:', choices: ['Spacious design and good ventilation', 'Overcrowding, poor light, and sanitation', 'Suburban planning', 'Public health clinics in every building'], answerIndex: 1, exp: 'Tenements crammed many families into small, poorly ventilated apartments.' },
+      { id: 'M4-Q10', type: 'tf', q: 'The Chinese Exclusion Act (1882) was the first significant law restricting immigration based on nationality.', correct: true, exp: 'It suspended Chinese immigration and was renewed multiple times.' },
+      { id: 'M5-Q16', type: 'mc', q: 'Which Progressive measure lets voters propose laws directly?', choices: ['Initiative', 'Referendum', 'Recall', 'Filibuster'], answerIndex: 0, exp: 'Initiative allows citizens to place proposals on the ballot.' },
+      { id: 'M5-Q17', type: 'mc', q: 'Which Progressive measure lets voters approve or reject laws passed by the legislature?', choices: ['Initiative', 'Referendum', 'Recall', 'Veto'], answerIndex: 1, exp: 'Referendum submits laws to voters for approval.' },
+      { id: 'M5-Q18', type: 'mc', q: 'Which federal law first attempted to regulate railroad rates and practices?', choices: ['Interstate Commerce Act', 'Hepburn Act', 'Elkins Act', 'Clayton Act'], answerIndex: 0, exp: 'The Interstate Commerce Act (1887) created the ICC to oversee railroads.' },
+      { id: 'M5-Q19', type: 'mc', q: 'Booker T. Washington advocated:', choices: ['Immediate civil and political equality', 'Vocational education and gradualism', 'Return to Africa', 'Separatist politics'], answerIndex: 1, exp: 'Washington emphasized economic self-help and vocational training.' },
+      { id: 'M5-Q20', type: 'mc', q: 'W.E.B. Du Bois advocated:', choices: ['Atlanta Compromise', 'Talented Tenth and immediate rights', 'Isolationism', 'Prohibition'], answerIndex: 1, exp: 'Du Bois pushed for immediate civil rights and higher education for the “Talented Tenth.”' },
+      { id: 'M5-Q21', type: 'tf', q: 'Progressives generally supported child labor laws and compulsory education.', correct: true, exp: 'Ending child labor and raising schooling were key goals.' },
+      { id: 'M5-Q22', type: 'mc', q: 'Which president is associated with “New Freedom” reforms like the Federal Reserve and Clayton Act?', choices: ['Theodore Roosevelt', 'William Howard Taft', 'Woodrow Wilson', 'William McKinley'], answerIndex: 2, exp: 'Wilson’s New Freedom targeted tariffs, banks, and trusts.' },
+      { id: 'M3-Q14', type: 'mc', q: 'Which innovation most directly enabled skyscraper construction?', choices: ['Bessemer steel and safety elevators', 'Telegraph networks', 'Oil pipelines', 'Airplanes'], answerIndex: 0, exp: 'Cheap steel plus elevators made tall buildings practical.' },
+      { id: 'M4-Q11', type: 'mc', q: 'Which term describes the blend of cultures from massive immigration?', choices: ['Melting pot', 'Nativism', 'Assimilation', 'Isolationism'], answerIndex: 0, exp: '“Melting pot” describes cultural mixture, especially in cities.' },
+      { id: 'M3-Q15', type: 'mc', q: 'Which law attempted early railroad regulation by banning rebates and requiring fair rates?', choices: ['Elkins Act', 'Hepburn Act', 'Interstate Commerce Act', 'Sherman Act'], answerIndex: 2, exp: 'The Interstate Commerce Act set the stage for later, stronger railroad regulation.' },
+      { id: 'M5-Q23', type: 'mc', q: 'The Pure Food and Drug Act primarily:', choices: ['Funded hospitals', 'Required accurate labeling and banned harmful additives', 'Nationalized drug makers', 'Created Medicaid'], answerIndex: 1, exp: 'It targeted mislabeling and adulteration of food and medicines.' },
+      { id: 'M5-Q24', type: 'mc', q: 'The Hepburn Act (1906) strengthened the ICC by:', choices: ['Allowing it to set maximum railroad rates', 'Banning unions', 'Creating the Federal Reserve', 'Outlawing income tax'], answerIndex: 0, exp: 'It expanded ICC powers over railroad pricing.' },
+      { id: 'M5-Q25', type: 'tf', q: 'Referendum allows voters to approve laws; recall lets them remove officials.', correct: true, exp: 'Both expanded direct democracy during the Progressive Era.' }
+    ];
+
+    // State
+    let state = {
+      mode: 'study', // 'study' | 'test'
+      order: [],      // question indices
+      onePer: true,
+      shuffleQ: true,
+      shuffleA: true,
+      showExpl: true,
+      current: 0,     // index into order[]
+      answers: {},    // id -> chosen index or boolean
+      locked: false,  // when submitted in test mode
+    };
+
+    // Elements
+    const host = document.getElementById('questionHost');
+    const barInner = document.getElementById('barInner');
+    const statTxt = document.getElementById('statTxt');
+    const modeTxt = document.getElementById('modeTxt');
+    const resultCard = document.getElementById('resultCard');
+
+    // Controls
+    const btnStudy = document.getElementById('btnStudy');
+    const btnTest = document.getElementById('btnTest');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnReset = document.getElementById('btnReset');
+    const btnReviewWrong = document.getElementById('btnReviewWrong');
+    const btnShowAll = document.getElementById('btnShowAll');
+    const btnDownloadCSV = document.getElementById('btnDownloadCSV');
+    const btnPrint = document.getElementById('btnPrint');
+    const btnDownloadHTML = document.getElementById('btnDownloadHTML');
+
+    const chkShuffleQ = document.getElementById('shuffleQ');
+    const chkShuffleA = document.getElementById('shuffleA');
+    const chkOnePer = document.getElementById('onePer');
+    const chkShowExpl = document.getElementById('showExpl');
+
+    // Initialize
+    function init() {
+      state.shuffleQ = chkShuffleQ.checked;
+      state.shuffleA = chkShuffleA.checked;
+      state.onePer = chkOnePer.checked;
+      state.showExpl = chkShowExpl.checked;
+      state.locked = false;
+      state.answers = {};
+      const idxs = BANK.map((_,i)=>i);
+      state.order = state.shuffleQ ? shuffle(idxs) : idxs;
+      state.current = 0;
+      btnSubmit.disabled = state.mode === 'study';
+      btnSubmit.classList.toggle('success', state.mode === 'test');
+      btnSubmit.classList.toggle('secondary', state.mode !== 'test');
+      resultCard.classList.remove('show');
+      render();
+    }
+
+    function setMode(newMode){
+      if(state.mode === newMode) return;
+      state.mode = newMode;
+      btnStudy.classList.toggle('active', newMode==='study');
+      btnTest.classList.toggle('active', newMode==='test');
+      btnSubmit.disabled = newMode==='study';
+      modeTxt.textContent = newMode==='study' ? 'Study' : 'Test';
+      init();
+    }
+
+    // Rendering
+    function render(){
+      host.innerHTML = '';
+      const total = state.order.length;
+      const current = Math.min(state.current, total-1);
+      const items = state.onePer ? [state.order[current]] : state.order;
+      const qNumOffset = state.onePer ? current : 0;
+
+      items.forEach((idx, i) => host.appendChild(renderQuestion(idx, qNumOffset + i + 1)));
+
+      // Progress
+      const answered = Object.keys(state.answers).length;
+      const pct = Math.round((Math.min(answered, total) / total) * 100);
+      barInner.style.width = pct + '%';
+      statTxt.textContent = `Q ${Math.min(current+1,total)} of ${total}`;
+      modeTxt.textContent = state.mode==='study' ? 'Study' : (state.locked ? 'Test (submitted)' : 'Test');
+
+      // Nav buttons
+      btnPrev.disabled = state.current <= 0;
+      btnNext.disabled = state.current >= total-1;
+    }
+
+    function renderQuestion(bankIndex, displayNumber){
+      const data = BANK[bankIndex];
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.dataset.qid = data.id;
+
+      const head = document.createElement('div');
+      head.className = 'qhead';
+      head.innerHTML = `<div class="qnum">Question ${displayNumber}</div><div class="qtype">${data.type.toUpperCase()}</div>`;
+
+      const qtext = document.createElement('div');
+      qtext.className = 'qtext';
+      qtext.textContent = data.q;
+
+      const choices = document.createElement('div');
+      choices.className = 'choices';
+
+      if(data.type === 'mc'){
+        let options = data.choices.map((c,idx)=>({label:c, idx}));
+        if(state.shuffleA) options = shuffle(options);
+        options.forEach(opt => {
+          const choice = document.createElement('label');
+          choice.className = 'choice';
+          const inp = document.createElement('input');
+          inp.type = 'radio';
+          inp.name = data.id;
+          inp.value = opt.idx;
+          const saved = state.answers[data.id];
+          if(saved !== undefined && saved === opt.idx) inp.checked = true;
+          inp.addEventListener('change', () => onAnswer(data, parseInt(inp.value,10), choice, card));
+          const span = document.createElement('span');
+          span.textContent = opt.label;
+          choice.appendChild(inp);
+          choice.appendChild(span);
+          choices.appendChild(choice);
+        });
+      } else {
+        [true, false].forEach(val => {
+          const choice = document.createElement('label');
+          choice.className = 'choice';
+          const inp = document.createElement('input');
+          inp.type = 'radio';
+          inp.name = data.id;
+          inp.value = val ? 'true' : 'false';
+          const saved = state.answers[data.id];
+          if(saved !== undefined && saved === val) inp.checked = true;
+          inp.addEventListener('change', () => onAnswer(data, val, choice, card));
+          const span = document.createElement('span');
+          span.textContent = val ? 'True' : 'False';
+          choice.appendChild(inp);
+          choice.appendChild(span);
+          choices.appendChild(choice);
+        });
+      }
+
+      const exp = document.createElement('div');
+      exp.className = 'explain';
+      exp.textContent = data.exp || '';
+
+      card.appendChild(head);
+      card.appendChild(qtext);
+      card.appendChild(choices);
+      card.appendChild(exp);
+
+      // If test mode and submitted, mark correctness
+      if(state.mode==='test' && state.locked){
+        markCard(card, data);
+        exp.classList.add('show');
+      }
+
+      return card;
+    }
+
+    function onAnswer(data, value, choiceEl, cardEl){
+      if(state.mode==='test' && state.locked) return; // no changes post-submit
+      state.answers[data.id] = value;
+      if(state.mode==='study'){
+        // Instant feedback
+        const exp = $('.explain', cardEl);
+        clearMark(cardEl);
+        const correct = isCorrect(data, value);
+        // mark selection
+        if(choiceEl){ choiceEl.classList.add(correct ? 'correct' : 'incorrect'); }
+        // also highlight the correct option in MC
+        if(data.type==='mc') {
+          highlightCorrectMC(cardEl, data);
+        }
+        if(state.showExpl && exp){ exp.classList.add('show'); }
+      }
+      renderProgressOnly();
+    }
+
+    function renderProgressOnly(){
+      const total = state.order.length;
+      const answered = Object.keys(state.answers).length;
+      const pct = Math.round((Math.min(answered, total) / total) * 100);
+      barInner.style.width = pct + '%';
+      const current = Math.min(state.current, total-1);
+      statTxt.textContent = `Q ${Math.min(current+1,total)} of ${total}`;
+    }
+
+    function clearMark(cardEl){
+      $$('.choice', cardEl).forEach(c => { c.classList.remove('correct','incorrect'); });
+    }
+
+    function isCorrect(data, value){
+      if(data.type==='mc') return value === data.answerIndex;
+      return Boolean(value) === Boolean(data.correct);
+    }
+
+    function highlightCorrectMC(cardEl, data){
+      const radios = $$('input[type="radio"]', cardEl);
+      radios.forEach(r => {
+        const val = parseInt(r.value, 10);
+        const label = r.parentElement;
+        if(val === data.answerIndex) label.classList.add('correct');
+      });
+    }
+
+    function markCard(cardEl, data){
+      clearMark(cardEl);
+      const exp = $('.explain', cardEl);
+      const chosen = state.answers[data.id];
+      if(chosen === undefined){
+        // mark only the correct answer subtly
+        if(data.type==='mc') highlightCorrectMC(cardEl, data);
+        if(exp) exp.classList.add('show');
+        return;
+      }
+      if(data.type==='mc'){
+        const radios = $$('input[type="radio"]', cardEl);
+        radios.forEach(r => {
+          const val = parseInt(r.value,10);
+          const label = r.parentElement;
+          if(val === data.answerIndex) label.classList.add('correct');
+        });
+        const chosenLabel = $$('input[type="radio"]', cardEl).find(r => parseInt(r.value,10)===chosen)?.parentElement;
+        if(chosenLabel && chosen !== data.answerIndex) chosenLabel.classList.add('incorrect');
+      } else {
+        const labels = $$('.choice', cardEl);
+        labels.forEach(l => {
+          const val = l.querySelector('input').value === 'true';
+          if(val === data.correct) l.classList.add('correct');
+        });
+        const selected = labels.find(l => (l.querySelector('input').checked));
+        if(selected && (selected.querySelector('input').value === 'true') !== data.correct){
+          selected.classList.add('incorrect');
+        }
+      }
+      if(exp) exp.classList.add('show');
+    }
+
+    function submitTest(){
+      state.locked = true;
+      // Mark all
+      $$('.card', host).forEach((cardEl, i) => {
+        const qid = cardEl.dataset.qid;
+        const data = BANK.find(q=>q.id===qid);
+        markCard(cardEl, data);
+      });
+      // Score
+      const total = state.order.length;
+      let correctCount = 0;
+      state.order.forEach(idx => {
+        const q = BANK[idx];
+        const val = state.answers[q.id];
+        if(val !== undefined && isCorrect(q, val)) correctCount++;
+      });
+      const pct = Math.round((correctCount/total)*100);
+      $('#scoreLine').textContent = `Score: ${correctCount} / ${total} (${pct}%)`;
+      $('#breakdown').innerHTML = `Answered: ${Object.keys(state.answers).length} • Unanswered: ${total - Object.keys(state.answers).length}`;
+      resultCard.classList.add('show');
+      render();
+    }
+
+    function resetAll(){
+      state.mode = state.mode; // keep mode
+      init();
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function reviewWrong(){
+      // Filter to only wrong or unanswered
+      const wrong = state.order.filter(idx => {
+        const q = BANK[idx];
+        const val = state.answers[q.id];
+        return val === undefined || !isCorrect(q, val);
+      });
+      if(wrong.length === 0){ alert('No wrong or unanswered questions to review!'); return; }
+      state.order = wrong;
+      state.current = 0;
+      state.onePer = true;
+      chkOnePer.checked = true;
+      state.mode = 'study';
+      btnStudy.classList.add('active');
+      btnTest.classList.remove('active');
+      btnSubmit.disabled = true;
+      resultCard.classList.remove('show');
+      render();
+    }
+
+    function showAllWithAnswers(){
+      state.onePer = false;
+      chkOnePer.checked = false;
+      render();
+      // Ensure all explanations visible
+      $$('.card .explain').forEach(e => e.classList.add('show'));
+      // If in test not yet submitted, reveal corrects lightly
+      if(!(state.mode==='test' && state.locked)){
+        $$('.card').forEach(cardEl => {
+          const qid = cardEl.dataset.qid;
+          const data = BANK.find(q=>q.id===qid);
+          if(data.type==='mc') highlightCorrectMC(cardEl, data);
+        });
+      }
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function downloadCSV(){
+      const rows = [['QID','Question','Your Answer','Correct Answer','Correct?']];
+      state.order.forEach(idx => {
+        const q = BANK[idx];
+        let yourAns = '';
+        let correctAns = '';
+        if(q.type==='mc'){
+          const val = state.answers[q.id];
+          yourAns = (val !== undefined) ? q.choices[val] : '';
+          correctAns = q.choices[q.answerIndex];
+        } else {
+          const val = state.answers[q.id];
+          yourAns = (val === undefined) ? '' : (val ? 'True' : 'False');
+          correctAns = q.correct ? 'True' : 'False';
+        }
+        const ok = (state.answers[q.id] !== undefined) && isCorrect(q, state.answers[q.id]) ? 'Yes' : 'No';
+        rows.push([q.id, q.q, yourAns, correctAns, ok]);
+      });
+      const csv = rows.map(r => r.map(x => '"'+String(x).replaceAll('"','""')+'"').join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'unit1_results.csv'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }
+
+    function downloadHTML(){
+      // Serialize current document so the user can save the customized test
+      const doctype = '<!DOCTYPE html>';
+      const html = document.documentElement.outerHTML;
+      const blob = new Blob([doctype + '\n' + html], {type:'text/html;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'unit1_mod3-5_practice_test.html'; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }
+
+    // Events
+    btnStudy.addEventListener('click', () => setMode('study'));
+    btnTest.addEventListener('click', () => setMode('test'));
+    btnPrev.addEventListener('click', () => { if(state.current>0){ state.current--; render(); window.scrollTo({top:0, behavior:'smooth'}); } });
+    btnNext.addEventListener('click', () => { if(state.current < state.order.length-1){ state.current++; render(); window.scrollTo({top:0, behavior:'smooth'}); } });
+    btnSubmit.addEventListener('click', () => { if(confirm('Submit your answers? You will see your score.')) submitTest(); });
+    btnReset.addEventListener('click', resetAll);
+
+    chkShuffleQ.addEventListener('change', () => init());
+    chkShuffleA.addEventListener('change', () => { state.shuffleA = chkShuffleA.checked; render(); });
+    chkOnePer.addEventListener('change', () => { state.onePer = chkOnePer.checked; render(); });
+    chkShowExpl.addEventListener('change', () => { state.showExpl = chkShowExpl.checked; render(); });
+
+    btnReviewWrong.addEventListener('click', reviewWrong);
+    btnShowAll.addEventListener('click', showAllWithAnswers);
+    btnDownloadCSV.addEventListener('click', downloadCSV);
+    btnPrint.addEventListener('click', () => window.print());
+    btnDownloadHTML.addEventListener('click', downloadHTML);
+
+    // Kickoff
+    init();
+  </script>
+</body>
+</html>
