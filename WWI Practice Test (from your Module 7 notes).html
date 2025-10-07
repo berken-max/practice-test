@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WWI Practice Test — Module 7</title>
+<style>
+  :root{
+    --bg:#0f172a;            /* slate-900 */
+    --panel:#111827;         /* gray-900 */
+    --card:#1f2937;          /* gray-800 */
+    --muted:#94a3b8;         /* slate-400 */
+    --text:#e5e7eb;          /* gray-200 */
+    --accent:#22c55e;        /* green-500 */
+    --accent2:#60a5fa;       /* blue-400 */
+    --warn:#f59e0b;          /* amber-500 */
+    --danger:#ef4444;        /* red-500 */
+    --success:#10b981;       /* emerald-500 */
+    --link:#38bdf8;
+    --chip:#0b1224;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background: radial-gradient(1200px 800px at 50% -10%, #1b2439 0%, var(--bg) 60%);
+    color:var(--text);
+    font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    -webkit-font-smoothing:antialiased;
+    line-height:1.45;
+  }
+  .container{
+    max-width:900px;
+    margin:0 auto;
+    padding:16px env(safe-area-inset-right) 24px env(safe-area-inset-left);
+  }
+  header{
+    position:sticky; top:0; z-index:10;
+    background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(15,23,42,0.75));
+    backdrop-filter: saturate(180%) blur(10px);
+    padding:12px 16px;
+    border-bottom:1px solid rgba(148,163,184,0.15);
+  }
+  .title{
+    font-weight:700; font-size:20px; letter-spacing:0.2px;
+  }
+  .subtitle{
+    color:var(--muted); font-size:13.5px;
+  }
+  .controls{
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;
+  }
+  .btn{
+    appearance:none; border:none; outline:none;
+    background:linear-gradient(180deg, #2a3349, #1a2337);
+    color:var(--text);
+    padding:10px 14px; border-radius:12px;
+    font-weight:600; font-size:14px; letter-spacing:0.2px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: transform .06s ease, filter .2s ease, background .3s ease;
+  }
+  .btn:active{ transform: translateY(1px) scale(0.99); }
+  .btn.primary{ background:linear-gradient(180deg, #2f855a 0%, #226e49 100%); }
+  .btn.secondary{ background:linear-gradient(180deg, #2563eb 0%, #1e4fb5 100%); }
+  .btn.warn{ background:linear-gradient(180deg, #d97706 0%, #b45309 100%); }
+  .btn.ghost{
+    background:transparent; border:1px solid rgba(148,163,184,0.25);
+  }
+  .pill{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 10px; border-radius:999px; background:var(--chip);
+    color:var(--muted); font-size:12.5px; letter-spacing:0.2px;
+    border:1px solid rgba(148,163,184,0.12);
+  }
+  .panel{
+    background:linear-gradient(180deg, rgba(31,41,55,0.7) 0%, rgba(31,41,55,0.55) 100%);
+    border:1px solid rgba(148,163,184,0.15);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    border-radius:16px; padding:14px;
+  }
+  .topbar{
+    display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+  }
+  .mode-switch{
+    display:flex; gap:8px;
+    background:rgba(148,163,184,0.08);
+    padding:6px; border-radius:12px; border:1px solid rgba(148,163,184,0.12);
+  }
+  .mode-btn{
+    padding:8px 12px; border-radius:8px; font-weight:700; font-size:13px;
+    color:var(--muted); background:transparent; border:none;
+  }
+  .mode-btn.active{
+    color:white; background:linear-gradient(180deg, #334155, #1f2937); border:1px solid rgba(148,163,184,0.2);
+  }
+  .progress{
+    display:flex; align-items:center; gap:8px; color:var(--muted); font-size:13.5px;
+  }
+  .progress-bar{
+    flex:1; height:8px; background:rgba(148,163,184,0.15); border-radius:999px; overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; background:linear-gradient(90deg, var(--accent2), var(--accent)); width:0%;
+    transition: width .3s ease;
+  }
+
+  .qcard{
+    margin-top:14px; padding:14px; border-radius:14px;
+    background:linear-gradient(180deg, #111827, #0f1625);
+    border:1px solid rgba(148,163,184,0.12);
+  }
+  .qhead{
+    display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+  }
+  .qnum{
+    font-weight:800; color:#a5b4fc; font-size:14px;
+  }
+  .qtext{
+    font-size:16px; font-weight:600; letter-spacing:0.1px;
+  }
+  .answers{
+    margin-top:10px; display:flex; flex-direction:column; gap:10px;
+  }
+  .opt{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px; border-radius:12px; cursor:pointer;
+    background:linear-gradient(180deg, #172035, #111827);
+    border:1px solid rgba(148,163,184,0.15);
+    transition: transform .06s ease, background .2s ease, border .2s ease;
+  }
+  .opt:active{ transform: translateY(1px); }
+  .opt input{ display:none; }
+  .opt .label{
+    font-weight:600; font-size:14px; color:var(--text);
+  }
+  .opt.correct{
+    border-color: rgba(16,185,129,0.6);
+    box-shadow: inset 0 0 0 1px rgba(16,185,129,0.35);
+    background:linear-gradient(180deg, rgba(16,185,129,0.15), rgba(17,24,39,0));
+  }
+  .opt.incorrect{
+    border-color: rgba(239,68,68,0.6);
+    box-shadow: inset 0 0 0 1px rgba(239,68,68,0.35);
+    background:linear-gradient(180deg, rgba(239,68,68,0.12), rgba(17,24,39,0));
+  }
+  .explain{
+    margin-top:8px; color:var(--muted); font-size:13.5px;
+  }
+
+  .footer-actions{
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+    margin-top:14px;
+  }
+
+  .hidden{ display:none !important; }
+
+  .summary{
+    margin-top:16px; padding:14px; border-radius:14px;
+    background:linear-gradient(180deg, #0d1528, #0a1221);
+    border:1px solid rgba(148,163,184,0.18);
+  }
+  .score{
+    font-size:22px; font-weight:900;
+  }
+  .missed{
+    margin-top:10px; display:flex; flex-direction:column; gap:12px;
+  }
+  a { color: var(--link); text-decoration: none; }
+  .download-note{ color: var(--muted); font-size:12.5px; margin-top:6px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="container" style="padding:0 16px;">
+    <div class="title">WWI Practice Test — Module 7</div>
+    <div class="subtitle">Study Mode (instant feedback) or Test Mode (score and review at the end). Shuffle enabled.</div>
+    <div class="controls">
+      <button class="btn secondary" id="btnStudy">Study Mode</button>
+      <button class="btn primary" id="btnTest">Test Mode</button>
+      <button class="btn ghost" id="btnReshuffle" title="Reshuffle questions and choices">Reshuffle</button>
+      <button class="btn warn" id="btnDownload">Download This Quiz</button>
+    </div>
+    <div class="download-note">Tip: After tapping Download on iPhone, use the Share icon to “Save to Files” so you can email or host the HTML.</div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="panel">
+    <div class="topbar">
+      <div class="mode-switch" role="tablist" aria-label="Mode Switch">
+        <button class="mode-btn active" id="tabStudy" aria-selected="true">Study</button>
+        <button class="mode-btn" id="tabTest" aria-selected="false">Test</button>
+      </div>
+      <div class="progress" aria-live="polite">
+        <span id="progressText">0/0</span>
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="questions"></div>
+
+    <div class="footer-actions">
+      <div class="pill">
+        <span id="questionCount">0 questions</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn ghost" id="btnBackToTop">Top</button>
+        <button class="btn secondary hidden" id="btnSubmitTest">Submit Test</button>
+      </div>
+    </div>
+
+    <div id="summary" class="summary hidden" tabindex="-1" aria-live="polite">
+      <div class="score" id="scoreLine">Score: 0/0 (0%)</div>
+      <div class="pill" style="margin-top:8px;" id="timeTaken">Time: 0s</div>
+      <div class="missed" id="missedList"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+/*
+  WWI Practice Test generated from Module 7 notes:
+  - Causes: Nationalism, Imperialism, Militarism, Alliance System
+  - Events: Assassination at Sarajevo, Schlieffen Plan, trench warfare, Somme, U-boats, Lusitania, Sussex Pledge, Zimmerman Note, 1917 US entry, Russian Revolution, AEF, convoy system, mechanized warfare, gas, Argonne, armistice 11/11/1918
+  - Home front: WIB, Liberty Bonds, CPI, Espionage & Sedition Acts, Great Migration, women’s roles, flu of 1918
+  - Peace: Fourteen Points, Paris Peace Conference, Treaty of Versailles, League of Nations, war-guilt clause, Senate rejection
+*/
+
+const SOURCE = "Module 7 notes (World War I)";
+
+// Utility: shuffle in-place
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// Questions derived from the provided notes
+const QUESTION_BANK = [
+  // Causes and Alliances
+  {
+    t:"Which of the following was NOT one of the four long-term causes of World War I?",
+    type:"mc",
+    choices:["Isolationism","Nationalism","Imperialism","Militarism"],
+    answer:"Isolationism",
+    exp:"The four long-term causes were nationalism, imperialism, militarism, and alliance systems."
+  },
+  {
+    t:"The Triple Entente (Allies) originally included which countries?",
+    type:"mc",
+    choices:["France, Britain, Russia","Germany, Austria-Hungary, Italy","Britain, Italy, Ottoman Empire","France, Germany, Russia"],
+    answer:"France, Britain, Russia",
+    exp:"By 1907, the Triple Entente was France, Britain, and Russia."
+  },
+  {
+    t:"True or False: The Central Powers included Germany, Austria-Hungary, and the Ottoman Empire.",
+    type:"tf",
+    answer:"True",
+    exp:"These were identified as Central Powers in the notes."
+  },
+  {
+    t:"Nationalism in Europe before WWI often led to:",
+    type:"mc",
+    choices:["Competitive rivalries and tension","Decreased military spending","Colonies gaining independence","Reduced ethnic tensions"],
+    answer:"Competitive rivalries and tension",
+    exp:"Nationalist devotion intensified rivalries and ethnic tensions."
+  },
+  {
+    t:"Militarism is best defined as:",
+    type:"mc",
+    choices:[
+      "The development of armed forces and their use as a tool of diplomacy",
+      "A policy of avoiding alliances",
+      "The peaceful settlement of disputes",
+      "Colonial peoples gaining self-rule"
+    ],
+    answer:"The development of armed forces and their use as a tool of diplomacy",
+    exp:"That is the definition provided in the notes."
+  },
+  {
+    t:"True or False: Germany began competing with Britain and France for colonies after it industrialized.",
+    type:"tf",
+    answer:"True",
+    exp:"Imperial competition intensified as Germany industrialized."
+  },
+  {
+    t:"By 1890, the strongest nation on the European continent was:",
+    type:"mc",
+    choices:["Britain","Germany","France","Russia"],
+    answer:"Germany",
+    exp:"Notes identify Germany as the strongest continental power by 1890."
+  },
+  {
+    t:"The belief that alliances would decrease the chances of war was based on the idea of:",
+    type:"mc",
+    choices:["Appeasement","Balance of Power","Unrestricted warfare","Isolationism"],
+    answer:"Balance of Power",
+    exp:"Leaders hoped balanced alliances would deter attacks."
+  },
+
+  // Spark and Early War
+  {
+    t:"The assassination that sparked WWI occurred in:",
+    type:"mc",
+    choices:["Sarajevo","Vienna","Berlin","Paris"],
+    answer:"Sarajevo",
+    exp:"Archduke Franz Ferdinand was killed in Sarajevo, Bosnia."
+  },
+  {
+    t:"Gavrilo Princip, who assassinated Archduke Franz Ferdinand, was a:",
+    type:"mc",
+    choices:["Member of the Black Hand","German soldier","Austro-Hungarian official","French nationalist"],
+    answer:"Member of the Black Hand",
+    exp:"The Black Hand promoted Serbian nationalism."
+  },
+  {
+    t:"True or False: Germany invaded Belgium as part of the Schlieffen Plan.",
+    type:"tf",
+    answer:"True",
+    exp:"The plan called for a quick drive through Belgium to Paris."
+  },
+  {
+    t:"The First Battle of the Somme (1916) was notable for:",
+    type:"mc",
+    choices:[
+      "Massive casualties with minimal territorial gains",
+      "The first use of nuclear weapons",
+      "An immediate Allied victory capturing Berlin",
+      "The end of trench warfare"
+    ],
+    answer:"Massive casualties with minimal territorial gains",
+    exp:"About 1.2 million casualties for ~7 miles gained."
+  },
+  {
+    t:"'No Man’s Land' refers to:",
+    type:"mc",
+    choices:[
+      "Neutral countries during WWI",
+      "The land between opposing trenches",
+      "Uncolonized territories",
+      "Uncharted seas used by U-boats"
+    ],
+    answer:"The land between opposing trenches",
+    exp:"Barren ground with shell craters and barbed wire."
+  },
+  {
+    t:"True or False: Trench foot was caused by prolonged exposure to cold, wet conditions.",
+    type:"tf",
+    answer:"True",
+    exp:"Toes could rot, sometimes requiring amputation."
+  },
+  {
+    t:"'Shell shock' in WWI described:",
+    type:"mc",
+    choices:[
+      "A type of explosive shell",
+      "A defensive trench design",
+      "A severe psychological reaction to combat",
+      "A naval bombardment tactic"
+    ],
+    answer:"A severe psychological reaction to combat",
+    exp:"The term was coined in WWI for emotional collapse."
+  },
+
+  // US Neutrality to War
+  {
+    t:"At the start of WWI, President Wilson’s policy for the United States was:",
+    type:"mc",
+    choices:["Neutrality","Immediate entry on the Allied side","Immediate entry on the Central Powers side","Isolation from trade with all nations"],
+    answer:"Neutrality",
+    exp:"Wilson declared neutrality with isolationist sentiment."
+  },
+  {
+    t:"True or False: US economic ties with the Allies grew stronger than with Germany from 1914 onward.",
+    type:"tf",
+    answer:"True",
+    exp:"Trade with Allies quadrupled; fell near zero with Germany."
+  },
+  {
+    t:"Britain’s blockade of Germany led to:",
+    type:"mc",
+    choices:[
+      "German famine and civilian hardship",
+      "US entry on the Central Powers side",
+      "Immediate German surrender",
+      "The end of submarine warfare"
+    ],
+    answer:"German famine and civilian hardship",
+    exp:"By 1917 about 750,000 Germans starved due to blockade."
+  },
+  {
+    t:"The German U-boat campaign included sinking the Lusitania, which resulted in:",
+    type:"mc",
+    choices:[
+      "US support shifting against the Central Powers",
+      "Immediate US declaration of war",
+      "End of British blockade",
+      "Armistice talks"
+    ],
+    answer:"US support shifting against the Central Powers",
+    exp:"128 Americans died; outrage grew in the US."
+  },
+  {
+    t:"True or False: The Sussex Pledge promised Germany would end all submarine warfare.",
+    type:"tf",
+    answer:"False",
+    exp:"It promised not to sink merchant vessels without warning/saving lives; not an absolute end."
+  },
+  {
+    t:"The Zimmerman Note proposed:",
+    type:"mc",
+    choices:[
+      "A German-Mexican alliance against the US",
+      "US entry into the League of Nations",
+      "A British-Russian non-aggression pact",
+      "Italian withdrawal from the war"
+    ],
+    answer:"A German-Mexican alliance against the US",
+    exp:"Germany promised to help Mexico recover lost territories."
+  },
+  {
+    t:"True or False: The Russian Revolution eventually led Russia to withdraw from the war.",
+    type:"tf",
+    answer:"True",
+    exp:"Bolsheviks overthrew the provisional government and exited the war with a peace agreement."
+  },
+
+  // US Mobilization and Fighting
+  {
+    t:"The Selective Service Act of 1917:",
+    type:"mc",
+    choices:[
+      "Required men to register for the draft",
+      "Outlawed conscription",
+      "Gave military rank to all nurses",
+      "Ended segregation in the military"
+    ],
+    answer:"Required men to register for the draft",
+    exp:"About 24 million registered; nearly 3 million called up."
+  },
+  {
+    t:"True or False: About 400,000 African Americans served, mostly in segregated, non-combat roles.",
+    type:"tf",
+    answer:"True",
+    exp:"Units were segregated; many assigned non-combat roles."
+  },
+  {
+    t:"The convoy system was designed primarily to:",
+    type:"mc",
+    choices:[
+      "Protect merchant ships from U-boats",
+      "Deliver tanks to the front",
+      "Evacuate civilians from Belgium",
+      "Blockade the Ottoman Empire"
+    ],
+    answer:"Protect merchant ships from U-boats",
+    exp:"Destroyers escorted groups across the Atlantic; losses halved."
+  },
+  {
+    t:"The American Expeditionary Force (AEF) was led by:",
+    type:"mc",
+    choices:["John J. Pershing","George S. Patton","Douglas MacArthur","William S. Sims"],
+    answer:"John J. Pershing",
+    exp:"General Pershing commanded the AEF."
+  },
+  {
+    t:"True or False: Tanks and airplanes marked a rise in mechanized warfare during WWI.",
+    type:"tf",
+    answer:"True",
+    exp:"Mechanized warfare relied on gasoline/diesel engines."
+  },
+  {
+    t:"The Second Battle of the Marne (1918) resulted in:",
+    type:"mc",
+    choices:[
+      "A German retreat",
+      "An Allied collapse",
+      "Russian re-entry into the war",
+      "US withdrawal"
+    ],
+    answer:"A German retreat",
+    exp:"German offensive failed; Allies counterattacked."
+  },
+  {
+    t:"Alvin York is best known for:",
+    type:"mc",
+    choices:[
+      "Capturing 132 prisoners in a single action",
+      "Designing the Schlieffen Plan",
+      "Leading the Flying Circus",
+      "Negotiating the armistice"
+    ],
+    answer:"Capturing 132 prisoners in a single action",
+    exp:"He also killed 25 Germans and was promoted to sergeant."
+  },
+  {
+    t:"True or False: The armistice ending the fighting took effect on 11/11/1918.",
+    type:"tf",
+    answer:"True",
+    exp:"The 11th hour of the 11th day of the 11th month."
+  },
+
+  // Home Front
+  {
+    t:"The War Industries Board (WIB) under Bernard Baruch:",
+    type:"mc",
+    choices:[
+      "Encouraged mass-production and set quotas",
+      "Ended the use of assembly lines",
+      "Reduced industrial output by 20%",
+      "Banned private business profits"
+    ],
+    answer:"Encouraged mass-production and set quotas",
+    exp:"WIB boosted efficiency and allocated raw materials."
+  },
+  {
+    t:"True or False: The US financed the war entirely through taxes.",
+    type:"tf",
+    answer:"False",
+    exp:"About one-third from taxes; the rest from Liberty and Victory bonds."
+  },
+  {
+    t:"The Committee on Public Information (CPI) led by George Creel aimed to:",
+    type:"mc",
+    choices:[
+      "Use propaganda to build public support for the war",
+      "Outlaw dissent through arrests alone",
+      "Negotiate peace with Germany",
+      "Nationalize all newspapers"
+    ],
+    answer:"Use propaganda to build public support for the war",
+    exp:"CPI mobilized posters, films, and “Four Minute Men.”"
+  },
+  {
+    t:"The Espionage and Sedition Acts allowed the government to:",
+    type:"mc",
+    choices:[
+      "Fine and jail people for anti-war activities or speech",
+      "Lower tariffs",
+      "Expand freedom of the seas",
+      "Grant suffrage to women"
+    ],
+    answer:"Fine and jail people for anti-war activities or speech",
+    exp:"Penalties up to $10,000 and 20 years; targeted dissenters."
+  },
+  {
+    t:"True or False: The Great Migration saw large numbers of African Americans move North for jobs and to escape Jim Crow.",
+    type:"tf",
+    answer:"True",
+    exp:"WWI accelerated migration to Northern cities."
+  },
+  {
+    t:"Women’s contributions during WWI helped build support for:",
+    type:"mc",
+    choices:[
+      "The 19th Amendment",
+      "Prohibition repeal",
+      "The draft for women",
+      "Ending public education"
+    ],
+    answer:"The 19th Amendment",
+    exp:"Wilson cited women’s war work; amendment ratified in 1919–1920 process."
+  },
+  {
+    t:"True or False: The 1918 flu epidemic killed around 500,000 Americans.",
+    type:"tf",
+    answer:"True",
+    exp:"It also killed tens of millions worldwide."
+  },
+
+  // Peace and Aftermath
+  {
+    t:"Wilson’s Fourteen Points included all EXCEPT:",
+    type:"mc",
+    choices:[
+      "War-guilt clause against Germany",
+      "Freedom of the seas",
+      "Arms reductions",
+      "Creation of a League of Nations"
+    ],
+    answer:"War-guilt clause against Germany",
+    exp:"War-guilt was in the Treaty of Versailles, not Wilson’s points."
+  },
+  {
+    t:"True or False: At the Paris Peace Conference, Wilson prioritized creating the League of Nations.",
+    type:"tf",
+    answer:"True",
+    exp:"He sacrificed many points to secure the League."
+  },
+  {
+    t:"The Treaty of Versailles required Germany to:",
+    type:"mc",
+    choices:[
+      "Pay $33 billion in reparations and accept the war-guilt clause",
+      "Gain colonies in Africa",
+      "Retain Alsace-Lorraine",
+      "Expand its army"
+    ],
+    answer:"Pay $33 billion in reparations and accept the war-guilt clause",
+    exp:"Also barred from maintaining a large army and returned Alsace-Lorraine to France."
+  },
+  {
+    t:"True or False: Russia gained territory at Versailles as a reward for high casualties.",
+    type:"tf",
+    answer:"False",
+    exp:"Russia lost more territory than Germany; also excluded from the conference."
+  },
+  {
+    t:"US Senate opposition led by Henry Cabot Lodge focused on:",
+    type:"mc",
+    choices:[
+      "Preserving Congress’s power to declare war",
+      "Adding more reparations",
+      "Strengthening German colonies",
+      "Inviting Central Powers to the League"
+    ],
+    answer:"Preserving Congress’s power to declare war",
+    exp:"Lodge wanted reservations ensuring Congressional authority."
+  },
+  {
+    t:"True or False: The US never joined the League of Nations.",
+    type:"tf",
+    answer:"True",
+    exp:"The Senate rejected the treaty; US signed a separate peace in 1921."
+  },
+  {
+    t:"Which is a major criticism of the Treaty of Versailles noted in the text?",
+    type:"mc",
+    choices:[
+      "It humiliated Germany and sowed seeds for future conflict",
+      "It fully satisfied all ethnic claims",
+      "It immediately stabilized the global economy",
+      "It disbanded all militaries worldwide"
+    ],
+    answer:"It humiliated Germany and sowed seeds for future conflict",
+    exp:"The treaty’s harsh terms contributed to future instability."
+  },
+  {
+    t:"Jeannette Rankin is significant because she:",
+    type:"mc",
+    choices:[
+      "Was the first woman elected to Congress",
+      "Led the AEF",
+      "Negotiated the armistice",
+      "Headed the CPI"
+    ],
+    answer:"Was the first woman elected to Congress",
+    exp:"She was from Montana."
+  },
+  {
+    t:"True or False: Eddie Rickenbacker was known as the “American ace of aces.”",
+    type:"tf",
+    answer:"True",
+    exp:"He downed 26 enemy aircraft in 134 air battles."
+  },
+  {
+    t:"The nickname 'doughboys' for US infantrymen was partly attributed to:",
+    type:"mc",
+    choices:[
+      "White belts cleaned with pipe clay ('dough')",
+      "Their rations",
+      "Their trench-digging skill",
+      "British slang for recruits"
+    ],
+    answer:"White belts cleaned with pipe clay ('dough')",
+    exp:"A commonly cited origin mentioned in the notes."
+  },
+  {
+    t:"True or False: Observation balloons and chemical weapons, including mustard gas, were used during WWI.",
+    type:"tf",
+    answer:"True",
+    exp:"Both were part of the war’s technology; gas use is now a war crime."
+  },
+  {
+    t:"The North Sea mine barrage helped:",
+    type:"mc",
+    choices:[
+      "Bottle up German U-boats",
+      "Supply Russia via the Baltic",
+      "Blockade US ports",
+      "Protect Ottoman shipping"
+    ],
+    answer:"Bottle up German U-boats",
+    exp:"A 230-mile barrier from Scotland to Norway."
+  },
+  {
+    t:"True or False: The term 'Dreadnought' refers to a new class of heavily armed, fast battleships.",
+    type:"tf",
+    answer:"True",
+    exp:"They used revolutionary steam turbine propulsion."
+  },
+  {
+    t:"The National War Labor Board promoted which of the following?",
+    type:"mc",
+    choices:[
+      "8-hour workday and safety inspections",
+      "Child labor expansion",
+      "Lower union membership",
+      "Wage cuts across industries"
+    ],
+    answer:"8-hour workday and safety inspections",
+    exp:"It also enforced a ban on child labor."
+  },
+  {
+    t:"True or False: The Food Administration advocated 'meatless' and 'wheatless' days and encouraged victory gardens.",
+    type:"tf",
+    answer:"True",
+    exp:"Food shipments to Allies tripled; farm income rose."
+  },
+  {
+    t:"Which slogan captured Wilson’s 1916 re-election campaign?",
+    type:"mc",
+    choices:[
+      "He Kept Us Out of War",
+      "Remember the Maine",
+      "Peace in Our Time",
+      "Tippecanoe and Tyler Too"
+    ],
+    answer:"He Kept Us Out of War",
+    exp:"Wilson narrowly won re-election on that slogan."
+  },
+  {
+    t:"True or False: The Flying Circus was a German air squadron led by Manfred von Richthofen, the Red Baron.",
+    type:"tf",
+    answer:"True",
+    exp:"Noted in the lesson overview."
+  },
+  {
+    t:"Which battle’s outcome helped secure Allied control of Sedan and cut German supply lines?",
+    type:"mc",
+    choices:[
+      "Battle of the Argonne Forest",
+      "Battle of Tannenberg",
+      "Battle of Jutland",
+      "Battle of Ypres (First)"
+    ],
+    answer:"Battle of the Argonne Forest",
+    exp:"The offensive contributed to final Allied advances."
+  },
+  {
+    t:"True or False: The US emerged from WWI as a stronger world power with strengthened government and accelerated social change.",
+    type:"tf",
+    answer:"True",
+    exp:"The war revealed US industrial and military potential."
+  },
+];
+
+// Config
+const TOTAL_QUESTIONS = Math.min(60, QUESTION_BANK.length); // use up to 60 based on available pool
+let mode = "study"; // "study" or "test"
+let sessionQuestions = [];
+let startTime = null;
+let answered = new Map(); // qid -> { selected, correct }
+let hasSubmitted = false;
+
+function initSession(){
+  // build a fresh shuffled set
+  const bankCopy = QUESTION_BANK.map((q, idx)=>({...q, id: idx}));
+  shuffle(bankCopy);
+  sessionQuestions = bankCopy.slice(0, TOTAL_QUESTIONS).map(q=>{
+    let opts = q.type==="tf" ? (["True","False"]) : [...q.choices];
+    shuffle(opts);
+    return {...q, choices: opts};
+  });
+  answered.clear();
+  hasSubmitted = false;
+  startTime = Date.now();
+  render();
+  scrollTo(0,0);
+}
+
+function setMode(newMode){
+  mode = newMode;
+  document.getElementById("tabStudy").classList.toggle("active", mode==="study");
+  document.getElementById("tabTest").classList.toggle("active", mode==="test");
+  document.getElementById("btnSubmitTest").classList.toggle("hidden", mode!=="test");
+  document.getElementById("summary").classList.add("hidden");
+  render();
+  scrollTo(0,0);
+}
+
+function updateProgress(){
+  const total = sessionQuestions.length;
+  let done = 0;
+  for(const q of sessionQuestions){
+    if(answered.has(q.id)) done++;
+  }
+  document.getElementById("progressText").textContent = `${done}/${total}`;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("questionCount").textContent = `${total} questions`;
+}
+
+function render(){
+  const container = document.getElementById("questions");
+  container.innerHTML = "";
+  sessionQuestions.forEach((q, idx)=>{
+    const card = document.createElement("div");
+    card.className = "qcard";
+    card.setAttribute("data-qid", q.id);
+
+    const head = document.createElement("div");
+    head.className = "qhead";
+
+    const left = document.createElement("div");
+    left.innerHTML = `<div class="qnum">Q${idx+1}</div><div class="qtext">${q.t}</div>`;
+    head.appendChild(left);
+
+    card.appendChild(head);
+
+    const answers = document.createElement("div");
+    answers.className = "answers";
+
+    const options = q.type==="tf" ? ["True","False"] : q.choices;
+    options.forEach(opt=>{
+      const row = document.createElement("label");
+      row.className = "opt";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "q_"+q.id;
+      input.value = opt;
+
+      const lab = document.createElement("div");
+      lab.className = "label";
+      lab.textContent = opt;
+
+      row.appendChild(input);
+      row.appendChild(lab);
+      answers.appendChild(row);
+
+      row.addEventListener("click", (e)=>{
+        // Immediate handling
+        selectAnswer(q, opt, row);
+      });
+
+      // Pre-mark if previously answered
+      const prev = answered.get(q.id);
+      if(prev && prev.selected === opt){
+        input.checked = true;
+        if(mode==="study"){
+          row.classList.add(prev.correct ? "correct" : "incorrect");
+        }
+      }
+    });
+
+    card.appendChild(answers);
+
+    // explanation (in Study Mode or after submit)
+    const explain = document.createElement("div");
+    explain.className = "explain" + ((mode==="study" || hasSubmitted) ? "" : " hidden");
+    explain.textContent = explanationText(q);
+    card.appendChild(explain);
+
+    // In Test Mode before submit, hide correctness colors:
+    if(mode==="test" && !hasSubmitted){
+      // remove visual correct/incorrect if any set
+      [...answers.querySelectorAll(".opt")].forEach(el=>{
+        el.classList.remove("correct","incorrect");
+      });
+    }
+
+    container.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function explanationText(q){
+  const ans = q.answer;
+  const kind = q.type==="tf" ? "True/False" : "Multiple-Choice";
+  return `Answer: ${ans} • ${q.exp} • Source: ${SOURCE}`;
+}
+
+function selectAnswer(q, opt, rowEl){
+  // set answer
+  const correct = String(opt) === String(q.answer);
+  answered.set(q.id, {selected: opt, correct});
+
+  if(mode==="study"){
+    // show immediate feedback
+    const parent = rowEl.parentElement;
+    // reset all
+    parent.querySelectorAll(".opt").forEach(el=>el.classList.remove("correct","incorrect"));
+    // mark selected
+    rowEl.classList.add(correct ? "correct" : "incorrect");
+    // show explanation
+    const card = rowEl.closest(".qcard");
+    card.querySelector(".explain")?.classList.remove("hidden");
+  } else {
+    // In Test Mode, do not show correctness until submit
+    // Keep radio checked state; visuals hidden
+    const parent = rowEl.parentElement;
+    parent.querySelectorAll("input[type=radio]").forEach(inp=>{
+      inp.checked = (inp.value === opt);
+    });
+  }
+  updateProgress();
+}
+
+function computeScore(){
+  let correct=0;
+  const total = sessionQuestions.length;
+  const missed = [];
+  for(const q of sessionQuestions){
+    const a = answered.get(q.id);
+    if(a && a.correct) correct++;
+    else missed.push(q);
+  }
+  return {correct, total, missed};
+}
+
+function showSummary(){
+  const {correct, total, missed} = computeScore();
+  const pct = total ? Math.round((correct/total)*100) : 0;
+  const summary = document.getElementById("summary");
+  const scoreLine = document.getElementById("scoreLine");
+  scoreLine.textContent = `Score: ${correct}/${total} (${pct}%)`;
+
+  const timeMs = Date.now() - (startTime || Date.now());
+  const secs = Math.max(0, Math.round(timeMs/1000));
+  const mm = Math.floor(secs/60), ss = secs%60;
+  document.getElementById("timeTaken").textContent = `Time: ${mm>0 ? mm+"m " : ""}${ss}s`;
+
+  const missedList = document.getElementById("missedList");
+  missedList.innerHTML = "";
+  if(missed.length===0){
+    const good = document.createElement("div");
+    good.textContent = "Excellent! You did not miss any questions.";
+    missedList.appendChild(good);
+  } else {
+    missed.forEach((q, i)=>{
+      const block = document.createElement("div");
+      block.className = "qcard";
+      block.innerHTML = `
+        <div class="qhead">
+          <div>
+            <div class="qnum">Missed ${i+1}</div>
+            <div class="qtext">${q.t}</div>
+          </div>
+        </div>
+        <div class="explain">Correct Answer: ${q.answer}. ${q.exp}</div>
+      `;
+      missedList.appendChild(block);
+    });
+  }
+  summary.classList.remove("hidden");
+  summary.focus();
+
+  // Reveal correct/incorrect styling on all questions
+  document.querySelectorAll(".qcard").forEach(card=>{
+    const qid = Number(card.getAttribute("data-qid"));
+    const q = sessionQuestions.find(x=>x.id===qid);
+    const a = answered.get(qid);
+    const explain = card.querySelector(".explain");
+    if(explain) explain.classList.remove("hidden");
+    const options = card.querySelectorAll(".opt");
+    options.forEach(opt=>{
+      const label = opt.querySelector(".label")?.textContent.trim();
+      opt.classList.remove("correct","incorrect");
+      if(a && a.selected === label){
+        opt.classList.add(a.correct ? "correct" : "incorrect");
+      }
+    });
+  });
+}
+
+function submitTest(){
+  hasSubmitted = true;
+  showSummary();
+}
+
+function reshuffle(){
+  initSession();
+}
+
+function downloadSelf(){
+  // Create a downloadable blob of this very document
+  const doctype = '<!DOCTYPE html>\n';
+  const html = document.documentElement.outerHTML;
+  const blob = new Blob([doctype + html], {type: "text/html;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "wwi_practice_test.html";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 0);
+}
+
+document.getElementById("btnStudy").addEventListener("click", ()=>setMode("study"));
+document.getElementById("btnTest").addEventListener("click", ()=>setMode("test"));
+document.getElementById("tabStudy").addEventListener("click", ()=>setMode("study"));
+document.getElementById("tabTest").addEventListener("click", ()=>setMode("test"));
+document.getElementById("btnReshuffle").addEventListener("click", reshuffle);
+document.getElementById("btnDownload").addEventListener("click", downloadSelf);
+document.getElementById("btnSubmitTest").addEventListener("click", submitTest);
+document.getElementById("btnBackToTop").addEventListener("click", ()=>window.scrollTo({top:0, behavior:"smooth"}));
+
+window.addEventListener("load", ()=>{
+  initSession();
+  setMode("study");
+});
+</script>
+</body>
+</html>
