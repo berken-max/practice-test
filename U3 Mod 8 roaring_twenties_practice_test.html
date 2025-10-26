@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Roaring Twenties Practice Test (Unit 3: Modules 8–10)</title>
+<style>
+  :root {
+    --bg: #0f172a;          /* slate-900 */
+    --card: #111827;        /* gray-900 */
+    --muted: #94a3b8;       /* slate-400 */
+    --text: #e5e7eb;        /* gray-200 */
+    --accent: #22c55e;      /* green-500 */
+    --accent-2: #60a5fa;    /* blue-400 */
+    --warn: #f97316;        /* orange-500 */
+    --error: #ef4444;       /* red-500 */
+    --correct: #16a34a;     /* green-600 */
+    --incorrect: #b91c1c;   /* red-700 */
+    --chip: #1f2937;        /* gray-800 */
+    --btn: #1e293b;         /* slate-800 */
+    --btn2: #0ea5e9;        /* sky-500 */
+    --radius: 14px;
+    --radius-sm: 12px;
+    --shadow: 0 10px 28px rgba(0,0,0,0.35);
+  }
+  html, body {
+    background: linear-gradient(180deg, #0b1220 0%, #0f172a 60%, #0b1220 100%);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    margin: 0;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: env(safe-area-inset-top) 16px calc(20px + env(safe-area-inset-bottom));
+  }
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(15,23,42,0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(148,163,184,0.15);
+  }
+  header .title {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .badge {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white; padding: 6px 10px; font-weight: 700; border-radius: 999px; font-size: 12px;
+  }
+  .subtitle { color: var(--muted); font-size: 13px; }
+  .controls {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+  }
+  button, select {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background: var(--btn);
+    color: var(--text);
+    border: 1px solid rgba(148,163,184,0.2);
+    padding: 10px 12px; border-radius: 12px; font-weight: 600;
+    box-shadow: var(--shadow);
+  }
+  button.primary {
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    border: none;
+  }
+  button:active { transform: translateY(1px); }
+  .card {
+    background: rgba(17,24,39,0.9);
+    border: 1px solid rgba(148,163,184,0.12);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px;
+  }
+  .info {
+    margin: 14px 0; display: grid; gap: 8px;
+  }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: var(--chip);
+    border: 1px solid rgba(148,163,184,0.15);
+    border-radius: 999px; padding: 6px 10px; color: var(--muted); font-size: 12px;
+  }
+  .progress {
+    width: 100%; height: 10px; border-radius: 999px;
+    background: rgba(148,163,184,0.15); overflow: hidden;
+  }
+  .progress > div {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #22c55e, #0ea5e9);
+  }
+  .q {
+    margin: 14px 0; padding: 14px; border-radius: var(--radius-sm);
+    border: 1px solid rgba(148,163,184,0.12);
+    background: rgba(2,6,23,0.6);
+  }
+  .q-num { font-weight: 800; color: #93c5fd; margin-bottom: 8px; }
+  .prompt { font-weight: 600; line-height: 1.45; }
+  .choices { margin-top: 10px; display: grid; gap: 8px; }
+  .choice {
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(180deg, #0b1220, #0f172a);
+    border: 1px solid rgba(148,163,184,0.18);
+    padding: 10px 12px; border-radius: 12px;
+  }
+  .choice input { transform: scale(1.2); }
+  .explain { margin-top: 8px; font-size: 13px; color: var(--muted); display: none; }
+  .choice.correct { border-color: rgba(34,197,94,0.9); background: rgba(22,163,74,0.12); }
+  .choice.incorrect { border-color: rgba(239,68,68,0.8); background: rgba(185,28,28,0.12); }
+  .q.missed { outline: 2px dashed var(--error); outline-offset: 4px; }
+  .footer-actions {
+    position: sticky;
+    bottom: 0; left: 0; right: 0;
+    padding: 10px 10px calc(12px + env(safe-area-inset-bottom));
+    background: rgba(15,23,42,0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(148,163,184,0.15);
+    display: grid; gap: 8px;
+  }
+  .summary { margin: 16px 0; padding: 14px; border-radius: var(--radius); border: 1px solid rgba(148,163,184,0.2); background: rgba(2,6,23,0.6); }
+  a.inline { color: #93c5fd; text-decoration: underline; text-underline-offset: 3px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title">
+        <div class="badge">Unit 3 • Module 8–10</div>
+        <div>
+          <div style="font-size:18px;font-weight:800;">The Roaring Twenties Practice Test</div>
+          <div class="subtitle">Study Mode (instant feedback) or Test Mode (score + review). Based on your class notes.</div>
+        </div>
+      </div>
+      <div class="controls">
+        <select id="mode">
+          <option value="study">Study Mode (instant feedback)</option>
+          <option value="test">Test Mode (score at end)</option>
+        </select>
+        <button id="restart" class="primary">Shuffle & Restart</button>
+        <button id="download">Download This Test</button>
+      </div>
+      <div class="info">
+        <div class="chips">
+          <div class="chip" id="progressChip">Progress: <span id="progressText">0/0</span></div>
+          <div class="chip">Shuffle: On</div>
+          <div class="chip">iPhone Optimized</div>
+        </div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div id="questions"></div>
+    <div class="footer-actions">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="submit" class="primary">Submit (Test Mode)</button>
+        <button id="reviewMissed" style="display:none;">Scroll To Missed</button>
+      </div>
+      <div id="summary" class="summary" style="display:none;"></div>
+    </div>
+  </main>
+<script>
+const QUESTIONS = [{"type": "mc", "prompt": "Which U.S. President won a landslide victory in 1920 promising a return to “normalcy”?", "choices": ["Warren G. Harding", "Woodrow Wilson", "Calvin Coolidge", "Herbert Hoover"], "answer": 0, "explain": "Harding campaigned on “normalcy,” appealing to a war-weary electorate."}, {"type": "mc", "prompt": "The Washington Naval Conference (1921) aimed primarily to:", "choices": ["Expand U.S. battleship fleets", "Limit naval armaments among major powers", "Form a military alliance with Russia", "End World War I reparations"], "answer": 1, "explain": "Secretary of State Charles Evans Hughes urged a halt to building warships and scrapping some existing vessels."}, {"type": "tf", "prompt": "Russia participated fully in the Washington Naval Conference.", "answer": false, "explain": "Russia was excluded due to its Communist government."}, {"type": "mc", "prompt": "The Kellogg–Briand Pact (1928) is best described as:", "choices": ["An enforceable treaty that disarmed all nations", "A pact renouncing war without enforcement mechanisms", "A trade agreement lowering tariffs", "An alliance obligating military support"], "answer": 1, "explain": "It renounced war as national policy, but lacked enforcement."}, {"type": "mc", "prompt": "What was a key effect of the Fordney–McCumber Tariff (1922)?", "choices": ["It reduced tariffs to spur European recovery", "It raised tariffs to a record level, hurting Allied debt repayment via exports", "It abolished tariffs on chemicals and metals only", "It allowed Germany to repay reparations more easily"], "answer": 1, "explain": "High tariffs made it hard for Britain and France to sell goods in the U.S. to repay debts."}, {"type": "mc", "prompt": "The Dawes Plan involved:", "choices": ["U.S. loans to Germany to facilitate reparations payments", "Forgiveness of all European debts", "Immediate U.S. military occupation of the Ruhr", "Abolition of German reparations"], "answer": 0, "explain": "American investors loaned Germany funds; Allies then repaid the U.S., effectively recycling U.S. money."}, {"type": "tf", "prompt": "President Harding generally favored a limited government role in business and social reform.", "answer": true, "explain": "He cut budgets and taxes to encourage business expansion."}, {"type": "mc", "prompt": "Which description matches the ‘Ohio Gang’?", "choices": ["Progressive reformers in Harding’s cabinet", "Harding’s poker-playing cronies linked to graft and scandal", "A group of isolationist senators", "A labor union leadership circle"], "answer": 1, "explain": "Several of Harding’s close associates were implicated in corruption."}, {"type": "mc", "prompt": "Albert B. Fall was convicted for his role in which scandal?", "choices": ["Teapot Dome", "Credit Mobilier", "Watergate", "Whiskey Ring"], "answer": 0, "explain": "He secretly leased oil reserves to private companies for personal gain."}, {"type": "tf", "prompt": "Albert B. Fall became the first American convicted of a felony while holding a Cabinet post.", "answer": true, "explain": "He was convicted of bribery in the Teapot Dome scandal."}, {"type": "mc", "prompt": "Which innovation most enabled Ford’s Model T success in the 1920s?", "choices": ["Hydrogen fuel", "Assembly-line mass production", "Electric self-driving", "Aluminum body panels"], "answer": 1, "explain": "Assembly lines drastically lowered costs and boosted output."}, {"type": "tf", "prompt": "Productivity rose by about 45% during the 1920s.", "answer": true, "explain": "Your notes indicate a 45% rise in productivity."}, {"type": "mc", "prompt": "Which is NOT an impact of the automobile cited in the notes?", "choices": ["Urban sprawl", "Growth of motels and service stations", "Route 66 prompting settlements", "Immediate ban on air travel"], "answer": 3, "explain": "Cars expanded travel and services; they did not ban air travel."}, {"type": "mc", "prompt": "Which 1927 infrastructure first is correctly matched?", "choices": ["Hoover Dam — first underwater tunnel", "Holland Tunnel — first underwater motor-vehicle tunnel", "Brooklyn Tunnel — first transatlantic tunnel", "Panama Tunnel — first canal tunnel"], "answer": 1, "explain": "The Holland Tunnel connected NYC and Jersey City."}, {"type": "mc", "prompt": "Early commercial aviation in the 1920s grew from:", "choices": ["Military airlift commands", "Mail-carrying services for the U.S. Post Office", "Helicopter taxi lines", "Commercial supersonic jets"], "answer": 1, "explain": "Airmail service was the seed for passenger/cargo airlines."}, {"type": "tf", "prompt": "Americans owned about 40% of the world’s wealth in the 1920s, and average income rose significantly.", "answer": true, "explain": "Average annual income rose from about $522 to $705 (~35%)."}, {"type": "mc", "prompt": "Which consumer trend is correctly matched to the 1920s?", "choices": ["Decline of advertising psychology", "Rise of consumerism and national brand culture", "End of installment plans", "Universal rural electrification completed"], "answer": 1, "explain": "Advertisers targeted desires; brand names and consumerism surged."}, {"type": "mc", "prompt": "Which pair is correctly matched?", "choices": ["Clarence Birdseye — quick-frozen foods", "Clarence Darrow — self-service grocery stores", "Charles Dawes — alternating electrical current", "A. Mitchell Palmer — Model T assembly line"], "answer": 0, "explain": "Birdseye pioneered quick-freezing; Saunders opened self‑service stores."}, {"type": "tf", "prompt": "The 1920s saw chain stores expand and mail-order catalogs spread.", "answer": true, "explain": "Your notes highlight chain store growth and mail-order circulation."}, {"type": "mc", "prompt": "The installment plan in the 1920s made it possible to:", "choices": ["Buy goods over time with small down payments", "Avoid paying any interest or principal", "Eliminate the need for banks", "Ban speculation in the stock market"], "answer": 0, "explain": "Installment credit spread purchases over time."}, {"type": "mc", "prompt": "What sparked the 1919 Red Scare in the U.S.?", "choices": ["The Bolshevik Revolution and mailed bombs", "The Kellogg–Briand Pact", "The Teapot Dome scandal", "The Dawes Plan"], "answer": 0, "explain": "Fear rose after the Russian Revolution and bomb plots."}, {"type": "tf", "prompt": "Attorney General A. Mitchell Palmer’s raids often violated civil liberties.", "answer": true, "explain": "Agents trampled rights and deported some without proper trials."}, {"type": "mc", "prompt": "Nicola Sacco and Bartolomeo Vanzetti were:", "choices": ["Oil executives in the Teapot Dome case", "Italian immigrant anarchists controversially executed", "Senators opposing the Washington Conference", "Leaders of the Boston Police strike"], "answer": 1, "explain": "They were convicted amid nativist bias; executed in 1927."}, {"type": "tf", "prompt": "The KKK of the 1920s targeted Blacks, Jews, Catholics, and radicals under the banner of '100% Americanism.'", "answer": true, "explain": "Membership reached into the millions by 1924."}, {"type": "mc", "prompt": "The Emergency Quota Act primarily sought to limit immigration from:", "choices": ["Northern Europe", "Southern and Eastern Europe", "The Western Hemisphere", "Australia and New Zealand"], "answer": 1, "explain": "It sharply curtailed 'new immigrants'; the Western Hemisphere was exempt."}, {"type": "mc", "prompt": "The Indian Citizenship Act of 1924:", "choices": ["Granted U.S. citizenship to many Native Americans but not universal voting rights then", "Ended tribal sovereignty", "Established reservations", "Gave all Native Americans the vote immediately"], "answer": 0, "explain": "Citizenship expanded, but voting rights varied until later."}, {"type": "mc", "prompt": "Which outcome followed the 1919 Boston Police Strike?", "choices": ["Immediate raises and union recognition", "Governor Coolidge called in the National Guard; strikers replaced", "Federal mediation restored all strikers", "A Supreme Court ruling ended all public-sector unions"], "answer": 1, "explain": "Coolidge’s response boosted his national profile."}, {"type": "tf", "prompt": "The 1919 steel strike ended without union recognition, though an 8‑hour day was granted.", "answer": true, "explain": "Workers did not secure a union, but work hours improved."}, {"type": "mc", "prompt": "John L. Lewis is associated with:", "choices": ["U.S. Steel management", "United Mine Workers and a successful wage increase", "The Palmer Raids", "The Emergency Quota Act"], "answer": 1, "explain": "He led coal miners to a 27% wage increase."}, {"type": "mc", "prompt": "The Volstead Act created a Prohibition Bureau that was:", "choices": ["Well funded and effective", "Underfunded and undermanned", "Military-run and strict", "Focused on beer only"], "answer": 1, "explain": "With ~1,500 agents for vast borders, enforcement lagged."}, {"type": "tf", "prompt": "Speakeasies were illicit bars requiring passwords or membership cards.", "answer": true, "explain": "They proliferated during Prohibition."}, {"type": "mc", "prompt": "Al Capone became notorious for:", "choices": ["Political speeches against Prohibition", "A bootlegging empire in Chicago", "Leading the Boston Police strike", "Flying the first solo transatlantic flight"], "answer": 1, "explain": "He allegedly netted tens of millions annually from bootlegging."}, {"type": "tf", "prompt": "The 21st Amendment repealed the 18th Amendment.", "answer": true, "explain": "Prohibition ended with the 21st in 1933."}, {"type": "mc", "prompt": "Fundamentalists in the 1920s generally:", "choices": ["Accepted Darwinian evolution", "Insisted on a literal interpretation of the Bible", "Rejected all religion", "Embraced modernist art and literature"], "answer": 1, "explain": "They emphasized biblical literalism over secular science."}, {"type": "mc", "prompt": "In the Scopes Trial (1925), Clarence Darrow and William Jennings Bryan were:", "choices": ["Both prosecutors", "Defense and prosecution figures, respectively", "Both defense attorneys", "Judge and juror"], "answer": 1, "explain": "Darrow defended Scopes; Bryan assisted the prosecution."}, {"type": "tf", "prompt": "John T. Scopes was found not guilty of teaching evolution.", "answer": false, "explain": "He was found guilty and fined $100."}, {"type": "mc", "prompt": "Which best characterizes the ‘flapper’?", "choices": ["A rural prohibitionist", "A young woman embracing new fashions and freedoms", "A union organizer in steel mills", "A fundamentalist preacher"], "answer": 1, "explain": "Flappers symbolized youthful rebellion and modern styles."}, {"type": "tf", "prompt": "A ‘double standard’ granted greater sexual freedom to men than to women in the 1920s.", "answer": true, "explain": "Social expectations were uneven."}, {"type": "mc", "prompt": "Which field was common for college-educated women in the 1920s?", "choices": ["Teaching and nursing", "Combat arms", "Cabinet posts", "Federal judgeships"], "answer": 0, "explain": "Many entered teaching, nursing, and clerical roles."}, {"type": "mc", "prompt": "Margaret Sanger is best associated with:", "choices": ["Anti-lynching legislation", "Self-service groceries", "Birth-control advocacy and clinics", "Aviation records"], "answer": 2, "explain": "She opened the first U.S. birth-control clinic and led advocacy."}, {"type": "tf", "prompt": "High school enrollment quadrupled from 1914 to 1926.", "answer": true, "explain": "Enrollment rose from ~1 million to ~4 million."}, {"type": "mc", "prompt": "Radio in the 1920s primarily enabled:", "choices": ["Local isolation", "A shared national experience of live news and events", "Only military communication", "Decline in sports interest"], "answer": 1, "explain": "Americans heard presidents and the World Series live."}, {"type": "mc", "prompt": "Charles Lindbergh is famed for:", "choices": ["The first nonstop solo transatlantic flight", "Inventing the jet engine", "First woman to cross the Atlantic", "Writing The Great Gatsby"], "answer": 0, "explain": "He flew the Spirit of St. Louis in 1927."}, {"type": "mc", "prompt": "Which film firsts are correctly paired?", "choices": ["The Jazz Singer — first major movie with sound", "Steamboat Willie — first color feature", "The Jazz Singer — first animated film", "Steamboat Willie — first silent drama"], "answer": 0, "explain": "The Jazz Singer (1927) was the first major 'talkie'; Steamboat Willie (1928) was first animated with sound."}, {"type": "mc", "prompt": "Which writer coined the term 'Jazz Age' and critiqued its excesses?", "choices": ["Sinclair Lewis", "F. Scott Fitzgerald", "Ernest Hemingway", "Dorothy Parker"], "answer": 1, "explain": "Fitzgerald used 'Jazz Age' and wrote The Great Gatsby."}, {"type": "tf", "prompt": "Sinclair Lewis used Babbitt to satirize middle-class conformity and won a Nobel Prize in literature.", "answer": true, "explain": "He was the first American to win the Nobel Prize in Literature."}, {"type": "mc", "prompt": "The Harlem Renaissance was primarily:", "choices": ["An economic boom in the Midwest", "A cultural flowering of African American arts and letters", "A new political party", "A labor strike in New York"], "answer": 1, "explain": "It celebrated Black culture, art, and literature in the 1920s."}, {"type": "mc", "prompt": "Which figure is correctly matched to their contribution?", "choices": ["Langston Hughes — poetry of working-class Black life", "Marcus Garvey — anti-immigrant quotas", "W.E.B. Du Bois — founded the UNIA", "Louis Armstrong — inventor of the saxophone"], "answer": 0, "explain": "Hughes wrote accessible, powerful poetry; Garvey founded the UNIA."}, {"type": "tf", "prompt": "Marcus Garvey promoted Black nationalism and encouraged building a separate Black society.", "answer": true, "explain": "He led the UNIA, advocating pride, enterprise, and return-to-Africa themes."}, {"type": "mc", "prompt": "Which jazz leaders are correctly paired with venues or roles?", "choices": ["Duke Ellington — led an orchestra at the Cotton Club", "Cab Calloway — invented recorded sound", "Bessie Smith — sportswriter", "Joe 'King' Oliver — Supreme Court justice"], "answer": 0, "explain": "Ellington’s orchestra was a Cotton Club fixture; Calloway led bands and popularized scat singing."}, {"type": "mc", "prompt": "Which organization pushed anti-lynching legislation and civil rights in the 1920s?", "choices": ["UNIA", "NAACP", "WPA", "FDIC"], "answer": 1, "explain": "The NAACP worked for anti-lynching laws and broader civil rights."}, {"type": "tf", "prompt": "Coolidge and Hoover generally favored high tariffs, low taxes, and minimal government involvement in business.", "answer": true, "explain": "They supported policies to keep business profits up and minimize interference."}, {"type": "mc", "prompt": "Urbanization in 1920 marked:", "choices": ["A majority of Americans living in rural areas", "A majority of Americans living in urban areas", "No change from 1900", "A decline in city populations"], "answer": 1, "explain": "By 1920, 51.2% lived in urban settings."}, {"type": "mc", "prompt": "‘Bootleggers’ were known for:", "choices": ["Smuggling liquor during Prohibition", "Selling illicit stocks", "Stealing automobiles", "Counterfeiting currency"], "answer": 0, "explain": "They smuggled alcohol from places like Canada and the Caribbean."}, {"type": "tf", "prompt": "The 'Lost Generation' referred to writers disillusioned with postwar society and the glorification of war.", "answer": true, "explain": "Authors like Hemingway criticized romantic views of war."}, {"type": "mc", "prompt": "Which sports hero is correctly matched?", "choices": ["Babe Ruth — baseball home run legend", "Gertrude Ederle — tennis champion", "Lou Gehrig — boxer", "Red Grange — baseball pitcher"], "answer": 0, "explain": "Ruth was the Yankees’ slugging icon; Ederle swam the English Channel; Grange was a football star."}, {"type": "mc", "prompt": "A major challenge for farmers in the 1920s was:", "choices": ["Underproduction", "Overproduction leading to lower prices", "Government price supports", "Complete electrification of rural farms"], "answer": 1, "explain": "New machinery created surpluses that drove down prices."}, {"type": "tf", "prompt": "Labor unions struggled in the 1920s due to immigrant language barriers, employer hostility, and exclusion of African Americans.", "answer": true, "explain": "Membership declined from over 5 million to about 3.5 million."}, {"type": "mc", "prompt": "Which magazine(s) began in the 1920s?", "choices": ["Reader’s Digest and Time", "Forbes and National Geographic", "Life (1936) and People", "The New Yorker (1925) and Wired"], "answer": 0, "explain": "Reader’s Digest (1922) and Time (1923) expanded mass media."}, {"type": "mc", "prompt": "The 'Silent Parade' in NYC was led by:", "choices": ["Marcus Garvey", "W.E.B. Du Bois", "James Weldon Johnson alone", "Louis Armstrong"], "answer": 1, "explain": "Du Bois helped lead 10,000 African Americans to protest racial violence."}, {"type": "tf", "prompt": "By the late 1920s, the U.S. had roughly 80% of the world’s cars—about one for every five Americans.", "answer": true, "explain": "Auto ownership was a symbol of status and mobility."}];
+function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(crypto.getRandomValues(new Uint32Array(1))[0]/(2**32)*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
+const state={mode:'study',questions:[],responses:{},evaluated:false};
+const el={container:document.getElementById('questions'),mode:document.getElementById('mode'),restart:document.getElementById('restart'),submit:document.getElementById('submit'),reviewMissed:document.getElementById('reviewMissed'),summary:document.getElementById('summary'),progressText:document.getElementById('progressText'),progressBar:document.getElementById('progressBar'),download:document.getElementById('download'),progressChip:document.getElementById('progressChip')};
+function cloneQuestion(q){const c=JSON.parse(JSON.stringify(q));if(c.type==='mc'){const original=c.choices.map((t,idx)=>({t,idx}));shuffle(original);c.choices=original.map(o=>o.t);c.answer=original.findIndex(o=>o.idx===q.answer);}return c;}
+function buildQuestions(){const qs=QUESTIONS.map(cloneQuestion);shuffle(qs);state.questions=qs;state.responses={};state.evaluated=false;render();}
+function render(){el.container.innerHTML='';const frag=document.createDocumentFragment();state.questions.forEach((q,qi)=>{const card=document.createElement('div');card.className='q';card.dataset.index=qi;const num=document.createElement('div');num.className='q-num';num.textContent=`Question ${qi+1}`;card.appendChild(num);const prompt=document.createElement('div');prompt.className='prompt';prompt.textContent=q.prompt;card.appendChild(prompt);const choicesWrap=document.createElement('div');choicesWrap.className='choices';if(q.type==='mc'){q.choices.forEach((choiceText,ci)=>{const row=document.createElement('label');row.className='choice';const input=document.createElement('input');input.type='radio';input.name='q'+qi;input.value=ci;input.addEventListener('change',()=>{state.responses[qi]=ci;updateProgress();if(state.mode==='study'){showFeedback(qi);}});const span=document.createElement('span');span.textContent=choiceText;row.appendChild(input);row.appendChild(span);choicesWrap.appendChild(row);});}else if(q.type==='tf'){["True","False"].forEach((tfText,ci)=>{const row=document.createElement('label');row.className='choice';const input=document.createElement('input');input.type='radio';input.name='q'+qi;input.value=ci;input.addEventListener('change',()=>{state.responses[qi]=(tfText==="True");updateProgress();if(state.mode==='study'){showFeedback(qi);}});const span=document.createElement('span');span.textContent=tfText;row.appendChild(input);row.appendChild(span);choicesWrap.appendChild(row);});}const explain=document.createElement('div');explain.className='explain';explain.id='explain-'+qi;explain.textContent=q.explain||'';card.appendChild(choicesWrap);card.appendChild(explain);frag.appendChild(card);});el.container.appendChild(frag);updateProgress();el.summary.style.display='none';el.reviewMissed.style.display='none';el.submit.style.display=(state.mode==='test')?'inline-block':'none';}
+function showFeedback(qi){const q=state.questions[qi];const card=document.querySelector(`.q[data-index="${qi}"]`);const expl=document.getElementById('explain-'+qi);const choices=card.querySelectorAll('.choice');choices.forEach(c=>c.classList.remove('correct','incorrect'));card.classList.remove('missed');if(q.type==='mc'){const picked=state.responses[qi];if(picked===undefined)return;choices.forEach((c,idx)=>{if(idx===q.answer)c.classList.add('correct');});if(picked!==q.answer){choices[picked].classList.add('incorrect');}}else{const pickedBool=state.responses[qi];const correctBool=!!q.answer;const correctIdx=correctBool?0:1;const pickedIdx=pickedBool?0:1;choices[correctIdx].classList.add('correct');if(pickedIdx!==correctIdx){choices[pickedIdx].classList.add('incorrect');}}expl.style.display='block';}
+function updateProgress(){const total=state.questions.length;const answered=Object.keys(state.responses).length;el.progressText.textContent=`${answered}/${total}`;const pct=total?(answered/total)*100:0;el.progressBar.style.width=pct+'%';}
+function grade(){let correct=0;const missed=[];state.questions.forEach((q,qi)=>{const val=state.responses[qi];let isCorrect=false;if(q.type==='mc'){isCorrect=(val===q.answer);}else{isCorrect=(Boolean(val)===Boolean(q.answer));}if(isCorrect)correct++;else missed.push(qi);});return{correct,total:state.questions.length,missed};}
+function reviewEnd(missed){missed.forEach(qi=>{const q=state.questions[qi];const card=document.querySelector(`.q[data-index="${qi}"]`);const choices=card.querySelectorAll('.choice');const expl=document.getElementById('explain-'+qi);if(q.type==='mc'){choices.forEach((c,idx)=>{if(idx===q.answer)c.classList.add('correct');});const picked=state.responses[qi];if(picked!==undefined&&picked!==q.answer){choices[picked].classList.add('incorrect');}}else{const correctIdx=q.answer?0:1;choices[correctIdx].classList.add('correct');const pickedIdx=state.responses[qi]?0:1;if(pickedIdx!==correctIdx)choices[pickedIdx].classList.add('incorrect');}expl.style.display='block';card.classList.add('missed');});if(missed.length){el.reviewMissed.style.display='inline-block';el.reviewMissed.onclick=()=>{const first=document.querySelector('.q.missed');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});};}else{el.reviewMissed.style.display='none';}}
+function showSummary(result){const {correct,total,missed}=result;const pct=Math.round((correct/total)*100);const emoji=pct>=90?"🎉":pct>=75?"✅":pct>=60?"🟡":"📘";const missedStr=missed.length?`You missed ${missed.length}. Scroll highlights for correct answers.`:"Perfect!";el.summary.style.display='block';el.summary.innerHTML=`<div style="font-weight:800; font-size:18px; margin-bottom:6px;">${emoji} Score: ${correct}/${total} (${pct}%)</div><div style="color:var(--muted);">${missedStr}</div>`;}
+function setMode(newMode){state.mode=newMode;state.evaluated=false;render();}
+el.mode.addEventListener('change',(e)=>{setMode(e.target.value);});
+el.restart.addEventListener('click',()=>{buildQuestions();window.scrollTo({top:0,behavior:'smooth'});});
+el.submit.addEventListener('click',()=>{if(state.mode!=='test')return;const result=grade();showSummary(result);reviewEnd(result.missed);state.evaluated=true;});
+el.download.addEventListener('click',()=>{const serializer=new XMLSerializer();const htmlString=serializer.serializeToString(document);const blob=new Blob([htmlString],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');const stamp=new Date().toISOString().split('T')[0];a.href=url;a.download=`roaring_twenties_practice_test_${stamp}.html`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);});
+buildQuestions();
+</script>
+</body>
+</html>
