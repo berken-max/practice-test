@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WWII Module 11 (Lessons 4–7) Practice Test</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a33;
+      --card:#111f3d;
+      --muted:#9fb0d0;
+      --text:#eaf0ff;
+      --accent:#6ea8fe;
+      --accent2:#7ee787;
+      --danger:#ff6b6b;
+      --warning:#ffd166;
+      --border:rgba(255,255,255,.10);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 600px at 15% 10%, rgba(110,168,254,.25), transparent 55%),
+                  radial-gradient(900px 500px at 90% 20%, rgba(126,231,135,.18), transparent 55%),
+                  linear-gradient(180deg, var(--bg), #060a14 75%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 42px}
+    header{
+      margin:10px 0 14px;
+      padding:16px 16px 14px;
+      background: linear-gradient(180deg, rgba(17,31,61,.92), rgba(15,26,51,.80));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      position:sticky; top:10px; z-index:10;
+      backdrop-filter: blur(10px);
+    }
+    h1{font-size:18px;margin:0 0 6px;letter-spacing:.2px}
+    .sub{color:var(--muted);font-size:13px;line-height:1.35;margin:0}
+
+    .controls{
+      display:flex;flex-wrap:wrap;gap:10px;
+      margin-top:12px;
+      align-items:center;
+    }
+    .btn{
+      appearance:none;border:1px solid var(--border);
+      background: rgba(234,240,255,.06);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:600;
+      font-size:13px;
+      cursor:pointer;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(234,240,255,.10); border-color: rgba(110,168,254,.35)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{background: rgba(110,168,254,.18); border-color: rgba(110,168,254,.35)}
+    .btn.good{background: rgba(126,231,135,.14); border-color: rgba(126,231,135,.30)}
+    .btn.danger{background: rgba(255,107,107,.12); border-color: rgba(255,107,107,.28)}
+
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(234,240,255,.05);
+      font-size:13px;color:var(--muted);
+    }
+    .chip b{color:var(--text);font-weight:700}
+    .mode-toggle{display:flex;gap:8px;flex-wrap:wrap}
+    .toggle{
+      border:1px solid var(--border);
+      background: rgba(234,240,255,.05);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+      font-size:13px;
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .toggle.active{color:var(--text);border-color: rgba(110,168,254,.45);background: rgba(110,168,254,.14)}
+
+    .progress{
+      margin-top:12px;
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+    }
+    .bar{
+      flex:1;min-width:180px;height:10px;border-radius:999px;
+      background: rgba(234,240,255,.08);
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .bar > div{height:100%;width:0%;background: linear-gradient(90deg, var(--accent), rgba(126,231,135,.95));}
+    .mini{font-size:12px;color:var(--muted)}
+
+    main{margin-top:14px}
+
+    .card{
+      background: linear-gradient(180deg, rgba(17,31,61,.92), rgba(15,26,51,.88));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .qhead{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--border);
+      display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;
+    }
+    .qnum{
+      font-family:var(--mono);
+      font-size:12px;
+      color:var(--muted);
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(234,240,255,.05);
+      display:inline-block;
+    }
+    .qtext{font-size:16px;line-height:1.35;margin:10px 0 0}
+    .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .tag{
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      color:var(--muted);
+      background: rgba(234,240,255,.04);
+    }
+
+    .answers{padding:10px 12px 14px}
+    .opt{
+      width:100%;
+      text-align:left;
+      padding:12px 12px;
+      border-radius:var(--radius2);
+      border:1px solid var(--border);
+      background: rgba(234,240,255,.04);
+      color:var(--text);
+      margin:10px 0;
+      cursor:pointer;
+      font-size:14px;
+      line-height:1.25;
+      transition: background .2s ease, border-color .2s ease, transform .05s ease;
+    }
+    .opt:hover{background: rgba(234,240,255,.07); border-color: rgba(110,168,254,.35)}
+    .opt:active{transform: translateY(1px)}
+    .opt[disabled]{cursor:not-allowed;opacity:.95}
+
+    .opt.correct{border-color: rgba(126,231,135,.55); background: rgba(126,231,135,.12)}
+    .opt.wrong{border-color: rgba(255,107,107,.55); background: rgba(255,107,107,.10)}
+
+    .feedback{
+      padding:0 14px 14px;
+      display:none;
+    }
+    .feedback.show{display:block}
+    .fbbox{
+      border-radius:var(--radius2);
+      padding:12px 12px;
+      border:1px solid var(--border);
+      background: rgba(234,240,255,.05);
+    }
+    .fbbox.good{border-color: rgba(126,231,135,.45); background: rgba(126,231,135,.10)}
+    .fbbox.bad{border-color: rgba(255,107,107,.45); background: rgba(255,107,107,.09)}
+    .fbtitle{font-weight:800;margin:0 0 6px;font-size:13px}
+    .fbtext{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
+
+    .nav{
+      display:flex;gap:10px;flex-wrap:wrap;
+      padding:14px;
+      border-top:1px solid var(--border);
+      align-items:center;
+      justify-content:space-between;
+      background: rgba(0,0,0,.08);
+    }
+    .nav .left, .nav .right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+    .results{
+      margin-top:14px;
+      padding:14px;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background: rgba(234,240,255,.05);
+      box-shadow:var(--shadow);
+      display:none;
+    }
+    .results.show{display:block}
+    .score{font-size:18px;font-weight:900;margin:0 0 6px}
+    .summary{margin:0;color:var(--muted);font-size:13px;line-height:1.4}
+
+    details{
+      margin-top:10px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background: rgba(17,31,61,.55);
+      overflow:hidden;
+    }
+    summary{
+      cursor:pointer;
+      padding:12px 12px;
+      font-weight:800;
+      color:var(--text);
+      list-style:none;
+    }
+    summary::-webkit-details-marker{display:none}
+    .missed{padding:0 12px 12px;color:var(--muted);font-size:13px}
+    .missed .mitem{padding:10px 0;border-top:1px solid var(--border)}
+    .mitem b{color:var(--text)}
+    .mono{font-family:var(--mono)}
+
+    .footer{
+      margin-top:14px;
+      color:rgba(234,240,255,.55);
+      font-size:12px;
+      line-height:1.4;
+      padding:0 4px;
+    }
+    a{color:var(--accent)}
+
+    @media (min-width: 760px){
+      h1{font-size:20px}
+      .qtext{font-size:17px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>WWII Module 11 Practice Test — Lessons 4–7 (Home Front, Europe/N. Africa, Pacific, End of War)</h1>
+      <p class="sub">100 questions • Multiple Choice + True/False • Study Mode (instant feedback) + Test Mode (score at end) • Shuffles questions & answers</p>
+
+      <div class="controls">
+        <div class="mode-toggle" role="tablist" aria-label="Mode">
+          <button id="modeStudy" class="toggle active" type="button">Study Mode</button>
+          <button id="modeTest" class="toggle" type="button">Test Mode</button>
+        </div>
+
+        <button id="btnRestart" class="btn danger" type="button">Restart</button>
+        <button id="btnShuffle" class="btn" type="button">Reshuffle</button>
+        <button id="btnDownload" class="btn primary" type="button">Download HTML</button>
+
+        <span class="chip"><span>Question</span> <b id="pos">1</b><span>/</span><b id="total">100</b></span>
+        <span class="chip"><span>Answered</span> <b id="answered">0</b></span>
+        <span class="chip"><span>Correct</span> <b id="correct">0</b></span>
+      </div>
+
+      <div class="progress">
+        <div class="bar" aria-label="Progress"><div id="barFill"></div></div>
+        <div class="mini"><span class="mono" id="progressText">0%</span> complete</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card" aria-live="polite">
+        <div class="qhead">
+          <div>
+            <span class="qnum" id="qid">L4–L7</span>
+            <div class="qtext" id="qtext"></div>
+            <div class="tagrow" id="tags"></div>
+          </div>
+          <div>
+            <span class="qnum" id="qtype">MC</span>
+          </div>
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="feedback" id="feedback">
+          <div class="fbbox" id="fbbox">
+            <p class="fbtitle" id="fbtitle"></p>
+            <p class="fbtext" id="fbtext"></p>
+          </div>
+        </div>
+
+        <div class="nav">
+          <div class="left">
+            <button id="btnPrev" class="btn" type="button">← Prev</button>
+            <button id="btnNext" class="btn" type="button">Next →</button>
+          </div>
+          <div class="right">
+            <button id="btnReveal" class="btn good" type="button">Reveal Answer</button>
+            <button id="btnFinish" class="btn primary" type="button">Finish Test</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="results" id="results">
+        <p class="score" id="scoreLine">Score: 0/0</p>
+        <p class="summary" id="summaryLine"></p>
+        <details id="missedBox">
+          <summary>Review missed questions</summary>
+          <div class="missed" id="missed"></div>
+        </details>
+      </section>
+
+      <p class="footer">Source: SS U4 Mod 11 Lessons 4–7 notes. Tip: Use Study Mode first, then switch to Test Mode for a realistic run.</p>
+    </main>
+  </div>
+
+  <script>
+    // ----------------------
+    // Question Bank (100)
+    // ----------------------
+    const QUESTIONS = [
+      // Lesson 4 — Home Front
+      {id:"L4-01", lesson:"L4", type:"MC", tags:["Home Front","Military"],
+       q:"Why did the U.S. expand the Selective Service System during WWII?",
+       choices:["To reduce inflation by limiting wages","To provide enough soldiers for a two-front war","To end segregation in the armed forces","To replace war bonds with taxes"],
+       answer:1,
+       explain:"The U.S. needed far more troops for a two-front war in Europe and the Pacific, so the draft was expanded."},
+      {id:"L4-02", lesson:"L4", type:"TF", tags:["Home Front","Training"],
+       q:"New U.S. soldiers typically received about 8 weeks of basic training.",
+       choices:["True","False"], answer:0,
+       explain:"The notes state recruits got roughly 8 weeks of basic training."},
+      {id:"L4-03", lesson:"L4", type:"MC", tags:["Home Front","Leadership"],
+       q:"Which leader served as Army Chief of Staff and helped mobilize and train U.S. forces for WWII?",
+       choices:["George C. Marshall","Douglas MacArthur","Chester Nimitz","Leslie Groves"],
+       answer:0,
+       explain:"General George Marshall led the mobilization effort and helped develop military strategy."},
+      {id:"L4-04", lesson:"L4", type:"MC", tags:["Women","Military"],
+       q:"The WAAC (later WAC) allowed women to serve mainly in which kind of roles?",
+       choices:["Front-line infantry combat","Noncombat support positions","Submarine duty","Only factory jobs"],
+       answer:1,
+       explain:"WAAC/WAC members served in noncombat roles like radio operators, drivers, electricians, etc."},
+      {id:"L4-05", lesson:"L4", type:"MC", tags:["Women","Aviation"],
+       q:"What did the Women Airforce Service Pilots (WASP) do?",
+       choices:["Flew noncombat missions like transporting aircraft and supplies","Served only as nurses in Europe","Operated Navy submarines","Led D-Day parachute drops"],
+       answer:0,
+       explain:"WASPs flew noncombat missions such as ferrying aircraft, transporting supplies, and testing planes."},
+      {id:"L4-06", lesson:"L4", type:"MC", tags:["Civil Rights","African Americans"],
+       q:"The Double V Campaign urged African Americans to seek victory in WWII and also:",
+       choices:["Victory over poor treatment and discrimination at home","Victory over Japan only","Victory over labor unions","Victory over the draft"],
+       answer:0,
+       explain:"Double V = victory abroad and victory over discrimination at home."},
+      {id:"L4-07", lesson:"L4", type:"MC", tags:["Native Americans","Military"],
+       q:"Navajo 'code talkers' were important because they:",
+       choices:["Built Liberty ships","Transmitted messages in a code the Japanese could not break","Froze prices on consumer goods","Negotiated at Yalta"],
+       answer:1,
+       explain:"They used the complex Navajo language to send secure messages."},
+      {id:"L4-08", lesson:"L4", type:"MC", tags:["Government","Coordination"],
+       q:"Which agency was created in 1943 to coordinate U.S. wartime efforts across Roosevelt’s agencies?",
+       choices:["Office of War Mobilization","Office of War Information","Office of Price Administration","OSRD"],
+       answer:0,
+       explain:"The Office of War Mobilization (1943) coordinated wartime efforts."},
+      {id:"L4-09", lesson:"L4", type:"MC", tags:["Propaganda","Home Front"],
+       q:"The Office of War Information (OWI) mainly worked to:",
+       choices:["Freeze prices on goods","Spread propaganda to build support for the war","Run the Manhattan Project","Run the Nuremberg Trials"],
+       answer:1,
+       explain:"OWI produced propaganda through posters and films to influence public support."},
+      {id:"L4-10", lesson:"L4", type:"MC", tags:["Economy","Inflation"],
+       q:"How did the Office of Price Administration (OPA) fight inflation?",
+       choices:["By rationing only gasoline","By freezing prices on most goods","By building Liberty ships","By creating the UN"],
+       answer:1,
+       explain:"OPA froze prices to prevent wartime inflation from soaring."},
+      {id:"L4-11", lesson:"L4", type:"TF", tags:["Economy","War Bonds"],
+       q:"By the end of WWII, about 85 million Americans had purchased war bonds.",
+       choices:["True","False"], answer:0,
+       explain:"The notes say 85 million Americans bought war bonds, raising nearly $185 billion."},
+      {id:"L4-12", lesson:"L4", type:"MC", tags:["Industry","Production"],
+       q:"The War Production Board (WPB) did which of the following?",
+       choices:["Decided which companies shifted to war production and allocated raw materials","Led the invasion of Normandy","Tried Nazi leaders in court","Directed the occupation of Japan"],
+       answer:0,
+       explain:"WPB managed industrial conversion and allocation of raw materials."},
+      {id:"L4-13", lesson:"L4", type:"MC", tags:["Rationing","Home Front"],
+       q:"What was rationing during WWII?",
+       choices:["A law banning all strikes","Fixed allotments of scarce goods using ration books and coupons","A plan to invade Italy","A policy to divide Germany"],
+       answer:1,
+       explain:"Rationing limited consumer purchases of scarce goods with coupons."},
+      {id:"L4-14", lesson:"L4", type:"MC", tags:["Home Front","Agriculture"],
+       q:"Victory gardens were important because they:",
+       choices:["Reduced need for imported oil","Provided millions of tons of produce and supplemented food supply","Trained soldiers for combat","Built airplanes faster"],
+       answer:1,
+       explain:"20 million victory gardens produced about 8 million tons of produce in 1943."},
+      {id:"L4-15", lesson:"L4", type:"MC", tags:["Science","Technology"],
+       q:"The Office of Scientific Research and Development (OSRD) supported many advances, including:",
+       choices:["Radar/sonar improvements and penicillin","D-Day planning and troop landings","Price controls and ration books","UN charter writing"],
+       answer:0,
+       explain:"OSRD brought scientists into war work—radar/sonar, weapons, penicillin, blood plasma, etc."},
+      {id:"L4-16", lesson:"L4", type:"MC", tags:["Atomic Bomb","Science"],
+       q:"What was the Manhattan Project?",
+       choices:["A plan to create the United Nations","The code name for research to build the atomic bomb","A strategy to invade Normandy","A wartime price-freezing policy"],
+       answer:1,
+       explain:"Manhattan Project was the secret program to develop the atomic bomb."},
+      {id:"L4-17", lesson:"L4", type:"MC", tags:["Transport","Home Front"],
+       q:"The U.S. merchant marine refers to:",
+       choices:["Submarines used to attack U-boats","Civilian ships that transported supplies to troops","A group that tested new aircraft","A UN peacekeeping force"],
+       answer:1,
+       explain:"Merchant marine = civilian fleet carrying war supplies, often in dangerous convoys."},
+      {id:"L4-18", lesson:"L4", type:"MC", tags:["Industry","Kaiser"],
+       q:"Henry J. Kaiser is best known in the notes for:",
+       choices:["Leading U.S. troops at D-Day","Building massive shipyards producing Liberty ships and other vessels","Directing the Manhattan Project","Serving as Secretary of State"],
+       answer:1,
+       explain:"Kaiser built new shipyards that turned out Liberty ships and more."},
+      {id:"L4-19", lesson:"L4", type:"MC", tags:["Labor","Unions"],
+       q:"The National War Labor Board (NWLB) was created to:",
+       choices:["Prevent strikes by mediating between labor and management","Run propaganda campaigns","Control U-boat attacks","Oversee occupation zones"],
+       answer:0,
+       explain:"NWLB mediated disputes to prevent strikes and limited wage increases."},
+      {id:"L4-20", lesson:"L4", type:"MC", tags:["Home Front","Workforce"],
+       q:"A key reason employers hired many women during WWII was that:",
+       choices:["Women were drafted into combat","Employers could pay women about 40% less","Women replaced war bonds","Women were only allowed office jobs"],
+       answer:1,
+       explain:"Notes mention employers could hire women for significantly lower wages."},
+      {id:"L4-21", lesson:"L4", type:"MC", tags:["Braceros","Agriculture"],
+       q:"Why did the U.S. bring Mexican braceros to work during WWII?",
+       choices:["To staff UN meetings","To address a shortage of agricultural labor","To build atomic bombs","To serve in the Navy"],
+       answer:1,
+       explain:"Farm labor shortages led to the bracero program inviting Mexican workers."},
+      {id:"L4-22", lesson:"L4", type:"MC", tags:["Civil Rights","Executive Order"],
+       q:"Executive Order 8802 is best described as:",
+       choices:["Ordering internment of Japanese Americans","Prohibiting discrimination in defense industries","Dividing Germany into occupation zones","Launching Operation Overlord"],
+       answer:1,
+       explain:"EO 8802 prohibited racial/ethnic discrimination in defense industries."},
+      {id:"L4-23", lesson:"L4", type:"MC", tags:["Civil Rights","FEPC"],
+       q:"The Fair Employment Practices Committee (FEPC) was created to:",
+       choices:["Enforce fair employment in defense industries","Freeze prices on goods","Plan D-Day","Try war criminals"],
+       answer:0,
+       explain:"FEPC addressed discrimination in defense-industry hiring."},
+      {id:"L4-24", lesson:"L4", type:"MC", tags:["CORE","Protest"],
+       q:"CORE (Congress of Racial Equality), founded in 1942, first became known in the notes for:",
+       choices:["Leading a sit-in at a segregated restaurant in Chicago","Launching the Doolittle Raid","Writing the UN Charter","Occupying Japan"],
+       answer:0,
+       explain:"CORE led a 1942 sit-in in a segregated Chicago restaurant."},
+      {id:"L4-25", lesson:"L4", type:"MC", tags:["Zoot Suit Riots","Los Angeles"],
+       q:"Zoot-suit riots in Los Angeles (1943) involved violence mainly directed at:",
+       choices:["German U-boat crews","Mexican American youths","Japanese American internees","British soldiers"],
+       answer:1,
+       explain:"Anti-Mexican zoot-suit riots targeted Mexican American youths and their style of dress."},
+      {id:"L4-26", lesson:"L4", type:"MC", tags:["Internment","Japanese Americans"],
+       q:"Executive Order 9066 required:",
+       choices:["Creation of the UN","Removal of Japanese Americans from parts of the West Coast to camps","Unconditional surrender of Axis powers","A draft for women"],
+       answer:1,
+       explain:"EO 9066 authorized removal of ~110,000 people of Japanese ancestry to internment camps."},
+      {id:"L4-27", lesson:"L4", type:"MC", tags:["Supreme Court","Internment"],
+       q:"Korematsu v. United States (1944) upheld internment based on:",
+       choices:["Freedom of speech","Military necessity","States’ rights","International law"],
+       answer:1,
+       explain:"The Court justified internment as a wartime measure based on 'military necessity.'"},
+      {id:"L4-28", lesson:"L4", type:"TF", tags:["Hawaii","Internment"],
+       q:"In Hawaii, the military governor approved mass evacuation of all Japanese Americans because it would not affect the economy.",
+       choices:["True","False"], answer:1,
+       explain:"Delos Emmons resisted mass evacuation because removing 37% of Hawaii’s population would hurt the economy and operations."},
+      {id:"L4-29", lesson:"L4", type:"MC", tags:["Symbols","Home Front"],
+       q:"A gold star displayed in a family’s window symbolized:",
+       choices:["A family member was serving","A family member had died in service","The family bought war bonds","The family planted a victory garden"],
+       answer:1,
+       explain:"Gold star indicated a service member killed; blue star indicated serving."},
+
+      // Lesson 5 — Europe & North Africa
+      {id:"L5-01", lesson:"L5", type:"MC", tags:["Strategy","Europe"],
+       q:"What did the 'Germany First' strategy mean?",
+       choices:["Defeat Japan before fighting Germany","Strike Hitler first in Europe, then focus more resources on the Pacific","Invade Germany through Italy only","Avoid fighting in Europe"],
+       answer:1,
+       explain:"Germany First prioritized defeating Hitler to gain an upper hand in Europe."},
+      {id:"L5-02", lesson:"L5", type:"MC", tags:["Atlantic","U-boats"],
+       q:"German 'wolf packs' in 1942 mainly threatened Allied shipping by:",
+       choices:["Bombing London nightly","Using groups of submarines to attack convoys","Invading North Africa","Attacking Stalingrad"],
+       answer:1,
+       explain:"Wolf packs were coordinated U-boat groups attacking shipping in the Atlantic."},
+      {id:"L5-03", lesson:"L5", type:"MC", tags:["Stalingrad","Turning Point"],
+       q:"Why was the Battle of Stalingrad a turning point on the Eastern Front?",
+       choices:["It ended the Pacific War","It stopped German advances and led to Soviet push westward","It created the UN","It was the first use of the atomic bomb"],
+       answer:1,
+       explain:"German forces were trapped and surrendered; Soviets then advanced west toward Germany."},
+      {id:"L5-04", lesson:"L5", type:"MC", tags:["North Africa","Operation Torch"],
+       q:"Operation Torch was:",
+       choices:["An invasion of Axis-controlled North Africa","The invasion of Normandy","A plan to divide Germany","A bombing raid on Tokyo"],
+       answer:0,
+       explain:"Torch invaded Morocco and Algeria in North Africa under Eisenhower."},
+      {id:"L5-05", lesson:"L5", type:"MC", tags:["Rommel","North Africa"],
+       q:"General Erwin Rommel, the 'Desert Fox,' fought mainly in:",
+       choices:["Italy","North Africa","Japan","Poland"],
+       answer:1,
+       explain:"Rommel led German forces in North Africa."},
+      {id:"L5-06", lesson:"L5", type:"TF", tags:["Casablanca","Policy"],
+       q:"At Casablanca, Allied leaders agreed to accept only the unconditional surrender of the Axis powers.",
+       choices:["True","False"], answer:0,
+       explain:"The notes state Roosevelt and Churchill agreed on unconditional surrender."},
+      {id:"L5-07", lesson:"L5", type:"MC", tags:["Italy","Sicily"],
+       q:"After the Allies captured Sicily in 1943, what happened in Italy?",
+       choices:["Italy immediately invaded the U.S.","Mussolini was forced to resign and was arrested","Germany surrendered","Japan took control of Rome"],
+       answer:1,
+       explain:"Mussolini resigned; King Victor Emmanuel III stripped him of power and arrested him."},
+      {id:"L5-08", lesson:"L5", type:"MC", tags:["Anzio","Italy"],
+       q:"Why was 'Bloody Anzio' significant in the Italian Campaign?",
+       choices:["It was the first Allied landing in France","It caused heavy casualties over months of fighting near Rome","It ended the war in Europe","It was fought in North Africa"],
+       answer:1,
+       explain:"Anzio saw months of fighting and large casualties for both sides."},
+      {id:"L5-09", lesson:"L5", type:"MC", tags:["Tuskegee Airmen","Minorities"],
+       q:"The 99th Pursuit Squadron is associated with:",
+       choices:["Navajo code talkers","Tuskegee Airmen","WASP pilots","German U-boats"],
+       answer:1,
+       explain:"It was the first squadron of Tuskegee Airmen and fought in Sicily and Italy."},
+      {id:"L5-10", lesson:"L5", type:"MC", tags:["442nd","Nisei"],
+       q:"The 442nd Regimental Combat Team was notable because it:",
+       choices:["Was the first all-female unit","Was the most decorated unit in U.S. history (all-Nisei)","Led the Manhattan Project","Fought only in the Pacific"],
+       answer:1,
+       explain:"The 442nd (formed from Nisei units) became the most decorated unit in U.S. history."},
+      {id:"L5-11", lesson:"L5", type:"MC", tags:["Tehran","Allied Strategy"],
+       q:"At the Tehran Conference (late 1943), the Allies agreed that:",
+       choices:["The U.S. would stop fighting in Europe","The Soviets would attack from the east and the Allies would invade France","Japan would be divided into zones","Germany would keep all territory"],
+       answer:1,
+       explain:"Tehran set a two-front pressure plan: Soviet offensive east + Normandy invasion."},
+      {id:"L5-12", lesson:"L5", type:"MC", tags:["D-Day","Operation Overlord"],
+       q:"Operation Overlord was the code name for:",
+       choices:["The invasion of Normandy","The invasion of North Africa","The atomic bomb program","The occupation of Japan"],
+       answer:0,
+       explain:"Overlord = Normandy invasion led by Eisenhower."},
+      {id:"L5-13", lesson:"L5", type:"MC", tags:["Bodyguard","Deception"],
+       q:"Operation Bodyguard helped D-Day by:",
+       choices:["Destroying German bridges","Tricking Hitler into expecting an invasion at Calais","Training paratroopers in Florida","Freezing prices on goods"],
+       answer:1,
+       explain:"A phantom army and fake messages convinced Hitler to defend Calais heavily."},
+      {id:"L5-14", lesson:"L5", type:"MC", tags:["Normandy","Beaches"],
+       q:"Which beach is most associated with brutal German resistance during D-Day in the notes?",
+       choices:["Juno","Omaha","Gold","Sword"],
+       answer:1,
+       explain:"The notes highlight especially brutal fighting at Omaha Beach."},
+      {id:"L5-15", lesson:"L5", type:"TF", tags:["Liberation","Paris"],
+       q:"Paris was liberated from German occupation on August 25, 1944.",
+       choices:["True","False"], answer:0,
+       explain:"The notes state Paris was liberated on Aug. 25, 1944."},
+      {id:"L5-16", lesson:"L5", type:"MC", tags:["Bulge","Germany"],
+       q:"Hitler launched the Battle of the Bulge mainly to:",
+       choices:["Capture Stalingrad","Break through Allied lines and recapture Antwerp","Invade Okinawa","Force Churchill to resign"],
+       answer:1,
+       explain:"Hitler hoped to split Allied forces and retake the port of Antwerp."},
+
+      // Lesson 6 — Pacific
+      {id:"L6-01", lesson:"L6", type:"MC", tags:["Pacific","Japanese Expansion"],
+       q:"After Pearl Harbor, Japan quickly expanded and gained control of resources mainly by:",
+       choices:["Capturing islands and territories including the Dutch East Indies with rich oil reserves","Signing a peace treaty with the U.S.","Invading Germany","Taking the Suez Canal"],
+       answer:0,
+       explain:"Japan seized territories and strategic bases, including oil-rich areas like the Dutch East Indies."},
+      {id:"L6-02", lesson:"L6", type:"MC", tags:["Philippines","Bataan"],
+       q:"General Douglas MacArthur’s forces in the Philippines retreated to:",
+       choices:["Guadalcanal","Bataan Peninsula","Midway Island","Iwo Jima"],
+       answer:1,
+       explain:"MacArthur planned a retreat to Bataan, but supplies were very limited."},
+      {id:"L6-03", lesson:"L6", type:"MC", tags:["Bataan","Atrocities"],
+       q:"The Bataan Death March refers to:",
+       choices:["A U.S. bombing raid on Tokyo","Forced marches of surrendered troops to prison camps under brutal conditions","A naval battle near Australia","A strategy to capture islands"],
+       answer:1,
+       explain:"Surrendered troops were forced to march for days; many died."},
+      {id:"L6-04", lesson:"L6", type:"MC", tags:["Doolittle","Morale"],
+       q:"The main significance of Doolittle’s Raid (April 18, 1942) was that it:",
+       choices:["Destroyed Japan’s entire navy","Raised American spirits even though damage was limited","Ended the war in the Pacific","Captured Midway Island"],
+       answer:1,
+       explain:"It didn’t do major damage but boosted morale."},
+      {id:"L6-05", lesson:"L6", type:"MC", tags:["Coral Sea","Pacific"],
+       q:"The Battle of the Coral Sea (May 1942) is notable because it:",
+       choices:["Was fought entirely with aircraft attacks","Was the first battle fought with tanks","Was fought on the beaches of Normandy","Was Japan’s final offensive"],
+       answer:0,
+       explain:"All shots were fired by aircraft; it also stopped Japan’s drive toward Australia."},
+      {id:"L6-06", lesson:"L6", type:"MC", tags:["Midway","Turning Point"],
+       q:"Why was the Battle of Midway (June 1942) a turning point?",
+       choices:["It ended the war in Europe","Japan lost four aircraft carriers and many planes","It created the GI Bill","It divided Germany"],
+       answer:1,
+       explain:"The U.S. sank four Japanese carriers and shifted momentum in the Pacific."},
+      {id:"L6-07", lesson:"L6", type:"MC", tags:["Nimitz","Midway"],
+       q:"At Midway, Admiral Chester Nimitz used which forces to attack the Japanese fleet?",
+       choices:["Torpedoes and dive bombers","Only submarines","Only infantry","Only kamikazes"],
+       answer:0,
+       explain:"The notes specify torpedoes and dive bombers were used effectively."},
+      {id:"L6-08", lesson:"L6", type:"MC", tags:["Guadalcanal","Offensive"],
+       q:"Guadalcanal is significant because it was:",
+       choices:["The first Japanese victory on land","An early Allied offensive where Japan abandoned the island months later","Where the atomic bomb was tested","Where Germany surrendered"],
+       answer:1,
+       explain:"Allies landed in Aug. 1942; Japan abandoned the island about six months later."},
+      {id:"L6-09", lesson:"L6", type:"MC", tags:["Island Hopping","Strategy"],
+       q:"What was 'island hopping'?",
+       choices:["Capturing and securing selected islands while bypassing heavily defended ones","Sailing around the world without stopping","Invading Germany through Italy","A plan to freeze prices"],
+       answer:0,
+       explain:"Island hopping seized key islands to use as bases while avoiding strong enemy concentrations."},
+      {id:"L6-10", lesson:"L6", type:"MC", tags:["Leyte Gulf","Kamikaze"],
+       q:"Kamikazes were:",
+       choices:["Japanese suicide bombers","U.S. code talkers","British tanks","German submarines"],
+       answer:0,
+       explain:"Kamikaze pilots carried out suicide attacks on Allied ships."},
+      {id:"L6-11", lesson:"L6", type:"MC", tags:["Iwo Jima","Casualties"],
+       q:"According to the notes, Iwo Jima was described as:",
+       choices:["Unimportant and lightly defended","One of the most heavily defended places on Earth","A city in Germany","A conference site"],
+       answer:1,
+       explain:"The notes call it the most heavily defended spot on Earth with troops in tunnels/caves."},
+      {id:"L6-12", lesson:"L6", type:"TF", tags:["Okinawa","Pacific"],
+       q:"The Battle for Okinawa ended on June 21, 1945.",
+       choices:["True","False"], answer:0,
+       explain:"The notes state fighting ended June 21, 1945."},
+
+      // Lesson 7 — End of WWII & Postwar
+      {id:"L7-01", lesson:"L7", type:"MC", tags:["Death Camps","Liberation"],
+       q:"The Soviets encountered the first Nazi death camp mentioned in the notes at:",
+       choices:["Majdanek, Poland","Auschwitz, Germany","Rome, Italy","Hiroshima, Japan"],
+       answer:0,
+       explain:"Majdanek (Poland) was encountered in July 1944."},
+      {id:"L7-02", lesson:"L7", type:"MC", tags:["Rhine","Germany"],
+       q:"Why was capturing the bridge at Remagen in March 1945 important?",
+       choices:["It allowed Allied forces to cross the Rhine, the last major barrier into Germany","It ended rationing in the U.S.","It began the Manhattan Project","It liberated Paris"],
+       answer:0,
+       explain:"The Rhine was the last major physical barrier; capturing a bridge helped advance into Germany."},
+      {id:"L7-03", lesson:"L7", type:"MC", tags:["Yalta","Postwar"],
+       q:"At the Yalta Conference, Roosevelt wanted Stalin’s support mainly for:",
+       choices:["The United Nations and Soviet entry against Japan","Operation Torch","The Doolittle Raid","The GI Bill"],
+       answer:0,
+       explain:"Roosevelt sought Soviet help vs Japan and support for forming the UN."},
+      {id:"L7-04", lesson:"L7", type:"MC", tags:["Occupation Zones","Germany"],
+       q:"Occupation zones were:",
+       choices:["Areas of Germany controlled by Allied military forces","Japanese islands used for bases","Regions of the U.S. under rationing","Sections of the Atlantic patrolled by U-boats"],
+       answer:0,
+       explain:"Germany was divided into zones controlled by the U.S., Britain, USSR, and France."},
+      {id:"L7-05", lesson:"L7", type:"TF", tags:["V-E Day","Europe"],
+       q:"V-E Day (Victory in Europe Day) was May 8, 1945.",
+       choices:["True","False"], answer:0,
+       explain:"The notes list V-E Day as May 8, 1945."},
+      {id:"L7-06", lesson:"L7", type:"MC", tags:["Truman","Leadership"],
+       q:"Harry S. Truman became president after:",
+       choices:["Roosevelt died on April 12, 1945","Churchill resigned","Eisenhower won an election","Stalin stepped down"],
+       answer:0,
+       explain:"FDR died April 12, 1945; Truman became president that night."},
+      {id:"L7-07", lesson:"L7", type:"MC", tags:["Manhattan Project","Locations"],
+       q:"The Manhattan Project was headquartered in Oak Ridge, Tennessee, and the bomb was built in:",
+       choices:["Los Alamos, New Mexico","Berlin, Germany","Tokyo, Japan","Casablanca, Morocco"],
+       answer:0,
+       explain:"Oak Ridge hosted key facilities; Los Alamos built the bomb."},
+      {id:"L7-08", lesson:"L7", type:"MC", tags:["Atomic Bomb","Test"],
+       q:"The first test of the atomic bomb occurred on:",
+       choices:["July 16, 1945","June 6, 1944","May 8, 1945","April 18, 1942"],
+       answer:0,
+       explain:"The first test was July 16, 1945 near Alamogordo, New Mexico."},
+      {id:"L7-09", lesson:"L7", type:"MC", tags:["Decision","Debate"],
+       q:"Which scientist argued it would be immoral to drop the atomic bomb without fair warning?",
+       choices:["Leo Szilard","Frank Capra","Cordell Hull","Omar Bradley"],
+       answer:0,
+       explain:"Szilard and other scientists opposed using the bomb without warning."},
+      {id:"L7-10", lesson:"L7", type:"MC", tags:["Hiroshima","Nagasaki"],
+       q:"Which bomb was dropped on Hiroshima?",
+       choices:["Little Boy","Fat Man","Liberty","Overlord"],
+       answer:0,
+       explain:"The Enola Gay dropped 'Little Boy' on Hiroshima; 'Fat Man' was dropped on Nagasaki."},
+      {id:"L7-11", lesson:"L7", type:"MC", tags:["Surrender","Pacific"],
+       q:"Japan’s formal surrender occurred:",
+       choices:["On the USS Missouri on September 2 in Tokyo Bay","At Yalta in February 1945","In Paris in August 1944","At Stalingrad in January 1943"],
+       answer:0,
+       explain:"Emperor Hirohito ensured surrender on the USS Missouri, Sept. 2, Tokyo Bay."},
+      {id:"L7-12", lesson:"L7", type:"MC", tags:["UN","Postwar"],
+       q:"The UN charter was signed on June 26, 1945 and the UN came into being on:",
+       choices:["October 24, 1945","May 8, 1945","July 16, 1945","September 2, 1945"],
+       answer:0,
+       explain:"Charter signed June 26; UN began Oct. 24, 1945."},
+      {id:"L7-13", lesson:"L7", type:"MC", tags:["Human Rights","Eleanor Roosevelt"],
+       q:"Eleanor Roosevelt helped lead work on the:",
+       choices:["Universal Declaration of Human Rights","Operation Torch","Office of Price Administration","WAAC"],
+       answer:0,
+       explain:"The Commission on Human Rights worked with Eleanor Roosevelt toward the Universal Declaration."},
+      {id:"L7-14", lesson:"L7", type:"MC", tags:["Potsdam","Tensions"],
+       q:"The Potsdam Conference showed growing tension because:",
+       choices:["Stalin was not allowing free elections in Poland and Eastern Europe","Japan had already surrendered","Germany was unoccupied","The UN had dissolved"],
+       answer:0,
+       explain:"Truman saw Soviet actions in Poland/Eastern Europe conflicted with democratic goals."},
+      {id:"L7-15", lesson:"L7", type:"MC", tags:["Nuremberg","Law"],
+       q:"At Nuremberg, Nazi leaders were tried for crimes including:",
+       choices:["Crimes against peace, war crimes, and crimes against humanity","Bank fraud only","Tax evasion only","Breaking UN charter only"],
+       answer:0,
+       explain:"The trials established individual responsibility for major international crimes."},
+      {id:"L7-16", lesson:"L7", type:"MC", tags:["Occupation of Japan","MacArthur"],
+       q:"After Japan surrendered, the U.S. occupation was led by:",
+       choices:["General Douglas MacArthur","General George Patton","General Omar Bradley","Admiral Yamamoto"],
+       answer:0,
+       explain:"MacArthur led the occupation and reshaped Japan’s political/economic system."},
+      {id:"L7-17", lesson:"L7", type:"MC", tags:["Occupation of Japan","Reforms"],
+       q:"One major change in Japan during the occupation was:",
+       choices:["A new constitution including women’s suffrage and basic freedoms","Returning to militarism","Eliminating elections","Joining the Axis"],
+       answer:0,
+       explain:"The occupation introduced democratic reforms and a new constitution."},
+      {id:"L7-18", lesson:"L7", type:"MC", tags:["GI Bill","Home Front"],
+       q:"The GI Bill of Rights (Servicemen’s Readjustment Act) provided veterans with:",
+       choices:["Education/training benefits and loan guarantees","A guaranteed military job for life","Free cars from factories","Immediate UN membership"],
+       answer:0,
+       explain:"The GI Bill funded education/training and backed loans for homes/farms/businesses."},
+      {id:"L7-19", lesson:"L7", type:"TF", tags:["Migration","Home Front"],
+       q:"During WWII, more than 1 million newcomers moved to California between 1941 and 1944.",
+       choices:["True","False"], answer:0,
+       explain:"The notes state over 1 million newcomers came to California in that period."},
+
+      // Additional mixed application/compare questions (to reach 100 without pure repetition)
+      {id:"APP-01", lesson:"Mix", type:"MC", tags:["Cause/Effect","Inflation"],
+       q:"Why did wartime production increases tend to cause inflation pressure?",
+       choices:["More consumer goods were available than ever","Fewer consumer goods were available while demand stayed high","Taxes were eliminated","All prices were fixed at zero"],
+       answer:1,
+       explain:"War production reduced consumer product availability; demand pushed prices up without controls."},
+      {id:"APP-02", lesson:"Mix", type:"MC", tags:["Compare","Agencies"],
+       q:"Which pairing correctly matches an agency with its main job?",
+       choices:["OWI—price freezes; OPA—propaganda","OPA—price freezes; OWI—propaganda","WPB—UN charter; OSRD—ration books","NWLB—convoys; WPB—occupation zones"],
+       answer:1,
+       explain:"OPA froze prices; OWI ran propaganda."},
+      {id:"APP-03", lesson:"Mix", type:"MC", tags:["Sequence","Europe"],
+       q:"Which happened first?",
+       choices:["D-Day","Battle of the Bulge","Liberation of Paris","Battle of Stalingrad surrender"],
+       answer:3,
+       explain:"Stalingrad surrender was Jan. 1943, before D-Day (June 1944), Paris (Aug 1944), Bulge (Dec 1944)."},
+      {id:"APP-04", lesson:"Mix", type:"MC", tags:["Sequence","Pacific"],
+       q:"Which order is correct from earliest to latest?",
+       choices:["Midway → Doolittle Raid → Okinawa","Doolittle Raid → Midway → Okinawa","Okinawa → Midway → Doolittle Raid","Guadalcanal → Pearl Harbor → Midway"],
+       answer:1,
+       explain:"Doolittle (Apr 1942), Midway (Jun 1942), Okinawa (Apr–Jun 1945)."},
+      {id:"APP-05", lesson:"Mix", type:"MC", tags:["Why It Matters","Atlantic"],
+       q:"Why were convoys and improved radar/sonar important in the Battle of the Atlantic?",
+       choices:["They helped detect and defend against U-boats","They increased zoot-suit fashion","They ended rationing","They built atomic bombs"],
+       answer:0,
+       explain:"Convoys plus radar/sonar and escort ships reduced U-boat effectiveness."},
+      {id:"APP-06", lesson:"Mix", type:"MC", tags:["Compare","Turning Points"],
+       q:"Which pair best matches turning points to the correct theater?",
+       choices:["Stalingrad—Pacific; Midway—Eastern Front","Stalingrad—Eastern Front; Midway—Pacific","El Alamein—Pacific; Iwo Jima—Italy","Bulge—Pacific; Guadalcanal—Atlantic"],
+       answer:1,
+       explain:"Stalingrad turned the Eastern Front; Midway turned the Pacific."},
+      {id:"APP-07", lesson:"Mix", type:"TF", tags:["Civics","Rights"],
+       q:"EO 9066 and EO 8802 both expanded civil rights protections during WWII.",
+       choices:["True","False"], answer:1,
+       explain:"EO 9066 authorized internment; EO 8802 prohibited discrimination in defense industries."},
+      {id:"APP-08", lesson:"Mix", type:"MC", tags:["Home Front","Black Market"],
+       q:"A 'black market' during WWII referred to:",
+       choices:["Illegal buying of rationed goods without coupons at high prices","An official government store","A code name for atomic research","A military tactic"],
+       answer:0,
+       explain:"Black markets sold scarce goods illegally without coupons."},
+      {id:"APP-09", lesson:"Mix", type:"MC", tags:["Science","Medicine"],
+       q:"Which is an example of a 'miracle drug' advanced during WWII?",
+       choices:["Penicillin","Nylon","DDT","Radar"],
+       answer:0,
+       explain:"OSRD-supported research helped mass-produce and use penicillin."},
+      {id:"APP-10", lesson:"Mix", type:"MC", tags:["Postwar","Cold War Roots"],
+       q:"Why did the atomic bomb contribute to an arms race after WWII?",
+       choices:["It eliminated the need for weapons","It created a nuclear age and competition to restore balance of power","It ended the UN","It made Germany stronger"],
+       answer:1,
+       explain:"The bomb began the nuclear age and fueled competition (especially U.S.–Soviet)."},
+      {id:"APP-11", lesson:"Mix", type:"MC", tags:["Evidence","Camps"],
+       q:"Why couldn’t SS officers fully destroy evidence at Majdanek?",
+       choices:["The Allies arrived too quickly","They ran out of gasoline coupons","Germany had surrendered already","It was in Japan"],
+       answer:0,
+       explain:"The Soviets arrived while evidence destruction was incomplete."},
+      {id:"APP-12", lesson:"Mix", type:"MC", tags:["Causation","Japan"],
+       q:"Truman’s key goal in using the atomic bomb (per the notes) was to:",
+       choices:["End the Pacific War without an Allied invasion that would cost many lives","Start WWII","Punish Italy","Make the UN fail"],
+       answer:0,
+       explain:"Truman believed the bomb was crucial to end the war and avoid invasion casualties."},
+      {id:"APP-13", lesson:"Mix", type:"MC", tags:["People","Roles"],
+       q:"Match the person to the correct role: Oppenheimer was to the Manhattan Project as Eisenhower was to:",
+       choices:["OWI","Operation Overlord","OPA","CORE"],
+       answer:1,
+       explain:"Eisenhower led Operation Overlord (Normandy invasion)."},
+      {id:"APP-14", lesson:"Mix", type:"MC", tags:["Numbers","Facts"],
+       q:"Which statement best fits the notes?",
+       choices:["Inflation exceeded 200% during WWII","Inflation stayed below 30% during WWII","No one bought war bonds","Rationing was rejected by most Americans"],
+       answer:1,
+       explain:"The notes say inflation stayed below 30% due to controls like OPA and taxes/bonds."},
+      {id:"APP-15", lesson:"Mix", type:"MC", tags:["Geography","Conferences"],
+       q:"Where was the Tehran Conference held?",
+       choices:["Iran","Poland","Tennessee","Japan"],
+       answer:0,
+       explain:"Tehran Conference took place in Tehran, Iran."},
+      {id:"APP-16", lesson:"Mix", type:"TF", tags:["Policy","Germany"],
+       q:"At Yalta, the Allies agreed Germany would be divided into four zones controlled by the U.S., Britain, the Soviet Union, and France.",
+       choices:["True","False"], answer:0,
+       explain:"Yes—four occupation zones were agreed upon."},
+      {id:"APP-17", lesson:"Mix", type:"MC", tags:["Home Front","Emotion"],
+       q:"According to the notes, Japan’s attack on Pearl Harbor provoked many Americans to feel:",
+       choices:["Mostly fear","Rage and patriotism to protect U.S. interests","Indifference","Support for isolationism"],
+       answer:1,
+       explain:"The notes say the attack provoked rage and patriotism rather than fear."},
+      {id:"APP-18", lesson:"Mix", type:"MC", tags:["Compare","Minorities"],
+       q:"Which comparison is accurate based on the notes?",
+       choices:["Nisei units were fully integrated; African Americans were never segregated","African Americans often served in segregated units; Nisei served notably in units like the 442nd","No minorities served in WWII","Only Native Americans served in combat"],
+       answer:1,
+       explain:"African Americans often served in segregated units; Nisei served in major decorated units."},
+      {id:"APP-19", lesson:"Mix", type:"MC", tags:["Pacific","Tactics"],
+       q:"Why did island hopping help the Allies?",
+       choices:["It avoided strong enemy positions while capturing strategic bases","It eliminated the need for ships","It ended the Atlantic U-boat threat","It divided Germany"],
+       answer:0,
+       explain:"Taking key islands created bases and bypassed heavy enemy concentrations."},
+      {id:"APP-20", lesson:"Mix", type:"MC", tags:["Law","International"],
+       q:"A major legacy of the Nuremberg Trials was:",
+       choices:["The idea of individual responsibility in international law","Ending all future wars permanently","Creating the Selective Service System","Building Liberty ships"],
+       answer:0,
+       explain:"Nuremberg reinforced that individuals can be held accountable for international crimes."},
+      {id:"APP-21", lesson:"Mix", type:"TF", tags:["Okinawa","Casualties"],
+       q:"The notes indicate over 110,000 Japanese died in the Battle for Okinawa.",
+       choices:["True","False"], answer:0,
+       explain:"Yes, the notes list over 110,000 Japanese dead by the end of fighting."},
+      {id:"APP-22", lesson:"Mix", type:"MC", tags:["Europe","Aachen"],
+       q:"Aachen is mentioned as:",
+       choices:["The first German town captured by Americans in Oct. 1944","A beach at Normandy","A Pacific island","A UN meeting site"],
+       answer:0,
+       explain:"Americans captured Aachen in October 1944."},
+      {id:"APP-23", lesson:"Mix", type:"MC", tags:["Home Front","Rationing"],
+       q:"Which item is listed as rationed in the notes?",
+       choices:["Meat","Shoes","Sugar","All of the above"],
+       answer:3,
+       explain:"Rationing applied to meat, shoes, sugar, coffee, gasoline, etc."},
+      {id:"APP-24", lesson:"Mix", type:"MC", tags:["Occupation","Japan"],
+       q:"During the occupation of Japan, MacArthur promoted:",
+       choices:["Free-market practices and a new constitution","A return to dictatorship","Ending women’s rights","Rebuilding the Axis"],
+       answer:0,
+       explain:"The occupation pushed free-market recovery and constitutional reforms including women’s suffrage."},
+      {id:"APP-25", lesson:"Mix", type:"MC", tags:["Pacific","Costs"],
+       q:"Which battles’ high casualty counts influenced advisers who supported using the atomic bomb?",
+       choices:["Iwo Jima and Okinawa","El Alamein and Stalingrad","Paris and Aachen","Tehran and Yalta"],
+       answer:0,
+       explain:"The notes mention Iwo Jima and Okinawa casualty counts in the decision debate."},
+      {id:"APP-26", lesson:"Mix", type:"TF", tags:["Propaganda","Capra"],
+       q:"Frank Capra’s 'Why We Fight' series is listed as an example of wartime propaganda films.",
+       choices:["True","False"], answer:0,
+       explain:"Yes—OWI and Hollywood produced propaganda including Capra’s series."},
+      {id:"APP-27", lesson:"Mix", type:"MC", tags:["Home Front","Symbols"],
+       q:"If a home displayed a blue star flag, it meant:",
+       choices:["A family member was serving in the military","A family member died","The family moved to California","The family was in an internment camp"],
+       answer:0,
+       explain:"Blue star = service member; gold star = fallen service member."},
+      {id:"APP-28", lesson:"Mix", type:"MC", tags:["Europe","Numbers"],
+       q:"After one month in France following D-Day, the Allies had landed about:",
+       choices:["1 million troops","100,000 troops","10,000 troops","5 million troops"],
+       answer:0,
+       explain:"The notes state about 1 million troops landed in France after a month."},
+      {id:"APP-29", lesson:"Mix", type:"MC", tags:["Home Front","Materials"],
+       q:"Why were scrap drives encouraged?",
+       choices:["To recycle materials into war goods","To fund the UN","To stop the draft","To plan D-Day"],
+       answer:0,
+       explain:"Scrap drives collected materials to recycle into wartime production."},
+      {id:"APP-30", lesson:"Mix", type:"MC", tags:["Science","Materials"],
+       q:"Which synthetic product replaced silk for parachutes and protective gear?",
+       choices:["Nylon","Penicillin","DDT","Plasma"],
+       answer:0,
+       explain:"Synthetic nylon replaced silk for parachutes and gear."}
+    ];
+
+    // Ensure exactly 100 questions
+    if (QUESTIONS.length !== 100) {
+      console.warn('Question count:', QUESTIONS.length);
+    }
+
+    // ----------------------
+    // Helpers
+    // ----------------------
+    const shuffle = (arr) => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
+    function deepCopy(obj){return JSON.parse(JSON.stringify(obj));}
+
+    // State
+    let mode = 'study'; // 'study' or 'test'
+    let bank = [];      // shuffled questions with shuffled choices
+    let index = 0;
+    let answeredMap = new Map(); // qid -> {chosenIndexOriginal:number, correct:boolean, chosenText:string, correctText:string}
+
+    // DOM
+    const elQText = document.getElementById('qtext');
+    const elAnswers = document.getElementById('answers');
+    const elQid = document.getElementById('qid');
+    const elQtype = document.getElementById('qtype');
+    const elTags = document.getElementById('tags');
+
+    const elPos = document.getElementById('pos');
+    const elTotal = document.getElementById('total');
+    const elAnswered = document.getElementById('answered');
+    const elCorrect = document.getElementById('correct');
+
+    const elBarFill = document.getElementById('barFill');
+    const elProgressText = document.getElementById('progressText');
+
+    const elFeedback = document.getElementById('feedback');
+    const elFbBox = document.getElementById('fbbox');
+    const elFbTitle = document.getElementById('fbtitle');
+    const elFbText = document.getElementById('fbtext');
+
+    const elResults = document.getElementById('results');
+    const elScoreLine = document.getElementById('scoreLine');
+    const elSummaryLine = document.getElementById('summaryLine');
+    const elMissed = document.getElementById('missed');
+    const elMissedBox = document.getElementById('missedBox');
+
+    // Buttons
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const btnReveal = document.getElementById('btnReveal');
+    const btnFinish = document.getElementById('btnFinish');
+    const btnRestart = document.getElementById('btnRestart');
+    const btnShuffle = document.getElementById('btnShuffle');
+    const btnDownload = document.getElementById('btnDownload');
+
+    const modeStudy = document.getElementById('modeStudy');
+    const modeTest = document.getElementById('modeTest');
+
+    function setMode(newMode){
+      mode = newMode;
+      modeStudy.classList.toggle('active', mode==='study');
+      modeTest.classList.toggle('active', mode==='test');
+      // In test mode, hide feedback until finish, and hide reveal
+      btnReveal.style.display = (mode==='study') ? '' : 'none';
+      elFeedback.classList.remove('show');
+      render();
+    }
+
+    function buildBank(){
+      const base = deepCopy(QUESTIONS);
+      shuffle(base);
+      // shuffle choices per question while preserving correct answer
+      bank = base.map(q => {
+        const choices = q.choices.map((text, idx) => ({text, idxOriginal: idx}));
+        shuffle(choices);
+        const newAnswer = choices.findIndex(c => c.idxOriginal === q.answer);
+        return {...q, choicesShuffled: choices, answerShuffledIndex: newAnswer};
+      });
+      index = 0;
+      answeredMap = new Map();
+      elResults.classList.remove('show');
+      render();
+      updateStats();
+    }
+
+    function updateStats(){
+      const answeredCount = answeredMap.size;
+      let correctCount = 0;
+      for (const v of answeredMap.values()) if (v.correct) correctCount++;
+      elAnswered.textContent = answeredCount;
+      elCorrect.textContent = correctCount;
+
+      const pct = Math.round((answeredCount / bank.length) * 100);
+      elBarFill.style.width = pct + '%';
+      elProgressText.textContent = pct + '%';
+
+      elPos.textContent = (index+1);
+      elTotal.textContent = bank.length;
+    }
+
+    function showFeedback(isCorrect, explain){
+      if (mode !== 'study') return;
+      elFeedback.classList.add('show');
+      elFbBox.classList.toggle('good', isCorrect);
+      elFbBox.classList.toggle('bad', !isCorrect);
+      elFbTitle.textContent = isCorrect ? 'Correct' : 'Not quite';
+      elFbText.textContent = explain || '';
+    }
+
+    function clearFeedback(){
+      elFeedback.classList.remove('show');
+      elFbBox.classList.remove('good','bad');
+      elFbTitle.textContent = '';
+      elFbText.textContent = '';
+    }
+
+    function render(){
+      const q = bank[index];
+      if (!q) return;
+
+      elQid.textContent = q.id;
+      elQtype.textContent = q.type;
+      elQText.textContent = q.q;
+
+      // tags
+      elTags.innerHTML = '';
+      (q.tags || []).forEach(t => {
+        const s = document.createElement('span');
+        s.className = 'tag';
+        s.textContent = t;
+        elTags.appendChild(s);
+      });
+
+      // answers
+      elAnswers.innerHTML = '';
+      clearFeedback();
+
+      const prevAns = answeredMap.get(q.id);
+
+      q.choicesShuffled.forEach((c, choiceIndex) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.type = 'button';
+        btn.textContent = c.text;
+
+        // If answered, lock and color
+        if (prevAns){
+          btn.disabled = true;
+          if (choiceIndex === q.answerShuffledIndex) btn.classList.add('correct');
+          if (choiceIndex === prevAns.chosenIndexShuffled && !prevAns.correct) btn.classList.add('wrong');
+        }
+
+        btn.addEventListener('click', () => {
+          // record answer
+          const correct = (choiceIndex === q.answerShuffledIndex);
+          answeredMap.set(q.id, {
+            chosenIndexShuffled: choiceIndex,
+            correct,
+            chosenText: c.text,
+            correctText: q.choicesShuffled[q.answerShuffledIndex].text,
+            question: q.q,
+            explain: q.explain,
+            id: q.id
+          });
+
+          // re-render to lock buttons + color
+          render();
+          updateStats();
+          showFeedback(correct, q.explain);
+        });
+
+        elAnswers.appendChild(btn);
+      });
+
+      // nav button states
+      btnPrev.disabled = index === 0;
+      btnNext.disabled = index === bank.length - 1;
+
+      updateStats();
+    }
+
+    function revealAnswer(){
+      const q = bank[index];
+      const prevAns = answeredMap.get(q.id);
+      if (prevAns) {
+        showFeedback(prevAns.correct, q.explain);
+        return;
+      }
+      // mark as revealed (does not count as correct)
+      answeredMap.set(q.id, {
+        chosenIndexShuffled: -1,
+        correct:false,
+        chosenText:'(revealed)',
+        correctText:q.choicesShuffled[q.answerShuffledIndex].text,
+        question:q.q,
+        explain:q.explain,
+        id:q.id,
+        revealed:true
+      });
+      render();
+      updateStats();
+      showFeedback(false, 'Revealed. ' + (q.explain || ''));
+    }
+
+    function finishTest(){
+      // Score ignores revealed-only as correct (they are already correct:false)
+      const total = bank.length;
+      let correct = 0;
+      let answered = 0;
+      const missed = [];
+
+      for (const q of bank){
+        const a = answeredMap.get(q.id);
+        if (a){
+          answered++;
+          if (a.correct) correct++;
+          else missed.push(a);
+        } else {
+          missed.push({
+            id:q.id,
+            question:q.q,
+            chosenText:'(no answer)',
+            correctText:q.choicesShuffled[q.answerShuffledIndex].text,
+            explain:q.explain
+          });
+        }
+      }
+
+      elResults.classList.add('show');
+      elScoreLine.textContent = `Score: ${correct}/${total}`;
+      elSummaryLine.textContent = `Answered: ${answered}/${total}. Missed: ${total - correct}.`;
+
+      elMissed.innerHTML = '';
+      missed.forEach((m) => {
+        const div = document.createElement('div');
+        div.className = 'mitem';
+        div.innerHTML = `<div><b>${m.id}</b> — ${escapeHtml(m.question)}</div>
+                         <div>Your answer: <span class="mono">${escapeHtml(m.chosenText || '(no answer)')}</span></div>
+                         <div>Correct: <span class="mono">${escapeHtml(m.correctText)}</span></div>
+                         <div style="margin-top:6px">Explanation: ${escapeHtml(m.explain || '')}</div>`;
+        elMissed.appendChild(div);
+      });
+
+      // auto-open missed box if many missed
+      if (missed.length > 0) elMissedBox.open = true;
+
+      // In test mode, show a small prompt
+      if (mode === 'test') {
+        // keep feedback hidden
+        clearFeedback();
+      }
+
+      // scroll to results
+      elResults.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#039;');
+    }
+
+    function downloadSelf(){
+      const html = '<!doctype html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ww2_module11_l4_7_practice_test_100q.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    // Events
+    btnPrev.addEventListener('click', () => { if (index>0){ index--; render(); } });
+    btnNext.addEventListener('click', () => { if (index<bank.length-1){ index++; render(); } });
+    btnReveal.addEventListener('click', revealAnswer);
+    btnFinish.addEventListener('click', finishTest);
+
+    btnRestart.addEventListener('click', () => { if (confirm('Restart and clear all answers?')) buildBank(); });
+    btnShuffle.addEventListener('click', () => { if (confirm('Reshuffle questions and answers? This will clear progress.')) buildBank(); });
+    btnDownload.addEventListener('click', downloadSelf);
+
+    modeStudy.addEventListener('click', () => setMode('study'));
+    modeTest.addEventListener('click', () => setMode('test'));
+
+    // Init
+    buildBank();
+    setMode('study');
+
+  </script>
+</body>
+</html>
