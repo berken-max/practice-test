@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WWII Module 11 (Lessons 1–3) Practice Test</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#1e293b;
+      --card:#334155;
+      --muted:#94a3b8;
+      --text:#f8fafc;
+      --accent:#38bdf8;
+      --accent2:#4ade80;
+      --danger:#f43f5e;
+      --border:rgba(255,255,255,.1);
+      --shadow:0 10px 25px rgba(0,0,0,.4);
+      --radius:16px;
+      --sans:ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:var(--sans); background:var(--bg); color:var(--text);
+      min-height:100vh; padding-bottom:40px;
+    }
+    .wrap{max-width:800px; margin:0 auto; padding:15px}
+    header{
+      background:var(--panel); padding:20px; border-radius:var(--radius);
+      border:1px solid var(--border); box-shadow:var(--shadow);
+      margin-bottom:20px; position:sticky; top:10px; z-index:100;
+    }
+    h1{font-size:20px; margin:0 0 8px}
+    .sub{font-size:13px; color:var(--muted); margin:0}
+    .stats{display:flex; gap:10px; flex-wrap:wrap; margin-top:15px}
+    .chip{
+      background:rgba(255,255,255,.05); padding:8px 12px; border-radius:10px;
+      font-size:12px; border:1px solid var(--border);
+    }
+    .chip b{color:var(--accent)}
+
+    .modes{display:flex; gap:8px; margin-top:12px}
+    .mbtn{
+      flex:1; padding:10px; border-radius:10px; border:1px solid var(--border);
+      background:rgba(255,255,255,.05); color:var(--muted); cursor:pointer; font-weight:bold;
+    }
+    .mbtn.active{background:var(--accent); color:var(--bg); border-color:var(--accent)}
+
+    .progress-container{margin-top:15px; height:8px; background:rgba(255,255,255,.1); border-radius:10px; overflow:hidden}
+    #pbar{height:100%; width:0%; background:var(--accent2); transition:width .3s}
+
+    main{margin-top:20px}
+    .card{
+      background:var(--panel); border-radius:var(--radius); border:1px solid var(--border);
+      box-shadow:var(--shadow); padding:20px;
+    }
+    .qmeta{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:10px}
+    .qtext{font-size:17px; line-height:1.4; margin-bottom:20px; font-weight:500}
+
+    .options{display:grid; gap:12px}
+    .opt{
+      background:rgba(255,255,255,.03); border:1px solid var(--border);
+      padding:14px; border-radius:12px; text-align:left; color:var(--text);
+      cursor:pointer; transition:all .2s; font-size:15px;
+    }
+    .opt:hover{background:rgba(255,255,255,.08); border-color:var(--accent)}
+    .opt.correct{background:rgba(74,222,128,.2); border-color:var(--accent2)}
+    .opt.wrong{background:rgba(244,63,94,.2); border-color:var(--danger)}
+    .opt:disabled{cursor:default}
+
+    .feedback{
+      margin-top:20px; padding:15px; border-radius:12px; display:none;
+      font-size:14px; line-height:1.5; border:1px solid var(--border);
+    }
+    .feedback.show{display:block}
+    .feedback.good{background:rgba(74,222,128,.1); border-color:var(--accent2)}
+    .feedback.bad{background:rgba(244,63,94,.1); border-color:var(--danger)}
+
+    .nav{display:flex; justify-content:space-between; margin-top:25px; gap:10px}
+    .btn{
+      padding:12px 20px; border-radius:10px; border:none; font-weight:bold;
+      cursor:pointer; transition:opacity .2s; font-size:14px;
+    }
+    .btn-p{background:var(--accent); color:var(--bg)}
+    .btn-s{background:rgba(255,255,255,.1); color:var(--text)}
+    .btn:disabled{opacity:0.3; cursor:not-allowed}
+
+    #results{display:none; margin-top:20px}
+    .res-card{background:var(--panel); padding:25px; border-radius:var(--radius); text-align:center}
+    .score-big{font-size:48px; font-weight:bold; color:var(--accent2); margin:10px 0}
+
+    .missed-list{margin-top:20px; text-align:left}
+    .missed-item{padding:15px; border-bottom:1px solid var(--border); font-size:14px}
+    .missed-item b{color:var(--danger)}
+    .missed-item i{color:var(--accent2)}
+
+    .download-area{margin-top:20px; text-align:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>WWII Practice Test: Lessons 1–3</h1>
+      <p class="sub">Origins of War, The Holocaust, & U.S. Neutrality</p>
+
+      <div class="modes">
+        <button id="mStudy" class="mbtn active">Study Mode</button>
+        <button id="mTest" class="mbtn">Test Mode</button>
+      </div>
+
+      <div class="stats">
+        <div class="chip">Question <b id="curIdx">1</b> / <b id="totalQ">100</b></div>
+        <div class="chip">Score: <b id="score">0</b></div>
+        <div class="chip">Progress: <b id="pct">0%</b></div>
+      </div>
+      <div class="progress-container"><div id="pbar"></div></div>
+    </header>
+
+    <main id="quiz-area">
+      <div class="card">
+        <div class="qmeta"><span id="qLesson">Lesson 1</span> <span id="qType">Multiple Choice</span></div>
+        <div id="qText" class="qtext"></div>
+        <div id="options" class="options"></div>
+        <div id="feedback" class="feedback"></div>
+
+        <div class="nav">
+          <button id="btnPrev" class="btn btn-s">Previous</button>
+          <button id="btnNext" class="btn btn-p">Next Question</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="results">
+      <div class="res-card">
+        <h2>Test Complete!</h2>
+        <div id="finalScore" class="score-big">0%</div>
+        <p id="scoreRaw"></p>
+        <button onclick="location.reload()" class="btn btn-p">Restart Quiz</button>
+
+        <div class="missed-list" id="missedList">
+          <h3>Review Missed Questions:</h3>
+        </div>
+      </div>
+    </header>
+
+    <div class="download-area">
+      <button id="btnDL" class="btn btn-s" style="font-size:12px; opacity:0.6">Download This Test</button>
+    </div>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      {l:"L1", t:"MC", q:"What was the name of the democratic government set up in Germany after WWI that eventually collapsed?", o:["Third Reich", "Weimar Republic", "Soviet Union", "Fascist Party"], a:1, e:"The Weimar Republic was the democratic government established in Germany after WWI."},
+      {l:"L1", t:"TF", q:"The Treaty of Versailles used a 'war-guilt clause' to place total blame for WWI on Germany.", o:["True", "False"], a:0, e:"Germany was forced to accept full responsibility and pay massive reparations."},
+      {l:"L1", t:"MC", q:"Who took control of the Soviet Union in 1924 and established a totalitarian government?", o:["Vladimir Lenin", "Joseph Stalin", "Benito Mussolini", "Adolf Hitler"], a:1, e:"Stalin took over after Lenin died and transformed the SU into a totalitarian state."},
+      {l:"L1", t:"MC", q:"What were 'collectives' in the Soviet Union?", o:["Private businesses", "Large government-owned farms", "Military training camps", "Labor unions"], a:1, e:"Collectives were large state-owned farms worked by hundreds of families."},
+      {l:"L1", t:"MC", q:"Which political philosophy stresses nationalism and places the interests of the state above individuals?", o:["Communism", "Fascism", "Democracy", "Isolationism"], a:1, e:"Fascism, established by Mussolini in Italy, emphasizes the state over the individual."},
+      {l:"L1", t:"MC", q:"Benito Mussolini's followers were known by what nickname?", o:["Brown Shirts", "Storm Troopers", "Black Shirts", "Red Army"], a:2, e:"Mussolini's private militia was called the Black Shirts."},
+      {l:"L1", t:"MC", q:"What was the name of Adolf Hitler's book that set forth the basic beliefs of Nazism?", o:["The Third Reich", "Mein Kampf", "The Communist Manifesto", "The Great Empire"], a:1, e:"Mein Kampf (My Struggle) outlined Hitler's ideology of racial purity and expansion."},
+      {l:"L1", t:"MC", q:"Hitler's private army of 'storm troopers' were also known as:", o:["Black Shirts", "Brown Shirts", "The SS", "The Gestapo"], a:1, e:"The Brown Shirts (SA) were Hitler's early private army."},
+      {l:"L1", t:"MC", q:"In 1933, Hitler was appointed to what position in the German government?", o:["President", "Chancellor", "King", "General"], a:1, e:"Hitler was appointed Chancellor (Prime Minister) before dismantling the republic."},
+      {l:"L1", t:"TF", q:"The 'Aryans' were considered the 'master race' in Nazi ideology.", o:["True", "False"], a:0, e:"Hitler believed blue-eyed, blond-haired Aryans were superior to all others."},
+      {l:"L1", t:"MC", q:"Which country's military leaders used violence to gain control of the government in the early 1930s?", o:["Italy", "Japan", "Spain", "France"], a:1, e:"Militarists in Japan took control to seek wealth and resources through expansion."},
+      {l:"L1", t:"MC", q:"Who led the Spanish army officers in a rebellion against the Spanish Republic in 1936?", o:["Francisco Franco", "Joseph Stalin", "Charles de Gaulle", "Hideki Tojo"], a:0, e:"General Francisco Franco led the fascist rebellion in the Spanish Civil War."},
+      {l:"L1", t:"MC", q:"The formal alliance between Hitler and Mussolini was known as the:", o:["Tripartite Pact", "Rome-Berlin Axis", "Munich Agreement", "Nonaggression Pact"], a:1, e:"The Rome-Berlin Axis linked the two fascist dictators."},
+      {l:"L1", t:"MC", q:"What was the first Chinese province invaded and seized by Japanese militarists in 1931?", o:["Beijing", "Manchuria", "Shanghai", "Hong Kong"], a:1, e:"Japan seized Manchuria and left the League of Nations when condemned."},
+      {l:"L1", t:"MC", q:"The German region bordering France that Hitler remilitarized in 1936 was the:", o:["Sudetenland", "Rhineland", "Ardennes", "Vichy"], a:1, e:"The Rhineland was demilitarized by the Treaty of Versailles, but Hitler sent troops there anyway."},
+      {l:"L1", t:"MC", q:"What was 'Anschluss'?", o:["The invasion of Poland", "The unification of Austria and Germany", "The bombing of Britain", "The fall of France"], a:1, e:"Anschluss was the 1938 unification of Austria into the German Reich."},
+      {l:"L1", t:"MC", q:"The western border regions of Czechoslovakia where 3 million Germans lived were called the:", o:["Rhineland", "Sudetenland", "Maginot Line", "Dunkirk"], a:1, e:"Hitler claimed Germans were being abused in the Sudetenland to justify taking it."},
+      {l:"L1", t:"MC", q:"The policy of giving up principles to pacify an aggressor is known as:", o:["Isolationism", "Appeasement", "Totalitarianism", "Blitzkrieg"], a:1, e:"Appeasement was famously used by Britain and France at the Munich Conference."},
+      {l:"L1", t:"MC", q:"Which British leader famously opposed the Munich Agreement and called it appeasement?", o:["Neville Chamberlain", "Winston Churchill", "George Marshall", "Harry Truman"], a:1, e:"Churchill was Chamberlain's rival and warned that appeasement would lead to war."},
+      {l:"L1", t:"MC", q:"Hitler signed a nonaggression pact in 1939 with which leader to avoid a two-front war?", o:["Mussolini", "Stalin", "Chamberlain", "Franco"], a:1, e:"The Hitler-Stalin pact shocked the world and cleared the way for the invasion of Poland."},
+      {l:"L1", t:"MC", q:"What was the date of the German invasion of Poland, marking the start of WWII?", o:["Nov 11, 1918", "Sept 1, 1939", "Dec 7, 1941", "June 6, 1944"], a:1, e:"WWII began when Germany invaded Poland on September 1, 1939."},
+      {l:"L1", t:"MC", q:"What does 'Blitzkrieg' mean?", o:["Sitting war", "Lightning war", "Total war", "Air war"], a:1, e:"Blitzkrieg used fast tanks and aircraft to surprise and crush the enemy."},
+      {l:"L1", t:"MC", q:"The system of fortifications built along France's eastern border was the:", o:["Siegfried Line", "Maginot Line", "Atlantic Wall", "Iron Curtain"], a:1, e:"The Maginot Line was meant to protect France but was bypassed by German tanks."},
+      {l:"L1", t:"MC", q:"Where were 400,000 British and French soldiers trapped and then rescued by a makeshift fleet?", o:["Paris", "Dunkirk", "London", "Normandy"], a:1, e:"The 'Miracle at Dunkirk' saved the Allied army from total destruction."},
+      {l:"L1", t:"MC", q:"The Nazi-controlled puppet government in southern France was located in:", o:["Paris", "Vichy", "Lyon", "Nice"], a:1, e:"Vichy France was the puppet state led by Philippe Pétain."},
+      {l:"L1", t:"MC", q:"Who set up a French government-in-exile in England after France fell?", o:["Philippe Pétain", "Charles de Gaulle", "Edouard Daladier", "Winston Churchill"], a:1, e:"General de Gaulle fled to England to lead the Free French forces."},
+      {l:"L1", t:"MC", q:"What new technology helped the British RAF plot flight paths of German planes?", o:["Sonar", "Radar", "Jet engines", "V-2 rockets"], a:1, e:"Radar was crucial to the British victory in the Battle of Britain."},
+      {l:"L2", t:"MC", q:"The systematic execution of 6 million Jews and 5 million others by Nazis is known as the:", o:["Blitzkrieg", "Holocaust", "Final Solution", "Kristallnacht"], a:1, e:"The Holocaust was the state-sponsored persecution and murder of millions."},
+      {l:"L2", t:"MC", q:"What did the Nuremberg Laws of 1935 do to Jews in Germany?", o:["Gave them equal rights", "Stripped them of citizenship, jobs, and property", "Forced them to leave the country", "Allowed them to join the army"], a:1, e:"These laws legalized discrimination and required Jews to wear the Star of David."},
+      {l:"L2", t:"MC", q:"What was 'Kristallnacht'?", o:["The invasion of Russia", "The Night of Broken Glass", "The fall of Berlin", "The signing of the peace treaty"], a:1, e:"On Nov 9-10, 1938, Nazis attacked Jewish homes, businesses, and synagogues."},
+      {l:"L2", t:"MC", q:"Which famous scientist was among the 100,000 Jewish refugees accepted by the U.S.?", o:["Thomas Mann", "Albert Einstein", "Paul Tillich", "Walter Gropius"], a:1, e:"Einstein was one of the many 'intellectual' refugees who fled to America."},
+      {l:"L2", t:"MC", q:"What happened to the passengers of the German ocean liner St. Louis?", o:["They were all welcomed in Miami", "They were forced to return to Europe; many were later killed", "They settled in Cuba", "They joined the U.S. Navy"], a:1, e:"The U.S. Coast Guard prevented the ship from docking, forcing it back to Europe."},
+      {l:"L2", t:"MC", q:"What was Hitler's 'Final Solution'?", o:["A plan to win the war", "A policy of genocide against Jews and other 'enemies'", "A trade agreement with Japan", "The invasion of Britain"], a:1, e:"The Final Solution was the deliberate and systematic killing of an entire population."},
+      {l:"L2", t:"MC", q:"Segregated Jewish areas in Polish cities guarded with walls and wire were called:", o:["Concentration camps", "Ghettos", "Collectives", "Communes"], a:1, e:"Ghettos like the one in Warsaw were used to confine and starve Jewish populations."},
+      {l:"L2", t:"MC", q:"Which was the largest of the Nazi death camps?", o:["Dachau", "Auschwitz", "Chelmno", "Majdanek"], a:1, e:"Auschwitz in Poland was the site of the largest mass murders in history."},
+      {l:"L2", t:"MC", q:"What was the purpose of the War Refugee Board created by FDR in 1944?", o:["To draft soldiers", "To rescue Jews in Europe", "To build ships", "To spy on Germany"], a:1, e:"The board helped rescue thousands of Jews in Hungary and Romania late in the war."},
+      {l:"L2", t:"MC", q:"Who wrote the book 'Night' about the horrors of Auschwitz?", o:["Albert Einstein", "Elie Wiesel", "Anne Frank", "Raoul Wallenberg"], a:1, e:"Wiesel's memoir is a famous account of surviving the death camps."},
+      {l:"L3", t:"MC", q:"The 1928 pact that stated 'war shouldn't be used as an instrument of national policy' was the:", o:["Kellogg-Briand Pact", "Treaty of Versailles", "Munich Agreement", "Atlantic Charter"], a:0, e:"The Kellogg-Briand Pact was signed by 62 nations but had no enforcement power."},
+      {l:"L3", t:"MC", q:"The Nye Committee found that which groups had made large profits during WWI?", o:["Farmers", "Banks and manufacturers", "Labor unions", "Teachers"], a:1, e:"This finding fueled isolationism by suggesting 'merchants of death' caused WWI."},
+      {l:"L3", t:"MC", q:"What was the 'Good Neighbor Policy'?", o:["A plan to invade Canada", "Nonintervention in Latin America", "A trade deal with Japan", "A law against immigration"], a:1, e:"FDR continued the policy of not interfering in the affairs of Latin American nations."},
+      {l:"L3", t:"MC", q:"The Neutrality Acts of 1935 and 1937 outlawed what?", o:["Immigration", "Arms sales or loans to nations at war", "Voting for women", "Buying German goods"], a:1, e:"These acts were designed to keep the U.S. out of foreign conflicts."},
+      {l:"L3", t:"MC", q:"What was the 'Cash and Carry' provision of 1939?", o:["A way to buy groceries", "Warring nations could buy U.S. arms if they paid cash and used their own ships", "A plan to lend tanks to Britain", "A tax on imported oil"], a:1, e:"This allowed the U.S. to help Britain and France while technically remaining neutral."},
+      {l:"L3", t:"MC", q:"The Tripartite Pact was a mutual defense treaty between which three nations?", o:["US, Britain, France", "Germany, Italy, Japan", "Germany, Russia, Italy", "Japan, China, Italy"], a:1, e:"These three became the Axis Powers, aimed at keeping the U.S. out of the war."},
+      {l:"L3", t:"MC", q:"What was the nation's first peacetime military draft?", o:["Selective Training and Service Act", "Neutrality Act", "Lend-Lease Act", "GI Bill"], a:0, e:"Passed in 1940, it registered 16 million men for potential service."},
+      {l:"L3", t:"MC", q:"FDR broke tradition by running for and winning how many terms as president?", o:["Two", "Three", "Four", "Five"], a:1, e:"FDR was the first and only president to be elected to more than two terms (he eventually won four)."},
+      {l:"L3", t:"MC", q:"The Lend-Lease Act of 1941 allowed the president to:", o:["Sell Alaska to Russia", "Lend or lease arms to countries whose defense was vital to the U.S.", "Declare war on Japan", "Draft women into the army"], a:1, e:"This replaced 'Cash and Carry' when Britain ran out of money."},
+      {l:"L3", t:"MC", q:"What were 'Wolf Packs'?", o:["Groups of German tanks", "Groups of German U-boats (submarines)", "Japanese aircraft carriers", "U.S. infantry divisions"], a:1, e:"Wolf packs attacked Allied supply ships in the Atlantic."},
+      {l:"L3", t:"MC", q:"The Atlantic Charter was a secret meeting and declaration between FDR and:", o:["Stalin", "Churchill", "Hitler", "Tojo"], a:1, e:"FDR and Churchill met on a battleship to discuss war aims and the future UN."},
+      {l:"L3", t:"MC", q:"Why did the U.S. place an oil embargo on Japan in 1941?", o:["Japan attacked Pearl Harbor", "Japan invaded French Indochina", "Japan stopped trading silk", "Japan joined the League of Nations"], a:1, e:"The embargo was a response to Japanese aggression in Southeast Asia."},
+      {l:"L3", t:"MC", q:"What was the date of the attack on Pearl Harbor?", o:["Sept 1, 1939", "Dec 7, 1941", "June 6, 1944", "May 8, 1945"], a:1, e:"FDR called this 'a date which will live in infamy.'"},
+      {l:"L1", t:"TF", q:"Joseph Stalin's '5-year plans' were aimed at rapid industrialization of the Soviet Union.", o:["True", "False"], a:0, e:"Stalin wanted to turn the SU into a major industrial power quickly."},
+      {l:"L1", t:"MC", q:"What was the 'Rome-Berlin Axis'?", o:["A new railroad", "An alliance between Hitler and Mussolini", "A trade route", "A peace treaty with France"], a:1, e:"It was the formal alliance between the two fascist leaders."},
+      {l:"L1", t:"MC", q:"Which country did Japan invade in 1937, leading to the 'Quarantine Speech' by FDR?", o:["Russia", "China", "Vietnam", "Australia"], a:1, e:"Japan's invasion of China prompted FDR to speak out against aggressor nations."},
+      {l:"L1", t:"MC", q:"The 'Munich Agreement' gave which territory to Germany?", o:["Poland", "Sudetenland", "Austria", "Paris"], a:1, e:"Britain and France allowed Hitler to take the Sudetenland to avoid war."},
+      {l:"L1", t:"MC", q:"What was the 'Siegfried Line'?", o:["A French defense line", "A German defense line facing the Maginot Line", "A Japanese naval base", "A Russian tank"], a:1, e:"It was the German counterpart to the French Maginot Line."},
+      {l:"L1", t:"MC", q:"The 'Phony War' or 'Sitzkrieg' occurred after the fall of which country?", o:["France", "Poland", "Norway", "Belgium"], a:1, e:"After Poland fell, there was a period of little fighting in the West."},
+      {l:"L1", t:"MC", q:"Which region of 'unguarded wooded ravines' did German tanks use to bypass the Maginot Line?", o:["Rhineland", "Ardennes", "Sudetenland", "Normandy"], a:1, e:"The French thought the Ardennes was impassable for tanks, but they were wrong."},
+      {l:"L1", t:"MC", q:"The 'Battle of Britain' was primarily fought in the:", o:["Sea", "Air", "Trenches", "Mountains"], a:1, e:"It was an air war between the Luftwaffe and the RAF."},
+      {l:"L2", t:"MC", q:"What was the 'Schutzstaffel' or SS?", o:["A labor union", "Hitler's elite security squadron", "A group of teachers", "A political party in Italy"], a:1, e:"The SS carried out many of the atrocities of the Holocaust."},
+      {l:"L2", t:"MC", q:"Which group was NOT targeted by the Nazis during the Holocaust?", o:["Jews", "Gypsies", "Aryans", "Jehovah's Witnesses"], a:2, e:"Aryans were considered the 'master race' by Nazis."},
+      {l:"L2", t:"MC", q:"What was the 'Wannsee Conference'?", o:["A peace talk", "Where Nazis coordinated the 'Final Solution' and gas chambers", "A meeting to end the war", "A trade summit"], a:1, e:"Top Nazi officials met here to plan the mass murder of Jews."},
+      {l:"L2", t:"MC", q:"Which diplomat issued 10,000 visas to help Jews escape to Portugal?", o:["Raoul Wallenberg", "Aristides de Sousa Mendes", "Cordell Hull", "Charles de Gaulle"], a:1, e:"Mendes was one of the 'righteous' who risked their careers to save lives."},
+      {l:"L2", t:"MC", q:"The 'Nuremberg Trials' were held to:", o:["Elect a new leader", "Try Nazi leaders for war crimes", "Sign a peace treaty", "Divide Germany"], a:1, e:"The trials established that individuals are responsible for their actions in war."},
+      {l:"L3", t:"MC", q:"The 'Hoover-Stimson Note' was a response to Japan's invasion of:", o:["Hawaii", "Manchuria", "Russia", "Vietnam"], a:1, e:"The U.S. refused to recognize Japan's seizure of Manchuria."},
+      {l:"L3", t:"MC", q:"The 'Johnson Debt Default Act' prohibited loans to countries that:", o:["Were at war", "Hadn't paid back WWI debts", "Were communist", "Had no oil"], a:1, e:"This act limited FDR's ability to help Britain early on."},
+      {l:"L3", t:"MC", q:"FDR's 'Quarantine Speech' was a call to:", o:["Stay isolated", "Isolate aggressor nations to stop war", "Start a draft", "Build more hospitals"], a:1, e:"FDR wanted to move away from strict isolationism."},
+      {l:"L3", t:"MC", q:"Who was FDR's Republican opponent in the 1940 election?", o:["Herbert Hoover", "Wendell Willkie", "Gerald Nye", "Henry Stimson"], a:1, e:"Willkie agreed with many of FDR's foreign policies, making the election unique."},
+      {l:"L3", t:"MC", q:"The 'Grand Alliance' included which three countries?", o:["US, Britain, France", "US, Britain, Soviet Union", "Germany, Italy, Japan", "Britain, France, Poland"], a:1, e:"Churchill coined this term for the 'Big Three' Allies."},
+      {l:"L3", t:"MC", q:"The 'Greer', 'Kearny', and 'Reuben James' were all:", o:["German submarines", "U.S. destroyers attacked by U-boats", "Japanese aircraft carriers", "British merchant ships"], a:1, e:"Attacks on these ships led to an 'undeclared naval war' in the Atlantic."},
+      {l:"L3", t:"MC", q:"How many Japanese warplanes were involved in the first wave of the Pearl Harbor attack?", o:["50", "More than 180", "500", "1000"], a:1, e:"The massive air raid came from six Japanese aircraft carriers."},
+      {l:"L1", t:"TF", q:"The 'Rome-Berlin Axis' was a formal alliance between Germany and the Soviet Union.", o:["True", "False"], a:1, e:"It was between Germany (Hitler) and Italy (Mussolini)."},
+      {l:"L1", t:"MC", q:"Which country did Hitler invade on April 9, 1940, to build bases to strike Britain?", o:["France", "Denmark and Norway", "Spain", "Russia"], a:1, e:"Hitler wanted coastal bases for his air and sea war against Britain."},
+      {l:"L1", t:"MC", q:"The 'V-1' and 'V-2' were types of:", o:["Tanks", "Rockets used by Germany against Britain", "Submarines", "Airplanes"], a:1, e:"These were early long-range missiles developed by German scientists."},
+      {l:"L2", t:"MC", q:"What was the 'Night of Broken Glass'?", o:["Blitzkrieg", "Kristallnacht", "D-Day", "V-E Day"], a:1, e:"Kristallnacht saw widespread state-sponsored violence against Jews."},
+      {l:"L2", t:"MC", q:"Which country's king refused to enforce Nuremberg Laws and helped save almost all its Jews?", o:["France", "Denmark", "Poland", "Italy"], a:1, e:"King Christian X of Denmark was a notable figure of resistance."},
+      {l:"L3", t:"MC", q:"The 'Reciprocal Trade Agreement Act' gave the president power to:", o:["Declare war", "Make trade agreements and lower tariffs", "Draft soldiers", "Close banks"], a:1, e:"This was part of FDR's effort to improve global economic relations."},
+      {l:"L3", t:"MC", q:"The 'Atlantic Charter' became the basis for which future organization?", o:["League of Nations", "United Nations", "NATO", "European Union"], a:1, e:"The charter's principles were adopted into the Declaration of the United Nations."},
+      {l:"L3", t:"MC", q:"Who was the Japanese Chief of Staff who ordered the attack on Pearl Harbor?", o:["Hirohito", "Hideki Tojo", "Yamamoto", "Mussolini"], a:1, e:"Tojo was the militant leader who pushed Japan into war with the U.S."},
+      {l:"L1", t:"MC", q:"What was the 'war-guilt clause'?", o:["A Nazi law", "Part of the Treaty of Versailles blaming Germany for WWI", "A Japanese military code", "A U.S. isolationist policy"], a:1, e:"This clause caused deep resentment in Germany and helped Hitler rise to power."},
+      {l:"L1", t:"MC", q:"Which dictator was known as 'Il Duce'?", o:["Hitler", "Mussolini", "Stalin", "Franco"], a:1, e:"Mussolini took this title, meaning 'The Leader.'"},
+      {l:"L1", t:"MC", q:"Which dictator was known as 'Der Führer'?", o:["Mussolini", "Hitler", "Stalin", "Tojo"], a:1, e:"Hitler took this title after dismantling the German republic."},
+      {l:"L1", t:"MC", q:"The 'Abraham Lincoln Battalion' was a group of Americans who fought in:", o:["WWI", "The Spanish Civil War", "The Battle of Britain", "Pearl Harbor"], a:1, e:"3,000 Americans volunteered to fight against fascism in Spain."},
+      {l:"L1", t:"MC", q:"Which country did Italy invade in 1935, while the League of Nations did little to stop it?", o:["Egypt", "Ethiopia", "Libya", "Sudan"], a:1, e:"Mussolini wanted to build a new Roman Empire in Africa."},
+      {l:"L1", t:"MC", q:"Who was the French Premier who signed the Munich Agreement?", o:["Charles de Gaulle", "Edouard Daladier", "Philippe Pétain", "Jean Monnet"], a:1, e:"Daladier, along with Chamberlain, chose appeasement at Munich."},
+      {l:"L1", t:"MC", q:"The 'Luftwaffe' was the name of the:", o:["German Army", "German Air Force", "German Navy", "German Secret Police"], a:1, e:"The Luftwaffe was central to Blitzkrieg and the Battle of Britain."},
+      {l:"L2", t:"MC", q:"What was the 'Star of David' used for in Nazi Germany?", o:["A military medal", "To identify and stigmatize Jews", "A holiday decoration", "A symbol of the Nazi party"], a:1, e:"Jews were forced to wear it on their clothing to make them easy to target."},
+      {l:"L2", t:"MC", q:"What were 'crematoriums' used for in death camps?", o:["Cooking food", "Burning bodies to hide evidence of mass murder", "Heating barracks", "Scientific research"], a:1, e:"Nazis used them to dispose of the millions of victims of the gas chambers."},
+      {l:"L2", t:"MC", q:"Who was the Swedish diplomat who issued 'protective passports' to Hungarian Jews?", o:["Raoul Wallenberg", "Elie Wiesel", "Albert Einstein", "Cordell Hull"], a:0, e:"Wallenberg saved thousands of lives before disappearing at the end of the war."},
+      {l:"L3", t:"MC", q:"The 'Washington Naval Conference' of 1921 resulted in a treaty for:", o:["Trade", "Disarmament", "War", "Immigration"], a:1, e:"It was an early attempt to prevent a naval arms race."},
+      {l:"L3", t:"MC", q:"The 'Neutrality Act of 1939' officially started which policy?", o:["Lend-Lease", "Cash and Carry", "The Draft", "The Embargo"], a:1, e:"This allowed the U.S. to sell weapons to Britain and France."},
+      {l:"L3", t:"MC", q:"What was the 'Tripartite Pact'?", o:["A peace treaty", "The alliance that formed the Axis Powers", "A trade deal", "A plan to divide Poland"], a:1, e:"It linked Germany, Italy, and Japan in a mutual defense agreement."},
+      {l:"L3", t:"MC", q:"Which U.S. destroyer was sunk in October 1941, killing over 100 sailors?", o:["Greer", "Reuben James", "Kearny", "Arizona"], a:1, e:"The sinking of the Reuben James was a major escalation in the Atlantic."},
+      {l:"L3", t:"MC", q:"What was the 'oil embargo'?", o:["A plan to buy more oil", "A ban on selling oil to Japan", "A tax on gasoline", "A way to find new oil fields"], a:1, e:"The U.S. used this to try and stop Japanese aggression in Asia."},
+      {l:"L3", t:"MC", q:"How many U.S. battleships were sunk or damaged at Pearl Harbor?", o:["2", "8", "20", "50"], a:1, e:"Nearly the entire Pacific fleet's battleship row was hit."},
+      {l:"L1", t:"TF", q:"The 'Blitzkrieg' strategy relied on slow, methodical infantry movements.", o:["True", "False"], a:1, e:"It relied on speed, tanks, and air power."},
+      {l:"L2", t:"TF", q:"The 'Final Solution' was a plan for the deliberate and systematic killing of an entire population.", o:["True", "False"], a:0, e:"This is the definition of genocide, which the Nazis practiced."},
+      {l:"L3", t:"TF", q:"The U.S. declared war on Japan the day after the Pearl Harbor attack.", o:["True", "False"], a:0, e:"Congress declared war on December 8, 1941."},
+      {l:"L1", t:"MC", q:"Which country was invaded by the Soviet Union from the east in September 1939?", o:["Germany", "Poland", "Finland", "France"], a:1, e:"Stalin and Hitler split Poland between them."},
+      {l:"L1", t:"MC", q:"The 'Battle of Britain' forced Hitler to:", o:["Surrender", "Call off his invasion of Britain indefinitely", "Invade Russia immediately", "Use the atomic bomb"], a:1, e:"The RAF's resistance saved Britain from a ground invasion."},
+      {l:"L2", t:"MC", q:"Which group was targeted for 'medical experiments' by Nazi doctors?", o:["SS officers", "Prisoners in concentration camps", "German politicians", "British pilots"], a:1, e:"Innocent victims were subjected to horrific experiments in the name of 'science.'"}
+    ];
+
+    let cur = 0;
+    let score = 0;
+    let mode = 'study';
+    let answered = new Array(QUESTIONS.length).fill(null);
+    let missed = [];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    // Shuffle questions on load
+    shuffle(QUESTIONS);
+
+    const elQText = document.getElementById('qText');
+    const elOptions = document.getElementById('options');
+    const elFeedback = document.getElementById('feedback');
+    const elCurIdx = document.getElementById('curIdx');
+    const elTotalQ = document.getElementById('totalQ');
+    const elScore = document.getElementById('score');
+    const elPct = document.getElementById('pct');
+    const elPbar = document.getElementById('pbar');
+    const elNext = document.getElementById('btnNext');
+    const elPrev = document.getElementById('btnPrev');
+
+    function updateStats() {
+      elCurIdx.innerText = cur + 1;
+      elTotalQ.innerText = QUESTIONS.length;
+      elScore.innerText = score;
+      const progress = Math.round(((cur) / QUESTIONS.length) * 100);
+      elPct.innerText = progress + '%';
+      elPbar.style.width = progress + '%';
+    }
+
+    function renderQ() {
+      const q = QUESTIONS[cur];
+      elQText.innerText = q.q;
+      document.getElementById('qLesson').innerText = q.l === 'L1' ? 'Lesson 1: War Breaks Out' : q.l === 'L2' ? 'Lesson 2: The Holocaust' : 'Lesson 3: America Moves Toward War';
+      document.getElementById('qType').innerText = q.t === 'MC' ? 'Multiple Choice' : 'True / False';
+
+      elOptions.innerHTML = '';
+      elFeedback.classList.remove('show', 'good', 'bad');
+
+      q.o.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'opt';
+        btn.innerText = opt;
+
+        if (answered[cur] !== null) {
+          btn.disabled = true;
+          if (i === q.a) btn.classList.add('correct');
+          if (i === answered[cur] && i !== q.a) btn.classList.add('wrong');
+        }
+
+        btn.onclick = () => {
+          if (answered[cur] !== null) return;
+          answered[cur] = i;
+          const isCorrect = i === q.a;
+          if (isCorrect) score++;
+          else missed.push({q: q.q, your: q.o[i], correct: q.o[q.a], e: q.e});
+
+          if (mode === 'study') {
+            elFeedback.innerText = (isCorrect ? "Correct! " : "Incorrect. ") + q.e;
+            elFeedback.classList.add('show', isCorrect ? 'good' : 'bad');
+            renderQ(); // Refresh to show colors
+          } else {
+            if (cur < QUESTIONS.length - 1) {
+              cur++;
+              renderQ();
+            } else {
+              showResults();
+            }
+          }
+          updateStats();
+        };
+        elOptions.appendChild(btn);
+      });
+
+      elPrev.disabled = cur === 0;
+      elNext.innerText = cur === QUESTIONS.length - 1 ? "Finish Test" : "Next Question";
+    }
+
+    elNext.onclick = () => {
+      if (cur < QUESTIONS.length - 1) {
+        cur++;
+        renderQ();
+      } else {
+        showResults();
+      }
+    };
+
+    elPrev.onclick = () => {
+      if (cur > 0) {
+        cur--;
+        renderQ();
+      }
+    };
+
+    function showResults() {
+      document.getElementById('quiz-area').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      const finalPct = Math.round((score / QUESTIONS.length) * 100);
+      document.getElementById('finalScore').innerText = finalPct + '%';
+      document.getElementById('scoreRaw').innerText = `You got ${score} out of ${QUESTIONS.length} correct.`;
+
+      const list = document.getElementById('missedList');
+      if (missed.length === 0) {
+        list.innerHTML += "<p>Perfect score! No missed questions.</p>";
+      } else {
+        missed.forEach(m => {
+          const item = document.createElement('div');
+          item.className = 'missed-item';
+          item.innerHTML = `<b>Q: ${m.q}</b><br>Your Answer: <b>${m.your}</b><br>Correct Answer: <i>${m.correct}</i><br><small>${m.e}</small>`;
+          list.appendChild(item);
+        });
+      }
+    }
+
+    document.getElementById('mStudy').onclick = () => {
+      mode = 'study';
+      document.getElementById('mStudy').classList.add('active');
+      document.getElementById('mTest').classList.remove('active');
+    };
+    document.getElementById('mTest').onclick = () => {
+      mode = 'test';
+      document.getElementById('mTest').classList.add('active');
+      document.getElementById('mStudy').classList.remove('active');
+    };
+
+    document.getElementById('btnDL').onclick = () => {
+      const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ww2_lessons_1_3_practice_test.html';
+      a.click();
+    };
+
+    renderQ();
+    updateStats();
+  </script>
+</body>
+</html>
